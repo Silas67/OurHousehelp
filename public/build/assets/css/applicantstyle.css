@@ -1,0 +1,417 @@
+body {
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Add a new class to overlay the main content */
+.sidebar.active + .main-content {
+    filter: blur(4px); /* Optional: Blur effect for main content */
+    pointer-events: none; /* Prevent interaction with main content */
+}
+
+a {
+    text-decoration: none;
+}
+
+.fas {
+    color: #6739c9;
+}
+
+
+
+.bg-custom-success {
+    background-color: #4e2a9c !important; /* Adding !important to ensure it overrides Bootstrap */
+    color: white;
+}
+
+.bg-custom-success h3 {
+    font-size: 16px; /* Size for burger icon */
+}
+
+
+.sidebar {
+    height: 100vh;
+    background-color: #0b0220; /* Dark background for sidebar */
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hidden by default */
+    transition: left 0.3s ease; /* Smooth transition for sidebar */
+    z-index: 1000; /* Ensure sidebar is above other elements */
+    width: 25%;
+}
+
+.sidebar.active {
+    left: 0; /* Show sidebar when active */
+}
+
+.sidebar .nav-link {
+    color: #ffffff; /* Light gray color for links */
+    padding: 12px; /* Padding around links */
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.sidebar .nav-link.active {
+    color: #fff; /* White text for active link */
+    background-color: #4e2a9c; /* Dark background for active link */
+}
+
+.sidebar .nav-link:hover {
+    background-color: #3a1f75; /* Dark background on hover */
+}
+
+.recentapp, .btn-primary {
+    color: #fff; /* White text for active link */
+    background-color: #4e2a9c; /* Dark background for active link */
+}
+
+.nav-item .submenu {
+    max-height: 0; /* Hidden by default */
+    overflow: hidden; /* Ensure it hides properly */
+    margin-left: 20px; /* Indent for submenu */
+    transition: max-height 0.3s ease-out; /* Smooth opening/closing */
+}
+
+.nav-item .submenu.active {
+    max-height: 500px; /* Set an arbitrary max height for visible submenu */
+}
+
+.submenu-icon {
+    transition: transform 0.3s ease; /* Smooth rotation for chevron */
+}
+
+.submenu-icon.rotate {
+    transform: rotate(180deg); /* Rotate the chevron down when active */
+}
+
+.main-content {
+    margin-left: 0; /* Default margin */
+    transition: margin-left 0.3s ease; /* Smooth transition for margin */
+    padding-top: 56px; /* Space for fixed header */
+}
+
+.main-content.active {
+    margin-left: 25% /* Space for sidebar when active */
+}
+
+.burger-icon {
+    cursor: pointer; /* Pointer cursor for clickable burger icon */
+    font-size: 24px; /* Size for burger icon */
+}
+
+.navbar {
+    position: fixed;
+    width: 75%; /* Width of navbar */
+    top: 0; /* Align to the top */
+    z-index: 1020; /* Higher z-index than the sidebar */
+}
+
+.card {
+    margin-bottom: 20px; /* Space below each card */
+}
+
+.content-container {
+    margin-top: 56px; /* Space for fixed header */
+}
+
+.sidebar_hr {
+    color: #c0c7cf;
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+    .burger-icon {
+        display: none; /* Hide burger icon on larger screens */
+    }
+
+    .sidebar {
+        left: 0; /* Show sidebar on larger screens */
+    }
+
+    .main-content {
+        margin-left: 25%; /* Space for sidebar on larger screens */
+    }
+
+    #close-sidebar {
+        display: none; /* Hide the close button on larger screens */
+    }
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    .navbar {
+        width: 100% !important; /* Full width navbar on smaller screens */
+    }
+
+    .sidebar {
+        width: 70%; /* Make sidebar wider on smaller screens */
+        left: -100%; /* Initially hidden */
+        z-index: 1050;
+    }
+
+    .sidebar.active {
+        left: 0; /* Show sidebar when active */
+    }
+}
+
+
+
+
+
+.form-style {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    background: #f4f7f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+
+  .form_button {
+    width: 100%;
+  }
+
+
+  .form_fieldset {
+    border: none;
+    margin-bottom: 20px;
+  }
+
+  .form_legend {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .form_label {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+
+  @media (max-width: 576px) {
+    .form-control {
+        min-width: 250px; /* Minimum width for mobile devices */
+        width: auto; /* Allow flexibility */
+        font-size: 14px; /* Adjust font size if necessary */
+    }
+
+    .table-responsive {
+        overflow-x: auto; /* Enable horizontal scrolling */
+    }
+}
+
+
+
+
+
+#close-sidebar {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 10px;
+    cursor: pointer; /* Pointer cursor for button */
+}
+
+
+/* inbox ........................... */
+.inbox-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.message-list {
+    width: 25%;
+    background-color: #fff;
+    border-right: 1px solid #dee2e6;
+    overflow-y: auto;
+}
+
+.message-list-item {
+    padding: 15px;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.message-list-item:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+.message-list-item.active {
+    background-color: #e9ecef;
+}
+
+.message-list-item h6 {
+    margin-bottom: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.message-list-item p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.message-details {
+    width: 75%;
+    padding: 20px;
+    background-color: #f1f1f1;
+    overflow-y: auto;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.message-header h5 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.message-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.message-timestamp {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.reply-box {
+    margin-top: 30px;
+}
+
+.reply-box textarea {
+    resize: none;
+}
+
+/* Add some responsiveness */
+@media (max-width: 768px) {
+    .inbox-container {
+        flex-direction: column;
+    }
+
+    .message-list,
+    .message-details {
+        width: 100%;
+    }
+}
+
+/* Preloader Styles */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #479c18; /* Green spinner */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    margin-top: 15px;
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    color: #28a745; /* Green text to match the spinner */
+    text-align: center;
+}
+
+
+
+/* switch for availability */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Smaller width */
+    height: 20px; /* Smaller height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px; /* Smaller height for the toggle */
+    width: 14px; /* Smaller width for the toggle */
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #3a1f75;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px); /* Adjusted for smaller size */
+}
+
+.slider.round {
+    border-radius: 20px; /* Adjusted for smaller round shape */
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}

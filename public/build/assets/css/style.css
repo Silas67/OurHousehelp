@@ -1,0 +1,796 @@
+/* Resetting defaults and box-sizing */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fonts */
+:root {
+    --body-font: "Ubuntu", "Open Sans", "Lato", "poppins", "Roboto", sans-serif;
+    --heading-font: "Ubuntu", "Open Sans", "Jost", "poppins", "Roboto", sans-serif;
+
+    /* --body-font: "Lato", sans-serif;
+    --heading-font: "Jost", sans-serif; */
+}
+
+body {
+    line-height: 1.82em;
+    color: #222;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: "Ubuntu", "Poppins", sans-serif;
+    padding-top: 60px; /* Ensures content doesn't go under the navbar */
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #479c18; /* Green button */
+    border: none;
+    color: white;
+}
+
+span {
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.btn-success {
+    background-color: #479c18; /* Light green button */
+    border: none;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #66bb6a; /* Darker light green on hover */
+}
+
+a {
+    text-decoration: none;
+    color: #2c6d08;
+}
+
+.links {
+    text-decoration: none;
+    color: #2c6d08;
+}
+
+.recentapp {
+    color: #fff; /* White text for active link */
+    background-color: #2c6d08; /* Dark background for active link */
+}
+
+h2,
+h4 {
+    color: #2c6d08;
+}
+
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* Pushes the logo left and menu right */
+    align-items: center;
+    background-color: #479c18;
+    padding: 15px;
+    color: white;
+    position: fixed; /* Keeps the navbar sticky */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Makes sure navbar stays on top */
+}
+
+.logo a {
+    color: white;
+    font-size: 1.5em;
+    text-decoration: none;
+}
+
+/* Smooth transition for mobile menu */
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Adds space between menu items */
+    transition: max-height 0.5s ease-in-out; /* Controls the open/close speed */
+    max-height: 0; /* Start with the menu closed */
+}
+
+.nav-links.active {
+    max-height: 300px; /* Set a maximum height when the menu is open */
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+/* Hover effect for menu items */
+.nav-links li a:hover {
+    color: #97f783; /* Changes color on hover */
+}
+
+/* Active state for menu items */
+.nav-links li a.active {
+    color: #97f783; /* Same color as hover */
+    font-weight: bold; /* Optional: To make the active item more prominent */
+    border-bottom: 2px solid #97f783; /* Optional: Adds an underline to the active item */
+}
+
+.menu-toggle {
+    display: none; /* Hidden on desktop view */
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.menu-toggle .bar {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 4px 0;
+}
+
+/* Hero Section Carousel */
+.hero {
+    position: relative;
+    height: 80vh;
+}
+
+.carousel-item {
+    height: 80vh;
+    position: relative;
+}
+
+.carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+/* Dark Overlay for better contrast */
+.carousel-item::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.5
+    ); /* Darken the background image with 50% opacity */
+    z-index: 1; /* Ensures the overlay is on top of the image but behind the text */
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 2; /* Ensures the text is above both the image and overlay */
+}
+
+
+
+.hero-buttons a {
+    text-decoration: none;
+    /* padding: 15px 30px; */
+    margin: 0 10px;
+    font-size: 1em;
+}
+
+/* Responsive Media Queries */
+/* Mobile Styles */
+@media (max-width: 768px) {
+
+    .carousel-caption p {
+        font-size: 1em;
+        margin-bottom: 20px;
+    }
+
+
+    .navbar {
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .menu-toggle {
+        display: flex;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .menu-toggle .bar {
+        width: 25px;
+        height: 3px;
+        background-color: white;
+        margin: 4px 0;
+        transition: all 0.3s;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 70px; /* Adjusted for space under the navbar */
+        left: 0;
+        width: 100%;
+        background-color: #479c18;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-in-out;
+    }
+
+    .nav-links li {
+        text-align: center;
+    }
+
+    .nav-links li a {
+        font-size: 1.2em;
+        color: white;
+        display: block;
+        text-decoration: none;
+        transition: background 0.3s;
+    }
+
+    .nav-links li a:hover {
+        background-color: #3b7a10;
+    }
+
+
+    /* Expanded Menu */
+    .nav-links.active {
+        max-height: 500px;
+    }
+
+    /* Menu Toggle (Hamburger) Animation */
+    .menu-toggle.active .bar:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .menu-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle.active .bar:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+}
+
+
+
+
+/*
+============== footer====================
+*/
+/* footer */
+.footer {
+    background: #282828;
+}
+
+.footer .bottom-footer {
+    margin-top: 60px;
+}
+.footer .bottom-footer .bor_top {
+    border-top: 1px solid #2f2f2f;
+    padding: 24px 0;
+}
+
+.footer .bottom-footer p a {
+    font-weight: normal;
+}
+
+.bor_top a,
+.color {
+    color: #479c18;
+}
+
+/* About Section Styling .................................................................. */
+.about-section {
+    padding: 50px 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-section h2 {
+    font-size: 2.5em;
+    margin-bottom: 30px;
+}
+
+.card-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.about-card {
+    background-color: white;
+    padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 48%; /* Adjust width to ensure two cards side by side */
+}
+
+.about-card h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-card p {
+    font-size: 1.1em;
+    color: #666;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .about-card {
+        width: 100%; /* Stack cards vertically on small screens */
+    }
+}
+
+/* Services Section Styling */
+.services-section {
+    padding: 50px 20px;
+    background-color: #fff;
+}
+
+.services-section h2 {
+    font-size: 2.5em;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.service-card {
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.service-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.service-card p {
+    font-size: 1em;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .service-card img {
+        height: 150px;
+    }
+
+    .services-section h2 {
+        font-size: 2em;
+    }
+
+    .service-card h3 {
+        font-size: 1.3em;
+    }
+
+    .service-card p {
+        font-size: 0.9em;
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.categories-filter {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.categories-filter li {
+    margin: 0 15px;
+}
+
+.categories-filter a {
+    text-decoration: none;
+    padding: 10px 20px;
+    background: #f2f2f2;
+    color: #333;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
+
+.categories-filter a:hover,
+.categories-filter a.active {
+    background: #479c18;
+    color: #fff;
+}
+
+.fas {
+    color: #479c18;
+}
+
+
+.project-item {
+    width: 30%; /* For 3 items per row */
+    margin: 15px;
+}
+
+.item-box {
+    position: relative;
+}
+
+.item-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery-heading {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* contact ...................................................................................... */
+
+.hover-title {
+    position: absolute; /* Positioning relative to the nearest positioned ancestor */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Offset to perfectly center */
+    opacity: 0; /* Initially hidden */
+    transition: opacity 0.3s ease; /* Fade effect */
+    pointer-events: none; /* Prevent mouse events */
+}
+
+#contact {
+    background-color: #f3f1f1;
+    padding: 50px 0;
+    position: relative; /* Needed for absolute positioning of the hover-title */
+}
+
+.contact-info {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.contact-info h3 {
+    margin-bottom: 15px;
+}
+
+.contact-info p {
+    margin: 5px 0;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.single-services {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.services-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.service-item {
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+}
+
+.service-item input {
+    margin-right: 10px;
+}
+
+.service-item label {
+    flex: 1;
+    text-align: left;
+}
+
+.service-item button {
+    margin-left: auto;
+}
+
+.service-item i {
+    margin-right: 10px;
+}
+
+/* pagination  */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    margin: 0 5px;
+}
+
+.pagination li a {
+    color: #007bff; /* Change link color */
+    padding: 8px 12px;
+    border: 1px solid #ddd; /* Add border */
+    border-radius: 4px; /* Rounded corners */
+    text-decoration: none;
+}
+
+.pagination li a:hover {
+    background-color: #007bff; /* Change background on hover */
+    color: white;
+}
+
+.pagination .active a {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.pagination .disabled a {
+    color: #ccc; /* Disable color for inactive links */
+}
+
+/* for Progress Bar and Navigation */
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.progress {
+    /* height: 20px; */
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    transition: width 0.3s;
+}
+
+/* preloader */
+/* Preloader Styles */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #479c18; /* Green spinner */
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loading-text {
+    margin-top: 15px;
+    font-family: "Ubuntu", "Arial", sans-serif;
+    font-size: 18px;
+    color: #28a745; /* Green text to match the spinner */
+    text-align: center;
+}
+
+/* 404 ......................... */
+.error-container-404 {
+    text-align: center;
+}
+.error-container-404 h1 {
+    font-size: 8rem;
+    margin-bottom: 0;
+}
+.error-container-404 h2 {
+    font-size: 2rem;
+    margin-top: 0;
+    color: #6c757d;
+}
+.error-container-404 p {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+.error-container-404 a {
+    margin-top: 20px;
+    display: inline-block;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+/* switch for availability */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px; /* Smaller width */
+    height: 20px; /* Smaller height */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px; /* Smaller height for the toggle */
+    width: 14px; /* Smaller width for the toggle */
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: #3a1f75;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px); /* Adjusted for smaller size */
+}
+
+.slider.round {
+    border-radius: 20px; /* Adjusted for smaller round shape */
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+
+
+/* service request */
+    .form-step {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .personal-info-section {
+        background-color: #e8f4f8;
+        padding: 15px;
+        border-left: 5px solid #b3e2ec;
+    }
+
+    .package-details {
+        background-color: #dffadf;
+        padding: 15px;
+        border-left: 5px solid #b3ecb8;
+    }
+
+    .service-days {
+        background-color: #fff8e8;
+        padding: 15px;
+        border-left: 5px solid #ffebba;
+    }
+
+    .extra-days {
+        background-color: #ffe8e5;
+        padding: 15px;
+        border-left: 5px solid #ffc8b8;
+    }
+
+    .apartment-details {
+        background-color: #f5e8f8;
+        padding: 15px;
+        border-left: 5px solid #e8b3ec;
+    }
+
+    .important-questions {
+        background-color: #fcd2e9;
+        padding: 15px;
+        border-left: 5px solid #f892ca;
+    }
+
+    .review-submit {
+        background-color: #ecebeb;
+        padding: 15px;
+        border-left: 5px solid #bebebe;
+    }
+
+    .form-step h5 {
+        color: #333333;
+        margin-bottom: 10px;
+    }
+
+    .form-control,
+    .form-check-input {
+        border-radius: 5px;
+    }
+
+    .btn {
+        border-radius: 5px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+        overflow: hidden;
+    }
+
+    .progress-bar-inner {
+        height: 100%;
+        background-color: #4caf50;
+        width: 20%;
+        /* Dynamically updated per step */
+        transition: width 0.3s ease;
+    }
