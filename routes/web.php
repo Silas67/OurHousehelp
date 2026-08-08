@@ -84,13 +84,10 @@ use App\Http\Controllers\ServiceRequestController;
 
 use App\Http\Controllers\BookingController;
 
-Route::get('/clear-cache', function () {
-    \Illuminate\Support\Facades\Artisan::call('config:clear');
-    \Illuminate\Support\Facades\Artisan::call('cache:clear');
-    \Illuminate\Support\Facades\Artisan::call('view:clear');
-    \Illuminate\Support\Facades\Artisan::call('route:clear');
-    return 'All caches cleared!';
-});
+// NOTE: an unauthenticated GET /clear-cache route used to live here and ran
+// config:clear, cache:clear, view:clear and route:clear for any caller.
+// Clear caches from the CLI (`php artisan optimize:clear`) or as part of the
+// deploy, never over HTTP.
 
 Route::get('/payments/paymentoption', [PaymentController::class, 'paymentoption'])->name('payments.paymentoption');
 
@@ -606,7 +603,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Credits (client)
     Route::post('/credits/webhook', [App\Http\Controllers\CreditController::class, 'handleWebhook'])->name('credits.webhook')->withoutMiddleware(['auth']);
-    Route::post('/credits/receipt', [App\Http\Controllers\CreditController::class, 'submitReceipt'])->name('credits.submit-receipt');
+    // (duplicate credits.submit-receipt registration removed; see above)
 
     // Push notification subscription routes (auth required)
     Route::post('/push/subscribe',   [App\Http\Controllers\PushSubscriptionController::class, 'subscribe'])->name('push.subscribe');
@@ -618,14 +615,8 @@ Route::middleware(['auth'])->group(function () {
 // Paystack webhook — no auth needed, called by Paystack servers
 // Route::post('/credits/webhook', [App\Http\Controllers\CreditController::class, 'handleWebhook'])->name('credits.webhook');
 
-Route::get('/test-paystack', function () {
-    try {
-        $res = Http::get('https://api.paystack.co/');
-        return $res->body();
-    } catch (\Exception $e) {
-        return $e->getMessage();
-    }
-});
+// Removed: unauthenticated GET /test-paystack, which proxied a request to the
+// Paystack API and echoed the raw response (or the exception message) back.
 
 // Notification routes
 Route::middleware(['auth'])->group(function () {
@@ -637,20 +628,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
 });
 
-// Add this route for checking auth status
-
-Route::get('/check-auth', function () {
-
-    return response()->json([
-
-        'authenticated' => Auth::check(),
-
-        'user_id' => Auth::id(),
-
-        'user_email' => Auth::check() ? Auth::user()->email : null
-
-    ]);
-})->name('check.auth');
+// Removed: unauthenticated GET /check-auth debug endpoint, which echoed the
+// current session's user id and email. Nothing referenced it.
 
 
 
@@ -825,34 +804,9 @@ Route::post('/requests/{id}/reject', [LiveInServiceRequestController::class, 're
 
 
 
-Route::get('/debug-salary/{id}', function ($id) {
-    $sr = \App\Models\ServiceRequest::find($id);
-
-    $serviceNames = is_array($sr->serviceName)
-        ? $sr->serviceName
-        : (json_decode($sr->serviceName, true) ?? []);
-
-    $serviceIds = \App\Models\Service::whereIn('service_name', $serviceNames)
-        ->pluck('id', 'service_name')
-        ->toArray();
-
-    $packageExact = \App\Models\Package::where('name', $sr->package)->first();
-    $packageByDays = \App\Models\Package::where('days_per_week', $sr->days_per_week)->first();
-
-    $salaryService = new \App\Services\StaffSalaryService();
-    $result = $salaryService->calculateFromServiceRequest($sr);
-
-    return response()->json([
-        'service_request_id' => $sr->id,
-        'package_stored' => $sr->package,
-        'days_per_week' => $sr->days_per_week,
-        'service_names' => $serviceNames,
-        'service_ids_found' => $serviceIds,
-        'package_exact_match' => $packageExact ? ['id' => $packageExact->id, 'name' => $packageExact->name] : null,
-        'package_days_match' => $packageByDays ? ['id' => $packageByDays->id, 'name' => $packageByDays->name] : null,
-        'salary_result' => $result,
-    ]);
-})->middleware('auth');
+// Removed: GET /debug-salary/{id}. It required auth but performed no ownership
+// check, so any logged-in user could dump another client's booking details and
+// salary breakdown by iterating the id.
 
 
 
@@ -1133,8 +1087,9 @@ Route::get('/services/{id}/request', [ServiceController::class, 'requestForm'])-
 
 Route::post('/services/{id}/request', [ServiceController::class, 'submitRequest'])->name('services.submitRequest');
 
-Route::get('/check-availability', [UserController::class, 'checkAvailability']);
-
+// An unthrottled duplicate of this route was registered just above. The router
+// matches in registration order, so the unthrottled one won and the rate limit
+// below never applied. Only the throttled registration remains.
 Route::middleware('throttle:10,1')->group(function () {
 
     Route::get('/check-availability', [UserController::class, 'checkAvailability']);
