@@ -1264,6 +1264,10 @@ Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('
 
     // Step 3: Staff Matching
 
+    // Lightweight JSON poll for the confirmation screen.
+    Route::get('/matching-status/{serviceRequest}', [BookingController::class, 'matchingStatus'])
+        ->name('matching-status');
+
     Route::get('/staff-matching/{serviceRequest}', [BookingController::class, 'showStaffMatching'])
 
         ->name('staff-matching');

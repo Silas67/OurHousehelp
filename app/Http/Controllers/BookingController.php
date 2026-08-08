@@ -311,6 +311,31 @@ class BookingController extends Controller
     }
 
     /**
+     * JSON status for the confirmation screen.
+     *
+     * The page used to full-reload every 30 seconds against a wait measured in
+     * days. This returns a few hundred bytes instead, so the client can poll
+     * briefly and then stop.
+     */
+    public function matchingStatus(ServiceRequest $serviceRequest)
+    {
+        $this->authorizeClient($serviceRequest);
+
+        $accepted = $serviceRequest->shortlistedStaff()
+            ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
+            ->count();
+
+        return response()->json([
+            'notified' => $serviceRequest->shortlistedStaff()->count(),
+            'accepted' => $accepted,
+            'ready' => $accepted >= 1,
+            'redirect' => $accepted >= 1
+                ? route('booking.shortlist', $serviceRequest->id)
+                : null,
+        ]);
+    }
+
+    /**
      * Step 4: Show shortlist of matched staff.
      */
     public function showShortlist(ServiceRequest $serviceRequest)
