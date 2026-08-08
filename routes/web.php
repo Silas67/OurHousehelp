@@ -1481,11 +1481,11 @@ Route::middleware(['admin', 'auth'])->group(function () {
 
 
 
-    // Job Offer Routes
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/job-offers/{id}/accept', [App\Http\Controllers\JobOfferController::class, 'accept'])->name('job-offer.accept');
-        Route::get('/job-offers/{id}/decline', [App\Http\Controllers\JobOfferController::class, 'decline'])->name('job-offer.decline');
-    });
+    // Removed: job-offer.accept / job-offer.decline routes pointed at
+    // App\Http\Controllers\JobOfferController, which does not exist in this
+    // codebase - any request to them raised a 500. Nothing referenced them.
+    // Staff accept/decline is handled by LiveOutServiceRequestController's
+    // shortlist-offer routes.
 
     // Pricing Management Routes
     Route::get('/admin/pricing', [App\Http\Controllers\PricingController::class, 'index'])->name('admin.pricing');
