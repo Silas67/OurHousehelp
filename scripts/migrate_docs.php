@@ -2,18 +2,25 @@
 /**
  * Move sensitive uploads out of the webroot onto the private disk.
  *
- * Run from the project root:  php migrate_docs.php [--dry-run]
+ * Usage:  php scripts/migrate_docs.php [--dry-run]
  *
  * Files are MOVED (not copied) so they stop being web-reachable. Filenames are
  * preserved, because the database stores them and SecureDocument::url() looks
  * files up by basename.
  */
 
-$root = __DIR__;
+// Resolve the project root whatever the working directory is: the script lives
+// in scripts/, so the root is one level up.
+$root = is_file(dirname(__DIR__) . '/artisan')
+    ? dirname(__DIR__)
+    : (is_file(__DIR__ . '/artisan') ? __DIR__ : getcwd());
+
 if (!is_file($root . '/artisan')) {
-    fwrite(STDERR, "Run this from the Laravel project root.\n");
+    fwrite(STDERR, "Could not locate the Laravel project root (no artisan file found).\n");
     exit(1);
 }
+
+echo "project root: $root\n";
 
 $dryRun = in_array('--dry-run', $argv, true);
 
