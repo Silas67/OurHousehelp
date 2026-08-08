@@ -7,8 +7,9 @@ use App\Models\ServiceRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class BookingPaymentReceivedNotification extends Notification
+class BookingPaymentReceivedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

@@ -7,8 +7,9 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class BankReceiptUploadedNotification extends Notification
+class BankReceiptUploadedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

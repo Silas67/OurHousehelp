@@ -6,8 +6,9 @@ use App\Models\ServiceRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ShortlistReadyNotification extends Notification
+class ShortlistReadyNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

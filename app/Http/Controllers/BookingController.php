@@ -22,6 +22,7 @@ use App\Notifications\UrgentRequestNotification;
 use App\Services\BookingCostService;
 use App\Services\StaffMatchingService;
 use App\Notifications\JobFilledNotification;
+use App\Jobs\NotifyMatchedStaff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -231,7 +232,8 @@ class BookingController extends Controller
 
         if ($matchedStaff->isNotEmpty()) {
             $this->matchingService->createShortlist($serviceRequest, $matchedStaff);
-            $this->matchingService->notifyMatchedStaff($serviceRequest);
+            // Fan-out is ~30 third-party calls; keep it out of the request.
+            NotifyMatchedStaff::dispatch($serviceRequest);
         } else {
             $serviceRequest->update(['matching_status' => 'matching']);
         }

@@ -6,8 +6,9 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-class NewStaffRegisteredNotification extends Notification
+class NewStaffRegisteredNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
