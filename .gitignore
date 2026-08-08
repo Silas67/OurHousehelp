@@ -58,3 +58,6 @@ yarn-error.log
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Generated package/service manifests
+/bootstrap/cache/*.php
