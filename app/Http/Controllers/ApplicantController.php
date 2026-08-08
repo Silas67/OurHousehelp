@@ -34,6 +34,8 @@ use Carbon\Carbon;
 
 use App\Models\PaymentPlan;
 
+use Illuminate\Support\Str;
+
 
 
 class ApplicantController extends Controller
@@ -328,7 +330,10 @@ class ApplicantController extends Controller
 
         $rules = [
 
-            'profile_photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            // NOTE: the form field is named `profile_photo_path` (see
+            // resources/views/partials/_profileupdate.blade.php). A rule keyed
+            // `profile_photo` never fired, leaving the upload unvalidated.
+            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
 
             'middle_name' => 'nullable|string|max:255',
 
@@ -394,7 +399,10 @@ class ApplicantController extends Controller
 
             $file = $request->file('profile_photo_path');
 
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            // Extension is derived from the detected MIME type, never from the
+            // client-supplied filename, and the basename is random so uploads
+            // cannot be enumerated or guessed.
+            $filename = Str::random(40) . '.' . $file->extension();
 
             $file->move(public_path('build/assets/image/profile_photo'), $filename);
 
@@ -408,7 +416,7 @@ class ApplicantController extends Controller
 
             $file = $request->file('id_card');
 
-            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $filename = Str::random(40) . '.' . $file->extension();
 
             $file->move(public_path('build/assets/image/idcards'), $filename);
 
