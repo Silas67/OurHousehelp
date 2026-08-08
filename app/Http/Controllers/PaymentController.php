@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\PaymentPlan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -50,128 +51,86 @@ class PaymentController extends Controller
 
     public function handlePayment(Request $request)
     {
-        // dd($request->all());
-
-        // Validate the request data
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'payment_plan_id' => 'required|exists:payment_plans,id',
-            'payment_frequency' => 'required|string',
-            'amount' => 'required|numeric',
-            'about_payment' => 'required|string',
-            'num_searches' => 'required|integer|min:1',
-            'payment_method' => 'required|string',
-            'plan_type' => 'required|string',
-            'receipt' => 'required|mimes:jpg,jpeg,png,pdf|max:2048', // Receipt validation
-        ]);
-
-        $userId = Auth::id();
-
-        // Check for active approved payment
-        $activePaymentExists = Payment::where('user_id', $userId)
-            ->where('status', 'approved')
-            ->where('plan_type', 'househelp')
-            ->where(function ($query) {
-                $query->whereNull('expiry_date')
-                    ->orWhere('expiry_date', '>', now());
-            })
-            ->whereColumn('used_searches', '<', 'num_searches')
-            ->exists();
-
-        if ($activePaymentExists) {
-            return redirect()->back()->with('error', 'You already have an active payment.');
-        }
-
-        // Check for pending, exhausted, or expired payments
-        $existingPayment = Payment::where('user_id', $userId)
-            ->where('plan_type', 'househelp')
-            ->whereIn('status', ['pending', 'exhausted', 'expired'])
-            ->first();
-
-        // Handle receipt upload
-        if ($request->hasFile('receipt')) {
-            $filePath = time() . '_receipt.' . $request->file('receipt')->getClientOriginalExtension();
-            $request->file('receipt')->move(public_path('build/assets/image/receipt'), $filePath);
-
-            // Add receipt_path to the validated data
-            $validated['receipt_path'] = $filePath;
-        }
-
-        if ($existingPayment) {
-            // Update the existing payment
-            $existingPayment->update($validated);
-            return redirect()->route('dashboard')->with('success', 'Payment updated successfully.');
-        }
-
-        // Create a new payment
-        $payment = Payment::create(array_merge($validated, [
-            'status' => 'pending', // Default status
-        ]));
-
-        session()->put('receipt_uploaded', true);
-
-        return redirect()->route('dashboard')->with('success', 'Payment request submitted. Please wait for confirmation.');
+        return $this->storeManualPayment($request, 'househelp', true);
     }
 
     public function handlePaymentSkill(Request $request)
     {
-        // dd($request->all());
+        // The active-payment guard is deliberately not enforced for skilled
+        // plans; it was commented out inline in the original implementation.
+        return $this->storeManualPayment($request, 'skilled', false);
+    }
 
-        // Validate the request data
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
+    /**
+     * Record a manual (bank transfer) payment request against a payment plan.
+     *
+     * Amount, search quota, plan description, plan type and the owning user are
+     * all resolved on the server. They were previously accepted from hidden
+     * form inputs, which allowed a client to set their own price, grant
+     * themselves an arbitrary search quota, or attribute a payment to
+     * another user's account.
+     */
+    private function storeManualPayment(Request $request, string $planType, bool $enforceActivePaymentGuard)
+    {
+        $request->validate([
             'payment_plan_id' => 'required|exists:payment_plans,id',
-            'payment_frequency' => 'required|string',
-            'amount' => 'required|numeric',
-            'about_payment' => 'required|string',
-            'num_searches' => 'required|integer|min:1',
-            'payment_method' => 'required|string',
-            'plan_type' => 'required|string',
-            'receipt' => 'required|mimes:jpg,jpeg,png,pdf|max:2048', // Receipt validation
+            'receipt' => 'required|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $userId = Auth::id();
 
-        // Check for active approved payment
-        $activePaymentExists = Payment::where('user_id', $userId)
-            ->where('status', 'approved')
-            ->where('plan_type', 'skilled')
-            ->where(function ($query) {
-                $query->whereNull('expiry_date')
-                    ->orWhere('expiry_date', '>', now());
-            })
-            ->whereColumn('used_searches', '<', 'num_searches')
-            ->exists();
+        // Scoping by plan_type stops a househelp form from purchasing a
+        // skilled-worker plan (or vice versa) by swapping the plan id.
+        $plan = PaymentPlan::where('id', $request->input('payment_plan_id'))
+            ->where('plan_type', $planType)
+            ->firstOrFail();
 
-        // if ($activePaymentExists) {
-        //     return redirect()->back()->with('error', 'You already have an active payment.');
-        // }
+        if ($enforceActivePaymentGuard) {
+            $activePaymentExists = Payment::where('user_id', $userId)
+                ->where('status', 'approved')
+                ->where('plan_type', $planType)
+                ->where(function ($query) {
+                    $query->whereNull('expiry_date')
+                        ->orWhere('expiry_date', '>', now());
+                })
+                ->whereColumn('used_searches', '<', 'num_searches')
+                ->exists();
+
+            if ($activePaymentExists) {
+                return redirect()->back()->with('error', 'You already have an active payment.');
+            }
+        }
 
         // Check for pending, exhausted, or expired payments
         $existingPayment = Payment::where('user_id', $userId)
-            ->where('plan_type', 'skilled')
+            ->where('plan_type', $planType)
             ->whereIn('status', ['pending', 'exhausted', 'expired'])
             ->first();
 
-        // Handle receipt upload
-        if ($request->hasFile('receipt')) {
-            $filePath = time() . '_receipt.' . $request->file('receipt')->getClientOriginalExtension();
-            $request->file('receipt')->move(public_path('build/assets/image/receipt'), $filePath);
+        $file = $request->file('receipt');
+        $receiptPath = Str::random(40) . '.' . $file->extension();
+        $file->move(public_path('build/assets/image/receipt'), $receiptPath);
 
-            // Add receipt_path to the validated data
-            $validated['receipt_path'] = $filePath;
-        }
+        $attributes = [
+            'user_id'           => $userId,
+            'payment_plan_id'   => $plan->id,
+            'plan_type'         => $plan->plan_type,
+            'amount'            => $plan->cost,
+            'num_searches'      => $plan->num_searches,
+            'about_payment'     => $plan->about,
+            'payment_frequency' => 'Not Specified',
+            'payment_method'    => 'Bank Transfer',
+            'receipt_path'      => $receiptPath,
+        ];
 
         if ($existingPayment) {
-            // Update the existing payment
-            $existingPayment->update($validated);
+            // Status is intentionally left untouched here, matching the
+            // previous behaviour.
+            $existingPayment->update($attributes);
             return redirect()->route('dashboard')->with('success', 'Payment updated successfully.');
         }
 
-        // Create a new payment
-        $payment = Payment::create(array_merge($validated, [
-            'status' => 'pending', // Default status
-        ]));
+        Payment::create($attributes + ['status' => 'pending']);
 
         session()->put('receipt_uploaded', true);
 

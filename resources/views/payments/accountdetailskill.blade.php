@@ -60,18 +60,11 @@
                             <form action="{{ route('payments.handleskills') }}" method="POST" enctype="multipart/form-data">
                              
                                 @csrf
-                                @if (Auth::check())
-                                    <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
-                                @endif
-                            
-                                <!-- Hidden Inputs Populated with Plan Data -->
+
+                                {{-- Only the plan id is submitted. Amount, search quota, plan
+                                     type and the owning user are resolved server-side from
+                                     the PaymentPlan row - never trusted from the browser. --}}
                                 <input type="hidden" name="payment_plan_id" value="{{ $plan->id }}">
-                                <input type="hidden" name="amount" value="{{ $plan->cost }}">
-                                <input type="hidden" name="about_payment" value="{{ $plan->about }}">
-                                <input type="hidden" name="num_searches" value="{{ $plan->num_searches }}">
-                                <input type="hidden" name="payment_frequency" value="Not Specified"> <!-- Add payment frequency -->
-                                <input type="hidden" name="payment_method" value="Bank Transfer"> 
-                                <input type="hidden" name="plan_type" value="{{ $plan->plan_type }}">
                             
                                 <!-- Plan Details -->
                                 <h4 class="fw-bold">Subscription type: {{ $plan->plan_name }}</h4>
