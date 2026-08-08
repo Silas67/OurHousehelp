@@ -279,7 +279,8 @@
             @csrf
             <input type="hidden" name="payment_type" id="paystackPaymentType" value="full">
             <input type="hidden" name="paystack_reference" id="paystackReference" value="">
-            <input type="hidden" name="amount_paid" id="paystackAmountPaid" value="">
+            {{-- amount_paid is not submitted: the server reads the settled amount
+                 from Paystack's verify response instead of trusting the browser. --}}
         </form>
         @endif
 
@@ -356,7 +357,6 @@ document.getElementById('paystackBtn').addEventListener('click', function () {
         },
         callback: function(response) {
             document.getElementById('paystackReference').value  = response.reference;
-            document.getElementById('paystackAmountPaid').value = selectedAmount;
             document.getElementById('paystackPaymentType').value = selectedPaymentType;
             document.getElementById('paystackBtn').disabled = true;
             document.getElementById('paystackBtn').innerHTML =

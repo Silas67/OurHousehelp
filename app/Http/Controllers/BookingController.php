@@ -595,27 +595,39 @@ class BookingController extends Controller
     {
         $this->authorizeClient($serviceRequest);
 
+        // `amount_paid` is deliberately NOT accepted from the request. The
+        // amount charged is decided by the browser (see booking/payment.blade.php),
+        // so it is only authoritative once Paystack confirms it.
         $validated = $request->validate([
             'paystack_reference' => 'required|string',
             'payment_type' => 'required|in:full,installment',
-            'amount_paid' => 'required|numeric',
         ]);
+
+        $reference = $validated['paystack_reference'];
 
         try {
             $secretKey = config('paystack.secretKey');
             $response = \Illuminate\Support\Facades\Http::withHeaders([
                 'Authorization' => 'Bearer ' . $secretKey,
-            ])->get('https://api.paystack.co/transaction/verify/' . $validated['paystack_reference']);
+            ])->get('https://api.paystack.co/transaction/verify/' . $reference);
 
             $data = $response->json();
+            $txn = $data['data'] ?? null;
 
-            if (!$response->successful() || $data['data']['status'] !== 'success') {
+            if (!$response->successful() || !is_array($txn) || ($txn['status'] ?? null) !== 'success') {
+                Log::warning('Paystack booking verify rejected', [
+                    'service_request_id' => $serviceRequest->id,
+                    'reference' => $reference,
+                ]);
                 return redirect()->route('booking.payment', $serviceRequest->id)
                     ->with('error', 'Payment verification failed. Please contact support.');
             }
 
-            $alreadyProcessed = BookingPayment::where('transaction_reference', $validated['paystack_reference'])->exists();
-            if ($alreadyProcessed) {
+            // A reference may only ever be consumed once, by any flow. Without
+            // the cross-table check a reference belonging to a cheaper
+            // transaction on the same merchant account (a credit top-up, a
+            // registration fee) could be replayed here to settle a booking.
+            if ($this->referenceAlreadyConsumed($reference)) {
                 return redirect()->route('booking.payment-success', $serviceRequest->id)
                     ->with('info', 'This payment has already been processed.');
             }
@@ -625,13 +637,43 @@ class BookingController extends Controller
             $installmentAmounts = $this->costService->calculateInstallmentAmounts($totalCost);
             $amount = $isInstallment ? $installmentAmounts['first_payment'] : $totalCost;
 
+            // Paystack reports minor units (kobo). Compare in kobo to avoid
+            // float rounding, and require at least the expected amount.
+            $expectedKobo = (int) round($amount * 100);
+            $paidKobo = (int) ($txn['amount'] ?? 0);
+            $currency = $txn['currency'] ?? null;
+
+            if ($currency !== 'NGN' || $paidKobo < $expectedKobo) {
+                Log::warning('Paystack booking amount mismatch', [
+                    'service_request_id' => $serviceRequest->id,
+                    'reference' => $reference,
+                    'expected_kobo' => $expectedKobo,
+                    'paid_kobo' => $paidKobo,
+                    'currency' => $currency,
+                ]);
+                return redirect()->route('booking.payment', $serviceRequest->id)
+                    ->with('error', 'The amount paid does not match this booking. Please contact support.');
+            }
+
+            // The transaction must have been initiated for this booking.
+            $metaRequestId = $txn['metadata']['service_request_id'] ?? null;
+            if ($metaRequestId !== null && (int) $metaRequestId !== (int) $serviceRequest->id) {
+                Log::warning('Paystack booking metadata mismatch', [
+                    'service_request_id' => $serviceRequest->id,
+                    'reference' => $reference,
+                    'metadata_service_request_id' => $metaRequestId,
+                ]);
+                return redirect()->route('booking.payment', $serviceRequest->id)
+                    ->with('error', 'Payment verification failed. Please contact support.');
+            }
+
             $payment = BookingPayment::create([
                 'service_request_id' => $serviceRequest->id,
                 'user_id' => Auth::id(),
                 'payment_for' => 'management_plan',
                 'amount' => $amount,
                 'payment_method' => 'card',
-                'transaction_reference' => $validated['paystack_reference'],
+                'transaction_reference' => $reference,
                 'status' => 'completed',
                 'is_installment' => $isInstallment,
                 'installment_type' => $isInstallment ? 'first_half' : null,
@@ -669,8 +711,9 @@ class BookingController extends Controller
 
             Log::info('Booking payment via Paystack', [
                 'service_request_id' => $serviceRequest->id,
-                'reference' => $validated['paystack_reference'],
+                'reference' => $reference,
                 'amount' => $amount,
+                'paid_kobo' => $paidKobo,
             ]);
 
             return redirect()->route('booking.payment-success', $serviceRequest->id)
@@ -1081,6 +1124,21 @@ class BookingController extends Controller
         if ((int) $serviceRequest->user_id !== (int) Auth::id()) {
             abort(403, 'Unauthorized access to this booking.');
         }
+    }
+
+    /**
+     * Has this gateway reference already been settled by any payment flow?
+     *
+     * Each flow writes to its own table, so a per-table check would let a
+     * reference settled elsewhere (credits, registration, live-out) be
+     * replayed against a booking.
+     */
+    private function referenceAlreadyConsumed(string $reference): bool
+    {
+        return BookingPayment::where('transaction_reference', $reference)->exists()
+            || \App\Models\RegistrationPayment::where('transaction_reference', $reference)->exists()
+            || \App\Models\LiveOutPayment::where('transaction_reference', $reference)->exists()
+            || \App\Models\CreditTransaction::where('reference', $reference)->exists();
     }
 
 
