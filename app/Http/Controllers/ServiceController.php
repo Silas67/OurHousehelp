@@ -551,9 +551,9 @@ class ServiceController extends Controller
     //     $serviceIds = $services->pluck('id')->toArray();
 
     //     // 1️⃣1️⃣ Handle file uploads
-    //     $passportPath = $request->file('passport')?->store('passports', 'public');
-    //     $idCardPath = $request->file('id_card')?->store('idcards', 'public');
-    //     $bankReceiptPath = $request->file('bank_receipt')?->store('bank_receipts', 'public');
+    //     $passportPath = ($request->file('passport') ? \App\Support\SecureDocument::store($request->file('passport'), 'passports') : null);
+    //     $idCardPath = ($request->file('id_card') ? \App\Support\SecureDocument::store($request->file('id_card'), 'idcards') : null);
+    //     $bankReceiptPath = ($request->file('bank_receipt') ? \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts') : null);
 
     //     // 1️⃣2️⃣ Persist to database FIRST
     //     $serviceRequest = ServiceRequest::create([
@@ -836,9 +836,9 @@ class ServiceController extends Controller
     //         $serviceIds = $services->pluck('id')->toArray();
 
     //         // 8️⃣ Handle file uploads
-    //         $passportPath = $request->file('passport')?->store('passports', 'public');
-    //         $idCardPath = $request->file('id_card')?->store('idcards', 'public');
-    //         $bankReceiptPath = $request->file('bank_receipt')?->store('bank_receipts', 'public');
+    //         $passportPath = ($request->file('passport') ? \App\Support\SecureDocument::store($request->file('passport'), 'passports') : null);
+    //         $idCardPath = ($request->file('id_card') ? \App\Support\SecureDocument::store($request->file('id_card'), 'idcards') : null);
+    //         $bankReceiptPath = ($request->file('bank_receipt') ? \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts') : null);
 
     //         // 9️⃣ Create Service Request (regardless of payment)
     //         $serviceRequest = ServiceRequest::create([
@@ -1170,9 +1170,9 @@ class ServiceController extends Controller
     //         $serviceIds = $services->pluck('id')->toArray();
 
     //         // 8️⃣ Handle file uploads
-    //         $passportPath = $request->file('passport')?->store('passports', 'public');
-    //         $idCardPath = $request->file('id_card')?->store('idcards', 'public');
-    //         $bankReceiptPath = $request->file('bank_receipt')?->store('bank_receipts', 'public');
+    //         $passportPath = ($request->file('passport') ? \App\Support\SecureDocument::store($request->file('passport'), 'passports') : null);
+    //         $idCardPath = ($request->file('id_card') ? \App\Support\SecureDocument::store($request->file('id_card'), 'idcards') : null);
+    //         $bankReceiptPath = ($request->file('bank_receipt') ? \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts') : null);
 
     //         // 9️⃣ Create Service Request (regardless of payment)
     //         $serviceRequest = ServiceRequest::create([
@@ -1551,9 +1551,9 @@ class ServiceController extends Controller
     //         }
 
     //         // 6️⃣ Handle file uploads
-    //         $passportPath = $request->file('passport')?->store('passports', 'public');
-    //         $idCardPath = $request->file('id_card')?->store('idcards', 'public');
-    //         $bankReceiptPath = $request->file('bank_receipt')?->store('bank_receipts', 'public');
+    //         $passportPath = ($request->file('passport') ? \App\Support\SecureDocument::store($request->file('passport'), 'passports') : null);
+    //         $idCardPath = ($request->file('id_card') ? \App\Support\SecureDocument::store($request->file('id_card'), 'idcards') : null);
+    //         $bankReceiptPath = ($request->file('bank_receipt') ? \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts') : null);
 
     //         if ($passportPath) $user->update(['passport' => $passportPath]);
     //         if ($idCardPath) $user->update(['id_card' => $idCardPath]);
@@ -2106,17 +2106,17 @@ class ServiceController extends Controller
             $bankReceiptPath = null;
 
             if ($request->hasFile('passport')) {
-                $passportPath = $request->file('passport')->store('passports', 'public');
+                $passportPath = \App\Support\SecureDocument::store($request->file('passport'), 'passports');
                 Log::info('Passport uploaded', ['path' => $passportPath]);
             }
 
             if ($request->hasFile('id_card')) {
-                $idCardPath = $request->file('id_card')->store('idcards', 'public');
+                $idCardPath = \App\Support\SecureDocument::store($request->file('id_card'), 'idcards');
                 Log::info('ID Card uploaded', ['path' => $idCardPath]);
             }
 
             if ($request->hasFile('bank_receipt')) {
-                $bankReceiptPath = $request->file('bank_receipt')->store('bank_receipts', 'public');
+                $bankReceiptPath = \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts');
                 Log::info('Bank receipt uploaded', ['path' => $bankReceiptPath]);
             }
 
@@ -2565,12 +2565,12 @@ class ServiceController extends Controller
 
             // Handle file uploads
             if ($request->hasFile('passport')) {
-                $passportPath = $request->file('passport')->store('passports', 'public');
+                $passportPath = \App\Support\SecureDocument::store($request->file('passport'), 'passports');
                 $user->passport = $passportPath;
             }
 
             if ($request->hasFile('id_card')) {
-                $idCardPath = $request->file('id_card')->store('idcards', 'public');
+                $idCardPath = \App\Support\SecureDocument::store($request->file('id_card'), 'idcards');
                 $user->id_card = $idCardPath;
             }
 

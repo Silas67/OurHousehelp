@@ -109,7 +109,7 @@ class PaymentController extends Controller
 
         $file = $request->file('receipt');
         $receiptPath = Str::random(40) . '.' . $file->extension();
-        $file->move(public_path('build/assets/image/receipt'), $receiptPath);
+        $file->storeAs(\App\Support\SecureDocument::storageDirectory('receipts'), $receiptPath, 'local');
 
         $attributes = [
             'user_id'           => $userId,

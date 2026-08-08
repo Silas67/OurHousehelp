@@ -542,7 +542,7 @@ class RegistrationPaymentController extends Controller
             ->firstOrFail();
 
         // Store the receipt
-        $path = $request->file('bank_receipt')->store('bank_receipts', 'public');
+        $path = \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts');
 
         $payment->update([
             'bank_receipt' => $path,

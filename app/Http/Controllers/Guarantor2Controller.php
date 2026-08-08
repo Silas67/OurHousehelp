@@ -134,7 +134,7 @@ class Guarantor2Controller extends Controller
 
             $passportFilename = time() . '_passport.' . $passportFile->getClientOriginalExtension();
 
-            $passportFile->move(public_path('build/assets/image/passports'), $passportFilename);
+            $passportFile->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $passportFilename, 'local');
 
             $guarantor->guarantor2_passport_path = $passportFilename;
         }
@@ -149,7 +149,7 @@ class Guarantor2Controller extends Controller
 
             $signatureFilename = time() . '_signature.' . $signatureFile->getClientOriginalExtension();
 
-            $signatureFile->move(public_path('build/assets/image/signatures'), $signatureFilename);
+            $signatureFile->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $signatureFilename, 'local');
 
             $guarantor->guarantor2_signature_path = $signatureFilename;
         }

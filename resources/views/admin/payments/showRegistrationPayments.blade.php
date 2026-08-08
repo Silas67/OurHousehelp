@@ -320,7 +320,7 @@
                                     <td class="py-3 px-4">
                                         <div class="d-flex align-items-center">
                                             @if ($payment->user->passport)
-                                                <img src="{{ asset('storage/' . $payment->user->passport) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}"
                                                     alt="{{ $payment->user->name }}" class="rounded-circle me-3"
                                                     width="40" height="40">
                                             @else
@@ -487,7 +487,7 @@
                                                                     @if ($payment->bank_receipt)
                                                                         <dt class="col-sm-5">Receipt:</dt>
                                                                         <dd class="col-sm-7">
-                                                                            <a href="{{ asset('storage/' . $payment->bank_receipt) }}"
+                                                                            <a href="{{ \App\Support\SecureDocument::url('receipts', $payment->bank_receipt) }}"
                                                                                 target="_blank"
                                                                                 class="btn btn-sm btn-outline-primary">
                                                                                 <i
@@ -505,7 +505,7 @@
                                                         <h6 class="fw-semibold mb-3">User Information</h6>
                                                         <div class="d-flex align-items-center mb-3">
                                                             @if ($payment->user->passport)
-                                                                <img src="{{ asset('storage/' . $payment->user->passport) }}"
+                                                                <img src="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}"
                                                                     class="rounded-circle me-3" width="60"
                                                                     height="60">
                                                             @endif
@@ -548,14 +548,14 @@
                                                             <h6 class="fw-semibold mb-3">Documents</h6>
                                                             <div class="d-flex gap-2">
                                                                 @if ($payment->user->passport)
-                                                                    <a href="{{ asset('storage/' . $payment->user->passport) }}"
+                                                                    <a href="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}"
                                                                         target="_blank"
                                                                         class="btn btn-sm btn-outline-primary">
                                                                         <i class="fas fa-id-card me-1"></i>Passport
                                                                     </a>
                                                                 @endif
                                                                 @if ($payment->user->id_card)
-                                                                    <a href="{{ asset('storage/' . $payment->user->id_card) }}"
+                                                                    <a href="{{ \App\Support\SecureDocument::url('idcards', $payment->user->id_card) }}"
                                                                         target="_blank"
                                                                         class="btn btn-sm btn-outline-primary">
                                                                         <i class="fas fa-file me-1"></i>ID Card

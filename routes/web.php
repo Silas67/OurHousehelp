@@ -618,6 +618,13 @@ Route::middleware(['auth'])->group(function () {
 // Removed: unauthenticated GET /test-paystack, which proxied a request to the
 // Paystack API and echoed the raw response (or the exception message) back.
 
+// Sensitive uploads (ID cards, guarantor passports/signatures, receipts).
+// Requires a session AND a valid signature, so links cannot be guessed by
+// iterating filenames or shared onward indefinitely.
+Route::get('/documents/{category}/{filename}', [App\Http\Controllers\SecureDocumentController::class, 'show'])
+    ->middleware(['auth', 'signed'])
+    ->name('documents.show');
+
 // Notification routes
 Route::middleware(['auth'])->group(function () {
 

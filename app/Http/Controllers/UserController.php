@@ -1340,7 +1340,7 @@ class UserController extends Controller
 
                 $idCardPath = time() . '_idcard.' . $request->file('id_card')->getClientOriginalExtension();
 
-                $request->file('id_card')->move(public_path('build/assets/image/idcards'), $idCardPath);
+                $request->file('id_card')->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath, 'local');
             }
 
 
@@ -1423,7 +1423,7 @@ class UserController extends Controller
 
                 $guarantor1PassportPath = time() . '_guarantor1Passport.' . $request->file('guarantor1_passport_path')->getClientOriginalExtension();
 
-                $request->file('guarantor1_passport_path')->move(public_path('build/assets/image/guarantors/passports'), $guarantor1PassportPath);
+                $request->file('guarantor1_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor1PassportPath, 'local');
             }
 
 
@@ -1434,7 +1434,7 @@ class UserController extends Controller
 
                 $guarantor1SignaturePath = time() . '_guarantor1Signature.' . $request->file('guarantor1_signature_path')->getClientOriginalExtension();
 
-                $request->file('guarantor1_signature_path')->move(public_path('build/assets/image/guarantors/signatures'), $guarantor1SignaturePath);
+                $request->file('guarantor1_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor1SignaturePath, 'local');
             }
 
 
@@ -1482,7 +1482,7 @@ class UserController extends Controller
 
                     $guarantor2PassportPath = time() . '_guarantor2Passport.' . $request->file('guarantor2_passport_path')->getClientOriginalExtension();
 
-                    $request->file('guarantor2_passport_path')->move(public_path('build/assets/image/guarantors/passports'), $guarantor2PassportPath);
+                    $request->file('guarantor2_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor2PassportPath, 'local');
                 }
 
                 $guarantor2SignaturePath = null;
@@ -1491,7 +1491,7 @@ class UserController extends Controller
 
                     $guarantor2SignaturePath = time() . '_guarantor2Signature.' . $request->file('guarantor2_signature_path')->getClientOriginalExtension();
 
-                    $request->file('guarantor2_signature_path')->move(public_path('build/assets/image/guarantors/signatures'), $guarantor2SignaturePath);
+                    $request->file('guarantor2_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor2SignaturePath, 'local');
                 }
 
                 Guarantor2::create([
@@ -1659,7 +1659,7 @@ class UserController extends Controller
 
                 $idCardPath = time() . '_idcard.' . $request->file('id_card')->getClientOriginalExtension();
 
-                $request->file('id_card')->move(public_path('build/assets/image/idcards'), $idCardPath);
+                $request->file('id_card')->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath, 'local');
             }
 
             // Create User
@@ -1732,13 +1732,13 @@ class UserController extends Controller
             $guarantor1PassportPath = null;
             if ($request->hasFile('guarantor1_passport_path')) {
                 $guarantor1PassportPath = time() . '_guarantor1Passport.' . $request->file('guarantor1_passport_path')->getClientOriginalExtension();
-                $request->file('guarantor1_passport_path')->move(public_path('build/assets/image/guarantors/passports'), $guarantor1PassportPath);
+                $request->file('guarantor1_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor1PassportPath, 'local');
             }
 
             $guarantor1SignaturePath = null;
             if ($request->hasFile('guarantor1_signature_path')) {
                 $guarantor1SignaturePath = time() . '_guarantor1Signature.' . $request->file('guarantor1_signature_path')->getClientOriginalExtension();
-                $request->file('guarantor1_signature_path')->move(public_path('build/assets/image/guarantors/signatures'), $guarantor1SignaturePath);
+                $request->file('guarantor1_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor1SignaturePath, 'local');
             }
 
             // Create Guarantor 1
@@ -1760,13 +1760,13 @@ class UserController extends Controller
             $guarantor2PassportPath = null;
             if ($request->hasFile('guarantor2_passport_path')) {
                 $guarantor2PassportPath = time() . '_guarantor2Passport.' . $request->file('guarantor2_passport_path')->getClientOriginalExtension();
-                $request->file('guarantor2_passport_path')->move(public_path('build/assets/image/guarantors/passports'), $guarantor2PassportPath);
+                $request->file('guarantor2_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor2PassportPath, 'local');
             }
 
             $guarantor2SignaturePath = null;
             if ($request->hasFile('guarantor2_signature_path')) {
                 $guarantor2SignaturePath = time() . '_guarantor2Signature.' . $request->file('guarantor2_signature_path')->getClientOriginalExtension();
-                $request->file('guarantor2_signature_path')->move(public_path('build/assets/image/guarantors/signatures'), $guarantor2SignaturePath);
+                $request->file('guarantor2_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor2SignaturePath, 'local');
             }
 
             // Create Guarantor 2

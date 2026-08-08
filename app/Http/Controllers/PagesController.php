@@ -1356,7 +1356,7 @@ class PagesController extends Controller
 
             if ($request->hasFile('bank_receipt')) {
 
-                $bankReceiptPath = $request->file('bank_receipt')->store('bank_receipts', 'public');
+                $bankReceiptPath = \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts');
 
             }
 
@@ -2016,7 +2016,7 @@ class PagesController extends Controller
 
             if ($request->hasFile('passport')) {
 
-                $passportPath = $request->file('passport')->store('passports', 'public');
+                $passportPath = \App\Support\SecureDocument::store($request->file('passport'), 'passports');
 
                 $user->update(['passport' => $passportPath]);
 
@@ -2026,7 +2026,7 @@ class PagesController extends Controller
 
             if ($request->hasFile('id_card')) {
 
-                $idCardPath = $request->file('id_card')->store('idcards', 'public');
+                $idCardPath = \App\Support\SecureDocument::store($request->file('id_card'), 'idcards');
 
                 $user->update(['id_card' => $idCardPath]);
 

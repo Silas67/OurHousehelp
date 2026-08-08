@@ -694,7 +694,7 @@
 
                                                         <small class="text-muted">Current: <a
 
-                                                                href="{{ asset('storage/' . $user->id_card) }}"
+                                                                href="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}"
 
                                                                 target="_blank">View ID Card</a></small>
 
@@ -1031,14 +1031,14 @@
                                         @if($guarantor1->guarantor1_passport_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Passport Photo</p>
-                                                <img src="{{ asset('build/assets/image/guarantors/passports/' . $guarantor1->guarantor1_passport_path) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor1->guarantor1_passport_path) }}"
                                                     class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
                                             </div>
                                         @endif
                                         @if($guarantor1->guarantor1_signature_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Signature</p>
-                                                <img src="{{ asset('build/assets/image/guarantors/signatures/' . $guarantor1->guarantor1_signature_path) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor1->guarantor1_signature_path) }}"
                                                     class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
                                             </div>
                                         @endif
@@ -1071,14 +1071,14 @@
                                         @if($guarantor2->guarantor2_passport_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Passport Photo</p>
-                                                <img src="{{ asset('build/assets/image/guarantors/passports/' . $guarantor2->guarantor2_passport_path) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) }}"
                                                     class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
                                             </div>
                                         @endif
                                         @if($guarantor2->guarantor2_signature_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Signature</p>
-                                                <img src="{{ asset('build/assets/image/guarantors/signatures/' . $guarantor2->guarantor2_signature_path) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) }}"
                                                     class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
                                             </div>
                                         @endif

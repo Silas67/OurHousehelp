@@ -65,12 +65,14 @@
     <div class="section">
         <div>
             <strong>Passport Photo:</strong>
-            <img src="{{ isset($guarantor->passport_path) ? asset('build/assets/image/passports/' . $guarantor->passport_path) : asset('build/assets/image/slider1.jpg') }}"
+            {{-- DomPDF fetches images itself with no session, so it cannot use
+                 the signed documents route. Embed from the filesystem instead. --}}
+            <img src="{{ \App\Support\SecureDocument::path('passports', $guarantor->passport_path ?? null) ?? public_path('build/assets/image/slider1.jpg') }}"
                 width="100" height="100">
         </div>
         <div>
             <strong>ID Card:</strong>
-            <img src="{{ isset($guarantor->signature_path) ? asset('build/assets/image/signatures/' . $guarantor->signature_path) : asset('build/assets/image/slider1.jpg') }}"
+            <img src="{{ \App\Support\SecureDocument::path('signatures', $guarantor->signature_path ?? null) ?? public_path('build/assets/image/slider1.jpg') }}"
                 width="100" height="50">
         </div>
     </div>

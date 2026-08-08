@@ -418,7 +418,7 @@ class ApplicantController extends Controller
 
             $filename = Str::random(40) . '.' . $file->extension();
 
-            $file->move(public_path('build/assets/image/idcards'), $filename);
+            $file->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $filename, 'local');
 
             $user->id_card = $filename;
 
@@ -664,7 +664,7 @@ class ApplicantController extends Controller
 
     //         $filename = time() . '.' . $file->getClientOriginalExtension();
 
-    //         $file->move(public_path('build/assets/image/idcards'), $filename);
+    //         $file->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $filename, 'local');
 
     //         $user->id_card = $filename;
 

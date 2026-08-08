@@ -584,11 +584,11 @@ $statusColors = [
 
                                 <div class="border p-2 rounded">
 
-                                    <img src="{{ asset('storage/' . $order->passport) }}" alt="Passport Photo"
+                                    <img src="{{ \App\Support\SecureDocument::url('passports', $order->passport) }}" alt="Passport Photo"
 
                                         class="img-fluid" style="max-height: 200px;">
 
-                                    <a href="{{ asset('storage/' . $order->passport) }}" target="_blank"
+                                    <a href="{{ \App\Support\SecureDocument::url('passports', $order->passport) }}" target="_blank"
 
                                         class="d-block mt-2">View Full Image</a>
 
@@ -608,11 +608,11 @@ $statusColors = [
 
                                 <div class="border p-2 rounded">
 
-                                    <img src="{{ asset('storage/' . $order->id_card) }}" alt="ID Card"
+                                    <img src="{{ \App\Support\SecureDocument::url('idcards', $order->id_card) }}" alt="ID Card"
 
                                         class="img-fluid" style="max-height: 200px;">
 
-                                    <a href="{{ asset('storage/' . $order->id_card) }}" target="_blank"
+                                    <a href="{{ \App\Support\SecureDocument::url('idcards', $order->id_card) }}" target="_blank"
 
                                         class="d-block mt-2">View Full Image</a>
 

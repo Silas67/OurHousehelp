@@ -516,7 +516,7 @@
 
                                                                 <div class="col-md-6 text-center">
 
-                                                                    <img src="{{ asset('storage/'.$guarantor->guarantor1_passport_path) }}" 
+                                                                    <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor->guarantor1_passport_path) }}" 
 
                                                                          class="img-thumbnail mb-2" 
 
@@ -534,7 +534,7 @@
 
                                                                 <div class="col-md-6 text-center">
 
-                                                                    <img src="{{ asset('storage/'.$guarantor->guarantor1_signature_path) }}" 
+                                                                    <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor->guarantor1_signature_path) }}" 
 
                                                                          class="img-thumbnail mb-2" 
 
@@ -643,7 +643,7 @@
 
                                                                 <div class="col-md-6 text-center">
 
-                                                                    <img src="{{ asset('storage/'.$guarantor2->guarantor2_passport_path) }}" 
+                                                                    <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) }}" 
 
                                                                          class="img-thumbnail mb-2" 
 
@@ -661,7 +661,7 @@
 
                                                                 <div class="col-md-6 text-center">
 
-                                                                    <img src="{{ asset('storage/'.$guarantor2->guarantor2_signature_path) }}" 
+                                                                    <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) }}" 
 
                                                                          class="img-thumbnail mb-2" 
 

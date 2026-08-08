@@ -42,7 +42,7 @@
                                         <td>{{ $guarantor->address }}</td>
                                         <td>
                                             @if ($guarantor->passport_path)
-                                                <img src="{{ asset('build/assets/image/passports/' . $guarantor->passport_path) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor->passport_path) }}"
                                                     alt="Passport" width="50">
                                             @else
                                                 N/A
@@ -50,7 +50,7 @@
                                         </td>
                                         <td>
                                             @if ($guarantor->signature_path)
-                                                <img src="{{ asset('build/assets/image/signatures/' . $guarantor->signature_path) }}"
+                                                <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor->signature_path) }}"
                                                     alt="Signature" width="50">
                                             @else
                                                 N/A

@@ -433,7 +433,7 @@ class ServiceRequestController extends Controller
                 'payment_method' => $validated['payment_method'],
                 'transaction_reference' => $transactionRef,
                 'status' => $validated['payment_method'] === 'bank_transfer' ? 'pending_approval' : 'completed',
-                'bank_receipt' => $request->file('bank_receipt')?->store('bank_receipts', 'public'),
+                'bank_receipt' => ($request->file('bank_receipt') ? \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts') : null),
                 'paid_at' => $validated['payment_method'] === 'bank_transfer' ? null : now(),
                 'expires_at' => now()->addYear(),
             ]);

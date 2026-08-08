@@ -79,7 +79,7 @@
                 <h6><strong>ID Card</strong></h6>
                 <div class="text-center mb-3">
                     @if ($user->id_card)
-                        <img src="{{ asset('build/assets/image/idcards/' . $user->id_card) }}"
+                        <img src="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}"
                             alt="ID Card" class="img-fluid rounded"
                             style="max-width: 200px;">
                     @else
@@ -106,12 +106,12 @@
                     <p><strong>Address:</strong> {{ $guarantor->guarantor1_address }}</p>
                     <div class="text-center">
                         @if ($guarantor->passport_path)
-                            <img src="{{ asset('build/assets/image/passports/' . $guarantor->guarantor1_passport_path) }}"
+                            <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor->guarantor1_passport_path) }}"
                                 alt="Passport Photo" class="img-thumbnail"
                                 width="150" height="150">
                         @endif
                         @if ($guarantor->signature_path)
-                            <img src="{{ asset('build/assets/image/signatures/' . $guarantor->guarantor1_signature_path) }}"
+                            <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor->guarantor1_signature_path) }}"
                                 alt="Signature" class="img-thumbnail" width="150"
                                 height="150">
                         @endif
@@ -132,12 +132,12 @@
                     <p><strong>Address:</strong> {{ $guarantor2->guarantor2_address }}</p>
                     <div class="text-center">
                         @if ($guarantor2->passport_path)
-                            <img src="{{ asset('build/assets/image/passports/' . $guarantor2->guarantor2_passport_path) }}"
+                            <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) }}"
                                 alt="Passport Photo" class="img-thumbnail"
                                 width="150" height="150">
                         @endif
                         @if ($guarantor2->signature_path)
-                            <img src="{{ asset('build/assets/image/signatures/' . $guarantor2->guarantor2_signature_path) }}"
+                            <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) }}"
                                 alt="Signature" class="img-thumbnail" width="150"
                                 height="150">
                         @endif

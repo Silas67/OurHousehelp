@@ -939,7 +939,7 @@ class AdminController extends Controller
 
             }
 
-            $path = $request->file('id_card')->store('id_cards', 'public');
+            $path = \App\Support\SecureDocument::store($request->file('id_card'), 'idcards');
 
             $validated['id_card'] = $path;
 

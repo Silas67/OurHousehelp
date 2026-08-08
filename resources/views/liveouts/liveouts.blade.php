@@ -1115,7 +1115,7 @@
                                                     <label for="guarantor1_passport" class="form-label">Passport
                                                         Photo:</label>
                                                     <img id="guarantor1-passport-preview"
-                                                        src="{{ old('guarantor1_passport_path', isset($guarantor1->guarantor1_passport_path) ? asset('build/assets/image/passports/' . $guarantor1->guarantor1_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
+                                                        src="{{ old('guarantor1_passport_path', isset($guarantor1->guarantor1_passport_path) ? \App\Support\SecureDocument::url('passports', $guarantor1->guarantor1_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="Passport Photo" class="img-thumbnail d-block mb-2"
                                                         style="width: 150px; height: 150px;">
                                                     <input type="file" name="guarantor1_passport_path"
@@ -1129,7 +1129,7 @@
                                                 <div class="col-md-6">
                                                     <label for="guarantor1_signature" class="form-label">ID Card:</label>
                                                     <img id="guarantor1-signature-preview"
-                                                        src="{{ old('guarantor1_signature_path', isset($guarantor1->guarantor1_signature_path) ? asset('build/assets/image/signatures/' . $guarantor1->guarantor1_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
+                                                        src="{{ old('guarantor1_signature_path', isset($guarantor1->guarantor1_signature_path) ? \App\Support\SecureDocument::url('signatures', $guarantor1->guarantor1_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="ID Card" class="img-thumbnail d-block mb-2"
                                                         style="width: 150px; height: 150px;">
                                                     <input type="file" name="guarantor1_signature_path"
@@ -1242,7 +1242,7 @@
                                                     <label for="guarantor2_passport" class="form-label">Passport
                                                         Photo:</label>
                                                     <img id="guarantor2-passport-preview"
-                                                        src="{{ old('guarantor2_passport_path', isset($guarantor2->guarantor2_passport_path) ? asset('build/assets/image/passports/' . $guarantor2->guarantor2_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
+                                                        src="{{ old('guarantor2_passport_path', isset($guarantor2->guarantor2_passport_path) ? \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="Passport Photo" class="img-thumbnail d-block mb-2"
                                                         style="width: 150px; height: 150px;">
                                                     <input type="file" name="guarantor2_passport_path"
@@ -1256,7 +1256,7 @@
                                                 <div class="col-md-6">
                                                     <label for="guarantor2_signature" class="form-label">ID Card:</label>
                                                     <img id="guarantor2-signature-preview"
-                                                        src="{{ old('guarantor2_signature_path', isset($guarantor2->guarantor2_signature_path) ? asset('build/assets/image/signatures/' . $guarantor2->guarantor2_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
+                                                        src="{{ old('guarantor2_signature_path', isset($guarantor2->guarantor2_signature_path) ? \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="ID Card" class="img-thumbnail d-block mb-2"
                                                         style="width: 150px; height: 150px;">
                                                     <input type="file" name="guarantor2_signature_path"

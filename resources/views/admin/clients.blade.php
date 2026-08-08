@@ -164,7 +164,7 @@
                                                                 <strong>ID Verification</strong>
                                                             </div>
                                                             <div class="card-body text-center">
-                                                                <img src="{{ asset('storage/id_cards/' . $user->id_card) }}" 
+                                                                <img src="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}" 
                                                                     alt="ID Card" 
                                                                     class="img-fluid rounded border" 
                                                                     style="max-height: 200px;">

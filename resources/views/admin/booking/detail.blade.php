@@ -155,12 +155,12 @@
                                     {{-- Fix #2: receipts served via controller not public storage --}}
                                     <td>
                                         @if($pmt->bank_receipt)
-                                            <a href="{{ asset('storage/' . $pmt->bank_receipt) }}"
+                                            <a href="{{ \App\Support\SecureDocument::url('receipts', $pmt->bank_receipt) }}"
                                                 target="_blank" class="btn btn-sm btn-outline-primary">
                                                 <i class="fas fa-file me-1"></i>View
                                             </a>
                                         @elseif($pmt->whatsapp_receipt)
-                                            <a href="{{ asset('storage/' .         $pmt->whatsapp_receipt) }}"
+                                            <a href="{{ \App\Support\SecureDocument::url('receipts', $pmt->whatsapp_receipt) }}"
                                                 target="_blank" class="btn btn-sm btn-outline-success">
                                                 <i class="fab fa-whatsapp me-1"></i>View
                                             </a>

@@ -3,7 +3,7 @@
     <td>
         <div class="d-flex align-items-center">
             @if($payment->user->passport)
-                <img src="{{ asset('storage/' . $payment->user->passport) }}" 
+                <img src="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}" 
                      alt="{{ $payment->user->name }}" 
                      class="user-avatar me-3">
             @else

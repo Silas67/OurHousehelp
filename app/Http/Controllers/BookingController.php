@@ -533,7 +533,7 @@ class BookingController extends Controller
         // Handle file upload
         $receiptPath = null;
         if ($request->hasFile('bank_receipt')) {
-            $receiptPath = $request->file('bank_receipt')->store('booking-receipts', 'public');
+            $receiptPath = \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts');
         }
 
         $transactionRef = $validated['payment_reference'];
@@ -734,7 +734,7 @@ class BookingController extends Controller
         $validated = $request->validate([
             'whatsapp_receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
-        $receiptPath = $request->file('whatsapp_receipt')->store('booking-receipts/whatsapp', 'public');
+        $receiptPath = \App\Support\SecureDocument::store($request->file('whatsapp_receipt'), 'receipts');
 
         // Find existing pending payment or create one
         $payment = $serviceRequest->bookingPayments()
