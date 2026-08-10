@@ -1,0 +1,20 @@
+/*
+ * Bootstrap + FontAwesome bundle for the Blade layouts
+ * (adminmain, usermain, applicantmain, main).
+ *
+ * These were previously pulled from three CDNs at four different Bootstrap
+ * versions, with several layouts loading two majors at once (4.x and 5.x)
+ * and letting them fight in the cascade. Everything is now one self-hosted
+ * 5.3.3 build, so there is a single source of truth and no third-party
+ * request on the critical path.
+ *
+ * Kept separate from app.css, which is the Tailwind/Jetstream entry point.
+ */
+
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* FontAwesome 6 - matches the existing `fas fa-*` / `fab fa-*` markup. */
+@import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
+@import '@fortawesome/fontawesome-free/css/solid.min.css';
+@import '@fortawesome/fontawesome-free/css/regular.min.css';
+@import '@fortawesome/fontawesome-free/css/brands.min.css';
