@@ -25,7 +25,7 @@
                             <input type="checkbox" name="specialties[]" value="Cleaning & Housekeeping" id="cleaning"
                                 class="mb-2"
                                 {{ in_array('Cleaning & Housekeeping', $user->specialties ?? []) ? 'checked' : '' }}>
-                            <label for="cleaning" class="font-weight-bold">
+                            <label for="cleaning" class="fw-bold">
                                 Cleaning & Housekeeping
                             </label>
                             <i class="fas fa-spray-can fa-2x mb-2"></i>
@@ -38,7 +38,7 @@
                         <div class="card text-center p-3">
                             <input type="checkbox" name="specialties[]" value="Laundry" id="laundry" class="mb-2"
                                 {{ in_array('Laundry', $user->specialties ?? []) ? 'checked' : '' }}>
-                            <label for="laundry" class="font-weight-bold">
+                            <label for="laundry" class="fw-bold">
                                 Laundry
                             </label>
                             <i class="fas fa-tshirt fa-2x mb-2"></i>
@@ -52,7 +52,7 @@
                             <input type="checkbox" name="specialties[]" value="Errand & Housekeeping" id="errands"
                                 class="mb-2"
                                 {{ in_array('Errand & Housekeeping', $user->specialties ?? []) ? 'checked' : '' }}>
-                            <label for="errands" class="font-weight-bold">
+                            <label for="errands" class="fw-bold">
                                 Errand & Housekeeping
                             </label>
                             <i class="fas fa-running fa-2x mb-2"></i>
@@ -66,7 +66,7 @@
                             <input type="checkbox" name="specialties[]" value="Nanny & Housekeeping" id="nanny"
                                 class="mb-2"
                                 {{ in_array('Nanny & Housekeeping', $user->specialties ?? []) ? 'checked' : '' }}>
-                            <label for="nanny" class="font-weight-bold">Nanny & Housekeeping</label>
+                            <label for="nanny" class="fw-bold">Nanny & Housekeeping</label>
                             <i class="fas fa-child fa-2x mb-2"></i>
                             <p>Babysitting, elderly care, and family support services.</p>
                         </div>
@@ -77,7 +77,7 @@
                         <div class="card text-center p-3">
                             <input type="checkbox" name="specialties[]" value="Cook & Errands" id="cook" class="mb-2"
                                 {{ in_array('Cook & Errands', $user->specialties ?? []) ? 'checked' : '' }}>
-                            <label for="cook" class="font-weight-bold">Cook & Errands</label>
+                            <label for="cook" class="fw-bold">Cook & Errands</label>
                             <i class="fas fa-utensils fa-2x mb-2"></i>
                             <p>Meal preparation and related errands for your culinary needs.</p>
                         </div>
@@ -88,7 +88,7 @@
                                 <input type="checkbox" name="specialties[]" value="{{ ucfirst($service->service_name) }}"
                                     id="{{ ucfirst($service->service_name) }}" class="mb-2"
                                     {{ in_array(ucfirst($service->service_name), is_array($applicant->specialties) ? $applicant->specialties : json_decode($applicant->specialties ?? '[]', true) ?? []) ? 'checked' : '' }}>
-                                <label for="{{ ucfirst($service->service_name) }}" class="font-weight-bold">
+                                <label for="{{ ucfirst($service->service_name) }}" class="fw-bold">
                                     {{ ucfirst($service->service_name) }}
                                 </label>
                                 <i class="fas fa-plus fa-2x mb-2"></i>

@@ -38,14 +38,14 @@
                                         <td>{{ $service->hours_of_work ?? 'N/A' }}</td>
                                         <td class="d-flex justify-content-start">
                                             <!-- View Details Button (Triggers Modal) -->
-                                            <button type="button" class="btn btn-sm btn-info mr-2" data-toggle="modal"
-                                                data-target="#serviceDetailsModal-{{ $service->id }}">
+                                            <button type="button" class="btn btn-sm btn-info me-2" data-bs-toggle="modal"
+                                                data-bs-target="#serviceDetailsModal-{{ $service->id }}">
                                                 View
                                             </button>
 
                                             <!-- Edit Button -->
                                             <a href="{{ route('admin.services.edit', $service->id) }}"
-                                                class="btn btn-sm btn-primary mr-2">
+                                                class="btn btn-sm btn-primary me-2">
                                                 Edit
                                             </a>
 
@@ -73,10 +73,8 @@
                                                         id="serviceDetailsModalLabel-{{ $service->id }}">
                                                         Service Details - {{ $service->service_name }}
                                                     </h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <!-- Service Details -->
@@ -107,7 +105,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Close</button>
+                                                        data-bs-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
                                         </div>

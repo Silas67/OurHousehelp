@@ -552,11 +552,17 @@
     </style>
     
     <script>
-        $(document).ready(function() {
-            @if (session('success') || $errors->any())
-                $('#feedbackModal').modal('show');
-            @endif
-        });
+        // Native Bootstrap 5 API. This previously used jQuery
+        // ($('#feedbackModal').modal('show')), which Bootstrap 5 removed support
+        // for, so the feedback modal never actually opened.
+        @if (session('success') || $errors->any())
+            document.addEventListener('DOMContentLoaded', function () {
+                var el = document.getElementById('feedbackModal');
+                if (el && window.bootstrap) {
+                    bootstrap.Modal.getOrCreateInstance(el).show();
+                }
+            });
+        @endif
     </script>
 
     <script>
@@ -569,9 +575,8 @@
         });
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- Bootstrap JS ships via @vite in the head partial. --}}
     <script src="{{ asset('build/assets/js/script.js') }}"></script>
-    </script>
 </body>
 
 </html>

@@ -30,16 +30,16 @@
                                     <td>{{ Str::limit($faq->question, 50) }}</td>
                                     <td>{{ Str::limit($faq->answer, 70) }}</td>
                                     <td>                                        
-                                        <button class="btn btn-sm btn-info view-faq"  data-toggle="modal"
-                                                data-target="#viewfaq-{{ $faq->id }}">
+                                        <button class="btn btn-sm btn-info view-faq"  data-bs-toggle="modal"
+                                                data-bs-target="#viewfaq-{{ $faq->id }}">
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-primary edit-faq"  data-toggle="modal"
-                                                data-target="#editfaq-{{ $faq->id }}">
+                                        <button class="btn btn-sm btn-primary edit-faq"  data-bs-toggle="modal"
+                                                data-bs-target="#editfaq-{{ $faq->id }}">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-danger delete-faq"  data-toggle="modal"
-                                                data-target="#deletefaq-{{ $faq->id }}">
+                                        <button class="btn btn-sm btn-danger delete-faq"  data-bs-toggle="modal"
+                                                data-bs-target="#deletefaq-{{ $faq->id }}">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

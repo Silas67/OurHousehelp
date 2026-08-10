@@ -35,7 +35,7 @@
                             <td>{{ $service->working_hours }}</td>
                             <td>{{ $service->description }}</td>
                             <td class="d-flex">
-                                <a href="{{ route('multipleservice.edit', $service->id) }}" class="btn btn-primary btn-sm mr-2">Edit</a>
+                                <a href="{{ route('multipleservice.edit', $service->id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
                                 <form action="{{ route('multipleservice.destroy', $service->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')

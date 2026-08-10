@@ -999,7 +999,7 @@
                                                                 id="{{ ucfirst($service->service_name) }}"
                                                                 class="mb-2"
                                                                 {{ in_array(ucfirst($service->service_name), $applicant->specialties ?? []) ? 'checked' : '' }}>
-                                                            <label for="{{ ucfirst($service->service_name) }}" class="font-weight-bold" style="font-weight: bolder">
+                                                            <label for="{{ ucfirst($service->service_name) }}" class="fw-bold" style="font-weight: bolder">
                                                                 {{ ucfirst($service->service_name) }}
                                                             </label>
                                                             <i class="fas fa-plus fa-2x mb-2"></i>

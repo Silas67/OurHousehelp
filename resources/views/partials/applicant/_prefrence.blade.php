@@ -3,23 +3,31 @@
 
 <div class="form-group text-center">
     <label style="font-size: 0.9rem; font-weight: bold;">Applicant Type</label>
-    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label class="btn btn-outline-primary {{ $user->applicant_type === 'live-in' ? 'active' : '' }}">
-            <input type="radio" name="applicant_type" value="live-in"
-                onclick="saveApplicantType('live-in')"
-                {{ $user->applicant_type === 'live-in' ? 'checked' : '' }}>
+    {{-- Bootstrap 5 removed the data-toggle="buttons" behaviour entirely. The
+         equivalent is the btn-check pattern: a visually hidden radio paired
+         with a label, styled by CSS rather than by JS toggling .active. --}}
+    <div class="btn-group" role="group" aria-label="Applicant type">
+        <input type="radio" class="btn-check" name="applicant_type" id="applicantTypeLiveIn"
+            value="live-in" autocomplete="off"
+            onclick="saveApplicantType('live-in')"
+            {{ $user->applicant_type === 'live-in' ? 'checked' : '' }}>
+        <label class="btn btn-outline-primary" for="applicantTypeLiveIn">
             <span style="font-size: 0.85rem;">Live-In</span>
         </label>
-        <label class="btn btn-outline-primary {{ $user->applicant_type === 'live-out' ? 'active' : '' }}">
-            <input type="radio" name="applicant_type" value="live-out"
-                onclick="saveApplicantType('live-out')"
-                {{ $user->applicant_type === 'live-out' ? 'checked' : '' }}>
+
+        <input type="radio" class="btn-check" name="applicant_type" id="applicantTypeLiveOut"
+            value="live-out" autocomplete="off"
+            onclick="saveApplicantType('live-out')"
+            {{ $user->applicant_type === 'live-out' ? 'checked' : '' }}>
+        <label class="btn btn-outline-primary" for="applicantTypeLiveOut">
             <span style="font-size: 0.85rem;">Live-Out</span>
         </label>
-        <label class="btn btn-outline-primary {{ $user->applicant_type === 'semi-live-in' ? 'active' : '' }}">
-            <input type="radio" name="applicant_type" value="semi-live-in"
-                onclick="saveApplicantType('semi-live-in')"
-                {{ $user->applicant_type === 'semi-live-in' ? 'checked' : '' }}>
+
+        <input type="radio" class="btn-check" name="applicant_type" id="applicantTypeSemiLiveIn"
+            value="semi-live-in" autocomplete="off"
+            onclick="saveApplicantType('semi-live-in')"
+            {{ $user->applicant_type === 'semi-live-in' ? 'checked' : '' }}>
+        <label class="btn btn-outline-primary" for="applicantTypeSemiLiveIn">
             <span style="font-size: 0.85rem;">Semi Live-In</span>
         </label>
     </div>

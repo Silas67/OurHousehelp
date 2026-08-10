@@ -247,13 +247,13 @@
                 <div class="col-md-12">
                     <div class="form-group row d-flex align-items-center">
                         <!-- Apartment name -->
-                        <label class="col-8 text-right" for="feature_{{ $details->name }}">
+                        <label class="col-8 text-end" for="feature_{{ $details->name }}">
                             {{ ucfirst($details->name) }}
                             <span hidden>(Cost per unit: ₦{{ number_format($details->cost, 2) }})</span>
                         </label>
 
                         <!-- Input field (associate with cost, not name) -->
-                        <div class="col-4 text-left">
+                        <div class="col-4 text-start">
                             <input type="number" class="form-control feature-input"
                                 id="feature_{{ $details->name }}" name="features[{{ $details->name }}]"
                                 min="0" placeholder="Type number" data-cost="{{ $details->cost }}"
@@ -268,8 +268,8 @@
             <!-- Grand Total Section -->
             <div class="col-md-12">
                 <div class="form-group row d-flex align-items-center">
-                    <label class="col-5 text-right"><strong>Apartment Total</strong></label>
-                    <div class="col-7 text-left">
+                    <label class="col-5 text-end"><strong>Apartment Total</strong></label>
+                    <div class="col-7 text-start">
                         <strong>₦<span id="grand_total">0</span></strong>
                     </div>
                 </div>

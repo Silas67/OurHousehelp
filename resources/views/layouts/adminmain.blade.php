@@ -3,14 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-
-    <!-- Bootstrap CSS -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {{-- Bootstrap 5.3.3 + FontAwesome 6, self-hosted. This layout previously
+         loaded Bootstrap 5.3.1 AND 4.5.2 at the same time from two CDNs. --}}
+    @vite(['resources/css/ui.css', 'resources/js/ui.js'])
 
 
 
@@ -124,13 +121,10 @@
 
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.bundle.min.js"></script>
-
+    {{-- Bootstrap JS now ships via @vite in <head>. jQuery slim, Popper and the
+         second Bootstrap (4.5.2) bundle were removed: no view under this layout
+         uses jQuery, and Bootstrap 5 bundles Popper itself. --}}
     <script src="{{ asset('build/assets/js/adminscript.js') }}"></script>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         window.addEventListener('load', function() {

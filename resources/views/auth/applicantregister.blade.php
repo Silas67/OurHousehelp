@@ -248,7 +248,7 @@
                                             @if($isMandatory)
                                                 <input type="hidden" name="specialties[]" value="{{ $serviceName }}">
                                             @endif
-                                            <label for="{{ $serviceName }}" class="font-weight-bold">
+                                            <label for="{{ $serviceName }}" class="fw-bold">
                                                 {{ $serviceName }}
                                                 @if($isMandatory)
                                                     <span class="badge bg-success" style="font-size: 10px;">Required</span>

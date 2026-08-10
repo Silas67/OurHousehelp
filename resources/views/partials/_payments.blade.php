@@ -37,7 +37,7 @@
                         @endif
                         {{-- <td>{{ $payment->about_payment ?? 'N/A' }}</td> --}}
                         <td>{{ $payment->paymentPlan->plan_name ?? 'N/A' }} <br> <span
-                                class="badge badge-secondary">{{ $payment->plan_type ?? 'N/A' }}</span>
+                                class="badge bg-secondary">{{ $payment->plan_type ?? 'N/A' }}</span>
                         </td> <!-- Display Plan Name -->
                         {{-- <td>{{ $payment->num_searches ?? 'N/A' }}</td> --}}
                         <td>₦{{ number_format($payment->amount, 2) }}</td>
@@ -47,15 +47,15 @@
                                 {{ ucfirst($payment->status) }}
                             @else
                                 @if ($payment->isExhausted())
-                                    <span class="badge badge-secondary">Exhausted</span>
+                                    <span class="badge bg-secondary">Exhausted</span>
                                 @elseif ($payment->status == 'approved' && $payment->expiry_date && now()->greaterThan($payment->expiry_date))
-                                    <span class="badge badge-secondary">Expired</span>
+                                    <span class="badge bg-secondary">Expired</span>
                                 @elseif ($payment->status == 'approved')
-                                    <span class="badge badge-success">Active</span>
+                                    <span class="badge bg-success">Active</span>
                                 @elseif ($payment->status == 'pending')
-                                    <span class="badge badge-warning">Pending</span>
+                                    <span class="badge bg-warning">Pending</span>
                                 @elseif ($payment->status == 'failed')
-                                    <span class="badge badge-danger">Cancelled</span>
+                                    <span class="badge bg-danger">Cancelled</span>
                                 @endif
                             @endif
 
@@ -70,8 +70,8 @@
                         </td>
                         <td>
                             {{-- @if ($payment->receipt_path) --}}
-                            <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                                data-target="#receiptModal{{ $payment->id }}">
+                            <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                data-bs-target="#receiptModal{{ $payment->id }}">
                                 Preview
                             </button>
                             {{-- @else
@@ -168,11 +168,9 @@
                                     <div class="d-flex align-items-center w-100">
                                         <img src="{{ asset('build/assets/image/logo/ohh-log.png') }}"
                                             alt="Company Logo" height="50">
-                                        <h5 class="modal-title mx-auto font-weight-bold">Payment Receipt</h5>
+                                        <h5 class="modal-title mx-auto fw-bold">Payment Receipt</h5>
                                     </div>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
                                 <!-- Modal Body with Receipt Content -->
@@ -181,7 +179,7 @@
                                         <!-- Receipt Header -->
                                         <div class="text-center mb-4">
                                             <h6 class="text-uppercase text-secondary">Transaction Summary</h6>
-                                            <h4 class="font-weight-bold">Payment #{{ $payment->id }}</h4>
+                                            <h4 class="fw-bold">Payment #{{ $payment->id }}</h4>
                                             <p class="text-muted">Date:
                                                 {{ $payment->created_at->format('d M, Y') }}
                                             </p>
@@ -241,7 +239,7 @@
 
                                 <!-- Modal Footer with Print Button -->
                                 <div class="modal-footer d-flex justify-content-between">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <button type="button" class="btn btn-primary"
                                         onclick="printReceipt({{ $payment->id }})">
                                         <i class="fas fa-print"></i> Print Receipt
@@ -264,12 +262,12 @@
                                             .border { border: 1px solid #ddd; padding: 15px; border-radius: 5px; }
                                             .text-center { text-align: center; }
                                             .text-secondary { color: #6c757d; }
-                                            .font-weight-bold { font-weight: bold; }
+                                            .fw-bold { font-weight: bold; }
                                             img { max-width: 100%; height: auto; }
                                             .badge { padding: 5px 10px; font-size: 14px; border-radius: 5px; }
-                                            .badge-success { background-color: #28a745; color: #fff; }
-                                            .badge-warning { background-color: #ffc107; color: #000; }
-                                            .badge-danger { background-color: #dc3545; color: #fff; }
+                                            .bg-success { background-color: #28a745; color: #fff; }
+                                            .bg-warning { background-color: #ffc107; color: #000; }
+                                            .bg-danger { background-color: #dc3545; color: #fff; }
                                         </style>
                                     </head>
                                     <body>
