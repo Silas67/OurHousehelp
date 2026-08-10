@@ -7,7 +7,7 @@
                 <div class="card shadow-sm">
                     <img src="{{ $househelp->profile_photo_path ? asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) : asset('build/assets/image/default-profile.png') }}"
                         alt="{{ $househelp->name }}'s Photo" class="img-fluid rounded mb-3"
-                        style="width: 100%; object-fit: cover;">
+                        style="width: 100%; object-fit: cover;" loading="lazy" decoding="async">
                     <h5 class="text-center">{{ $househelp->name }} {{ $househelp->last_name }}</h5>
                 </div>
             </div>

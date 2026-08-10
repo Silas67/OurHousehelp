@@ -152,10 +152,7 @@
                                      </label>
                                      <div class="col-md-8">
                                          <div class="mb-3 align-item-start position-relative">
-                                             <img id="profile-photo-preview"
-                                                 src="{{ asset('build/assets/image/slider1.jpg') }}" alt="Profile Photo"
-                                                 class="img-thumbnail rounded-circle"
-                                                 style="width: 150px; height: 150px; object-fit: cover;">
+                                             <x-img src="build/assets/image/slider1.jpg" id="profile-photo-preview" alt="Profile Photo" class="img-thumbnail rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" loading="lazy" decoding="async" />
                                          </div>
 
                                          <input type="file" id="profile_photo_path" name="profile_photo_path"

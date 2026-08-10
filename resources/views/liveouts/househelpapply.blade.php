@@ -130,7 +130,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             accept="image/*" onchange="previewPhoto(this)" required>
                                         @error('profile_photo')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         <img id="photoPreview" src="#" alt="Preview"
-                                            style="display:none;width:70px;height:70px;object-fit:cover;border-radius:50%;margin-top:8px;border:3px solid #0F6E56;">
+                                            style="display:none;width:70px;height:70px;object-fit:cover;border-radius:50%;margin-top:8px;border:3px solid #0F6E56;" loading="lazy" decoding="async">
                                     </div>
 
                                 </div>
@@ -283,7 +283,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <small class="text-muted">Upload a clear photo of your NIN slip, driver's licence, voter's card or international passport</small>
                                         @error('id_card')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         <img id="idcard-preview" src="#" alt="ID Card Preview"
-                                            style="display:none;max-width:200px;margin-top:10px;border-radius:8px;border:2px solid #0F6E56;">
+                                            style="display:none;max-width:200px;margin-top:10px;border-radius:8px;border:2px solid #0F6E56;" loading="lazy" decoding="async">
                                     </div>
                                 </div>
 

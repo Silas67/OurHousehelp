@@ -348,10 +348,7 @@
                                                         class="text-danger">*</span></label>
                                                 <div class="col-md-6">
                                                     <div class="mb-3 align-item-start">
-                                                        <img id="profile-photo-preview-skills"
-                                                            src="{{ asset('build/assets/image/slider1.jpg') }}"
-                                                            alt="Profile Photo" class="img-thumbnail"
-                                                            style="width: 150px; height: 150px;">
+                                                        <x-img src="build/assets/image/slider1.jpg" id="profile-photo-preview-skills" alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async" />
                                                     </div>
                                                     <input type="file" id="profile_photo_path_skills"
                                                         name="profile_photo_path"

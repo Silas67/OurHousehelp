@@ -17,7 +17,7 @@
                         <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                             alt="{{ $househelp->name }}'s photo" 
                             class="img-fluid rounded-circle border border-3 border-primary"
-                            style="width: 180px; height: 180px; object-fit: cover;">
+                            style="width: 180px; height: 180px; object-fit: cover;" loading="lazy" decoding="async">
                             
                         <!-- Rating Badge -->
                         <div class="mt-3">

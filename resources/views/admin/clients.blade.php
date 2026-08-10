@@ -97,12 +97,9 @@
                                                                     <img src="{{ asset('storage/profile_photos/' . $user->profile_photo_path) }}" 
                                                                         alt="Profile Photo" 
                                                                         class="rounded-circle"
-                                                                        width="120" height="120">
+                                                                        width="120" height="120" loading="lazy" decoding="async">
                                                                 @else
-                                                                    <img src="{{ asset('build/assets/image/default-profile.png') }}" 
-                                                                        alt="Default Profile" 
-                                                                        class="rounded-circle"
-                                                                        width="120" height="120">
+                                                                    <x-img src="build/assets/image/default-profile.png" alt="Default Profile" class="rounded-circle" width="120" height="120" loading="lazy" decoding="async" />
                                                                 @endif
                                                             </div>
                                                             <div class="text-center text-md-start">
@@ -167,7 +164,7 @@
                                                                 <img src="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}" 
                                                                     alt="ID Card" 
                                                                     class="img-fluid rounded border" 
-                                                                    style="max-height: 200px;">
+                                                                    style="max-height: 200px;" loading="lazy" decoding="async">
                                                             </div>
                                                         </div>
                                                         @endif

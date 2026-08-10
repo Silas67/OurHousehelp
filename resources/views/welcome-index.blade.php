@@ -78,8 +78,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/cleaning 3.jpg') }}" alt="Project 1"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/cleaning 3.jpg" alt="Project 1" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Cleaning Services</a></span>
@@ -90,8 +89,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/cleaning 2.jpg') }}" alt="Project 2"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/cleaning 2.jpg" alt="Project 2" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Cleaning Services</a></span>
@@ -102,8 +100,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/laundry 2.jpg') }}" alt="Project 3"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/laundry 2.jpg" alt="Project 3" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Laundry Services</a></span>
@@ -114,8 +111,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/nanny 2.jpg') }}" alt="Project 4"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/nanny 2.jpg" alt="Project 4" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Nanny Services</a></span>
@@ -126,8 +122,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/driver 2.jpg') }}" alt="Project 5"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/driver 2.jpg" alt="Project 5" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Driving Services</a></span>
@@ -138,8 +133,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/driver 3.jpg') }}" alt="Project 6"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/driver 3.jpg" alt="Project 6" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Driving Services</a></span>
@@ -150,8 +144,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/errand 5.jpg') }}" alt="Project 6"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/errand 5.jpg" alt="Project 6" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Errand Services</a></span>
@@ -161,8 +154,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/cook 2.jpg') }}" alt="Project 4"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/cook 2.jpg" alt="Project 4" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Cooking Services</a></span>
@@ -173,8 +165,7 @@
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="item-box">
                         <a href="#" class="lightbox">
-                            <img src="{{ asset('build/assets/image/gallery/plumber.jpg') }}" alt="Project 5"
-                                class="img-fluid">
+                            <x-img src="build/assets/image/gallery/plumber.jpg" alt="Project 5" class="img-fluid" loading="lazy" decoding="async" />
                         </a>
                         <div class="gallery-heading text-center mt-2">
                             <span><a href="#">Plumbing Services</a></span>

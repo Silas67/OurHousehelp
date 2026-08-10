@@ -36,7 +36,7 @@
 
                                          alt="Profile Photo"
 
-                                         style="min-width: 150px; min-height: 150px; object-fit: cover;">
+                                         style="min-width: 150px; min-height: 150px; object-fit: cover;" loading="lazy" decoding="async">
 
                                 @else
 
@@ -344,7 +344,7 @@
 
                                                      alt="ID Card"
 
-                                                     style="max-height: 400px;">
+                                                     style="max-height: 400px;" loading="lazy" decoding="async">
 
                                                 <div class="mt-3">
 
@@ -522,7 +522,7 @@
 
                                                                          alt="Passport"
 
-                                                                         style="max-height: 120px;">
+                                                                         style="max-height: 120px;" loading="lazy" decoding="async">
 
                                                                     <p class="small text-muted mb-0">Passport Photo</p>
 
@@ -540,7 +540,7 @@
 
                                                                          alt="Signature"
 
-                                                                         style="max-height: 120px;">
+                                                                         style="max-height: 120px;" loading="lazy" decoding="async">
 
                                                                     <p class="small text-muted mb-0">Signature</p>
 
@@ -649,7 +649,7 @@
 
                                                                          alt="Passport"
 
-                                                                         style="max-height: 120px;">
+                                                                         style="max-height: 120px;" loading="lazy" decoding="async">
 
                                                                     <p class="small text-muted mb-0">Passport Photo</p>
 
@@ -667,7 +667,7 @@
 
                                                                          alt="Signature"
 
-                                                                         style="max-height: 120px;">
+                                                                         style="max-height: 120px;" loading="lazy" decoding="async">
 
                                                                     <p class="small text-muted mb-0">Signature</p>
 

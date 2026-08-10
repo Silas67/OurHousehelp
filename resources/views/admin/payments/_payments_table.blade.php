@@ -5,7 +5,7 @@
             @if($payment->user->passport)
                 <img src="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}" 
                      alt="{{ $payment->user->name }}" 
-                     class="user-avatar me-3">
+                     class="user-avatar me-3" loading="lazy" decoding="async">
             @else
                 <div class="user-avatar bg-secondary text-white d-flex align-items-center justify-content-center me-3">
                     {{ substr($payment->user->name, 0, 1) }}

@@ -88,7 +88,7 @@
                             <img id="guarantor2-passport-preview"
                                 src="{{ old('guarantor2_passport_path', isset($guarantor2->guarantor2_passport_path) ? asset('public/build/assets/image/passports/' . $guarantor2->guarantor2_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
                                 alt="Passport Photo" class="img-thumbnail d-block mb-2"
-                                style="width: 150px; height: 150px;">
+                                style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                             <input type="file" name="guarantor2_passport_path" id="guarantor2_passport" class="form-control"
                                 accept="image/*"
                                 onchange="previewImage('guarantor2_passport', 'guarantor2-passport-preview')">
@@ -99,7 +99,7 @@
                             <img id="guarantor2-signature-preview"
                                 src="{{ old('guarantor2_signature_path', isset($guarantor2->guarantor2_signature_path) ? asset('public/build/assets/image/signatures/' . $guarantor2->guarantor2_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
                                 alt="ID Card" class="img-thumbnail d-block mb-2"
-                                style="width: 150px; height: 150px;">
+                                style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                             <input type="file" name="guarantor2_signature_path" id="guarantor2_signature"
                                 class="form-control" accept="image/*"
                                 onchange="previewImage('guarantor2_signature', 'guarantor2-signature-preview')">

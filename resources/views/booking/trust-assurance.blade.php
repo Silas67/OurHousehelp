@@ -13,7 +13,7 @@
             <div class="card-body text-center p-4">
                 @if($selectedStaff->profile_photo_path)
                     <img src="{{ asset('storage/' . $selectedStaff->profile_photo_path) }}"
-                        class="rounded-circle mb-3" width="80" height="80" style="object-fit: cover;">
+                        class="rounded-circle mb-3" width="80" height="80" style="object-fit: cover;" loading="lazy" decoding="async">
                 @else
                     <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3"
                         style="width: 80px; height: 80px;">

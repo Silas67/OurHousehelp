@@ -60,7 +60,7 @@
                 <div>
                     <!-- Card 1: Single Monthly Services -->
                     <div class="container">
-                        {{-- <img src="{{ asset('build/assets/image/coming-soon.png') }}" alt="Coming Soon"> --}}
+                        {{-- <x-img src="build/assets/image/coming-soon.png" alt="Coming Soon" loading="lazy" decoding="async" /> --}}
                         <h1>Coming Soon!</h1>
                         <p>We’re working hard to bring you something amazing. <br> Stay tuned for updates.</p>
                         <p class="countdown" id="countdown"></p>

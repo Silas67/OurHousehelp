@@ -395,9 +395,7 @@
 
                 <div class="col-lg-5 d-none d-lg-block">
                     <div style="position:relative; padding: 20px;">
-                        <img src="{{ asset('build/assets/image/gallery/cleaning 3.jpg') }}"
-                            alt="Professional domestic staff"
-                            style="width:100%; border-radius:20px; object-fit:cover; height:440px;">
+                        <x-img src="build/assets/image/gallery/cleaning 3.jpg" alt="Professional domestic staff" style="width:100%; border-radius:20px; object-fit:cover; height:440px;" loading="lazy" decoding="async" />
                         <div style="position:absolute; bottom:40px; left:0; background:#fff; border-radius:14px; padding:16px 20px; box-shadow:0 8px 32px rgba(0,0,0,0.1); width:200px;">
                             <div style="font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:4px;">Latest Match</div>
                             <div style="font-size:14px; font-weight:500; color:var(--ink);">Cleaning + Laundry</div>
@@ -617,27 +615,27 @@
             </div>
             <div class="ohh-gallery-grid">
                 <div class="ohh-gallery-item tall" style="min-height:300px;">
-                    <img src="{{ asset('build/assets/image/gallery/cleaning 3.jpg') }}" alt="Cleaning Services">
+                    <x-img src="build/assets/image/gallery/cleaning 3.jpg" alt="Cleaning Services" loading="lazy" decoding="async" />
                     <div class="ohh-gallery-caption">Cleaning Services</div>
                 </div>
                 <div class="ohh-gallery-item" style="min-height:180px;">
-                    <img src="{{ asset('build/assets/image/gallery/nanny 2.jpg') }}" alt="Nanny Services">
+                    <x-img src="build/assets/image/gallery/nanny 2.jpg" alt="Nanny Services" loading="lazy" decoding="async" />
                     <div class="ohh-gallery-caption">Nanny Services</div>
                 </div>
                 <div class="ohh-gallery-item" style="min-height:180px;">
-                    <img src="{{ asset('build/assets/image/gallery/cook 2.jpg') }}" alt="Cook Services">
+                    <x-img src="build/assets/image/gallery/cook 2.jpg" alt="Cook Services" loading="lazy" decoding="async" />
                     <div class="ohh-gallery-caption">Cook Services</div>
                 </div>
                 <div class="ohh-gallery-item" style="min-height:180px;">
-                    <img src="{{ asset('build/assets/image/gallery/laundry 2.jpg') }}" alt="Laundry Services">
+                    <x-img src="build/assets/image/gallery/laundry 2.jpg" alt="Laundry Services" loading="lazy" decoding="async" />
                     <div class="ohh-gallery-caption">Laundry Services</div>
                 </div>
                 <div class="ohh-gallery-item" style="min-height:180px;">
-                    <img src="{{ asset('build/assets/image/gallery/driver 2.jpg') }}" alt="Driver Services">
+                    <x-img src="build/assets/image/gallery/driver 2.jpg" alt="Driver Services" loading="lazy" decoding="async" />
                     <div class="ohh-gallery-caption">Driver Services</div>
                 </div>
                 <div class="ohh-gallery-item" style="min-height:180px;">
-                    <img src="{{ asset('build/assets/image/gallery/errand 5.jpg') }}" alt="Errand Services">
+                    <x-img src="build/assets/image/gallery/errand 5.jpg" alt="Errand Services" loading="lazy" decoding="async" />
                     <div class="ohh-gallery-caption">Errand Services</div>
                 </div>
             </div>

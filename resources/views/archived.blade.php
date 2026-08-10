@@ -43,7 +43,7 @@
                                         <td>
                                             @if ($guarantor->passport_path)
                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor->passport_path) }}"
-                                                    alt="Passport" width="50">
+                                                    alt="Passport" width="50" loading="lazy" decoding="async">
                                             @else
                                                 N/A
                                             @endif
@@ -51,7 +51,7 @@
                                         <td>
                                             @if ($guarantor->signature_path)
                                                 <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor->signature_path) }}"
-                                                    alt="Signature" width="50">
+                                                    alt="Signature" width="50" loading="lazy" decoding="async">
                                             @else
                                                 N/A
                                             @endif

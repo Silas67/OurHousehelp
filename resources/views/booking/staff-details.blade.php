@@ -18,7 +18,7 @@
                         @if($selectedStaff->profile_photo_path)
                             <img src="{{ asset('storage/' . $selectedStaff->profile_photo_path) }}"
                                 class="rounded-circle mb-3" width="150" height="150"
-                                style="object-fit: cover;">
+                                style="object-fit: cover;" loading="lazy" decoding="async">
                         @else
                             <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-3"
                                 style="width: 150px; height: 150px;">

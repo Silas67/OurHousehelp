@@ -360,13 +360,11 @@
 
                                 src="{{ asset('public/build/assets/image/profile_photo/' . Auth::user()->profile_photo_path) }}"
 
-                                alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;">
+                                alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async">
 
                         @else
 
-                            <img id="profile-photo-preview" src="{{ asset('build/assets/image/slider1.jpg') }}"
-
-                                alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;">
+                            <x-img src="build/assets/image/slider1.jpg" id="profile-photo-preview" alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async" />
 
                         @endif
 
@@ -1360,13 +1358,11 @@
 
                                 src="{{ asset('public/build/assets/image/idcards/' . Auth::user()->id_card) }}"
 
-                                alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;">
+                                alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;" loading="lazy" decoding="async">
 
                         @else
 
-                            <img id="idcard-preview" src="{{ asset('build/assets/image/slider1.jpg') }}"
-
-                                alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;">
+                            <x-img src="build/assets/image/slider1.jpg" id="idcard-preview" alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;" loading="lazy" decoding="async" />
 
                         @endif
 

@@ -46,7 +46,7 @@
                             @if ($worker->profile_photo_path)
                                 <img src="{{ $worker->profile_photo_path ? asset('public/build/assets/image/profile_photo/' . $worker->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
                                     class="img-fluid rounded-3 border" alt="{{ $worker->name }}"
-                                    style="max-height: 300px; width: 100%; object-fit: cover;">
+                                    style="max-height: 300px; width: 100%; object-fit: cover;" loading="lazy" decoding="async">
                             @else
                                 <div class="bg-light p-5 text-center rounded-3 d-flex align-items-center justify-content-center"
                                     style="height: 300px;">

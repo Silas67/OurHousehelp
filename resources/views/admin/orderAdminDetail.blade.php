@@ -586,7 +586,7 @@ $statusColors = [
 
                                     <img src="{{ \App\Support\SecureDocument::url('passports', $order->passport) }}" alt="Passport Photo"
 
-                                        class="img-fluid" style="max-height: 200px;">
+                                        class="img-fluid" style="max-height: 200px;" loading="lazy" decoding="async">
 
                                     <a href="{{ \App\Support\SecureDocument::url('passports', $order->passport) }}" target="_blank"
 
@@ -610,7 +610,7 @@ $statusColors = [
 
                                     <img src="{{ \App\Support\SecureDocument::url('idcards', $order->id_card) }}" alt="ID Card"
 
-                                        class="img-fluid" style="max-height: 200px;">
+                                        class="img-fluid" style="max-height: 200px;" loading="lazy" decoding="async">
 
                                     <a href="{{ \App\Support\SecureDocument::url('idcards', $order->id_card) }}" target="_blank"
 

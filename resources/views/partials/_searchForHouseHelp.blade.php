@@ -98,7 +98,7 @@
                         {{-- <td>
                         <img src="{{ $househelp->profile_photo_path ? asset('build/assets/image/profile_photo/' . $househelp->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
                              alt="{{ $househelp->name }}'s photo" class="img-fluid rounded" style="width: 50px; height: 50px; cursor: pointer"
-                             data-bs-toggle="modal" data-bs-target="#viewpictureprofile{{ $househelp->id }}">
+                             data-bs-toggle="modal" data-bs-target="#viewpictureprofile{{ $househelp->id }}" loading="lazy" decoding="async">
                     </td> --}}
                         <td>{{ $househelp->name }}</td>
                         <td>
@@ -139,7 +139,7 @@
                                     <div class="modal-body">
                                         <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                                             alt="{{ $househelp->name }}'s photo" class="img-fluid rounded mb-3"
-                                            style="width: 100%; max-height: 200px; object-fit: contain;">
+                                            style="width: 100%; max-height: 200px; object-fit: contain;" loading="lazy" decoding="async">
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -177,7 +177,7 @@
 
                                     <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                                         alt="{{ $househelp->name }}'s photo" class="img-fluid rounded mb-3"
-                                        style="width: 100%; max-height: 200px; object-fit: cover;">
+                                        style="width: 100%; max-height: 200px; object-fit: cover;" loading="lazy" decoding="async">
                                     <p><strong>Name:</strong> {{ $househelp->name }} {{ $househelp->last_name }}
                                     </p>
                                     <p><strong>Gender:</strong> {{ ucfirst($househelp->gender) }}</p>

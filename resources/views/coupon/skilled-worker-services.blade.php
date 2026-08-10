@@ -144,7 +144,7 @@
                                     <div class="position-relative d-inline-block">
                                         <img src="{{ $worker->profile_photo_path ? asset('public/build/assets/image/profile_photo/' . $worker->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
                                             class="rounded-circle border border-3 border-white shadow-sm"
-                                            style="width: 100px; height: 100px; object-fit: cover;">
+                                            style="width: 100px; height: 100px; object-fit: cover;" loading="lazy" decoding="async">
                                         <span
                                             class="position-absolute bottom-0 end-0 bg-white p-1 rounded-circle shadow-sm">
                                             <i class="fas fa-certificate text-success"></i>

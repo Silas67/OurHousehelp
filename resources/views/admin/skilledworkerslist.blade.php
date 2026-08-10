@@ -110,12 +110,9 @@
                                                                                 alt="Profile Photo"
                                                                                 class="rounded-circle shadow-lg border border-3 border-primary"
                                                                                 width="150" height="150"
-                                                                                onerror="this.onerror=null;this.src='{{ asset('build/assets/image/slider1.jpg') }}'">
+                                                                                onerror="this.onerror=null;this.src='{{ asset('build/assets/image/slider1.jpg') }}'" loading="lazy" decoding="async">
                                                                         @else
-                                                                            <img src="{{ asset('build/assets/image/slider1.jpg') }}"
-                                                                                alt="Profile Photo"
-                                                                                class="rounded-circle shadow-lg border border-3 border-primary"
-                                                                                width="150" height="150">
+                                                                            <x-img src="build/assets/image/slider1.jpg" alt="Profile Photo" class="rounded-circle shadow-lg border border-3 border-primary" width="150" height="150" loading="lazy" decoding="async" />
                                                                         @endif
                                                                         <div class="mt-2">
                                                                             <span class="badge bg-info text-dark fs-6">

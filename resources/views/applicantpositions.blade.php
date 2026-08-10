@@ -34,11 +34,9 @@
                                             @if ($request->client->profile_photo_path)
                                                 <img src="{{ asset('build/assets/image/profile_photo/' . $request->client->profile_photo_path) }}"
                                                     alt="{{ $request->name }}'s photo" class="img-fluid rounded mb-3"
-                                                    style="width: 100%; max-height: 200px; object-fit: cover;">
+                                                    style="width: 100%; max-height: 200px; object-fit: cover;" loading="lazy" decoding="async">
                                             @else
-                                                <img src="{{ asset('build/assets/image/slider1.jpg') }}" alt="Profile Photo"
-                                                    class="img-thumbnail"
-                                                    style="width: 100%; max-height: 200px; object-fit: cover;">
+                                                <x-img src="build/assets/image/slider1.jpg" alt="Profile Photo" class="img-thumbnail" style="width: 100%; max-height: 200px; object-fit: cover;" loading="lazy" decoding="async" />
                                             @endif
 
                                             <p><strong>Name:</strong> {{ $request->client->name }}

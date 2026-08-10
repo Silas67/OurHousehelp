@@ -322,7 +322,7 @@
                                             @if ($payment->user->passport)
                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}"
                                                     alt="{{ $payment->user->name }}" class="rounded-circle me-3"
-                                                    width="40" height="40">
+                                                    width="40" height="40" loading="lazy" decoding="async">
                                             @else
                                                 <div class="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center me-3"
                                                     style="width: 40px; height: 40px;">
@@ -507,7 +507,7 @@
                                                             @if ($payment->user->passport)
                                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $payment->user->passport) }}"
                                                                     class="rounded-circle me-3" width="60"
-                                                                    height="60">
+                                                                    height="60" loading="lazy" decoding="async">
                                                             @endif
                                                             <div>
                                                                 <h6 class="mb-0">{{ $payment->user->name }}</h6>

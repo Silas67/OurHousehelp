@@ -633,10 +633,7 @@
                                                 <div class="col-md-6">
 
                                                     <div class="mb-3 align-item-start">
-                                                        <img id="profile-photo-preview"
-                                                            src="{{ asset('build/assets/image/slider1.jpg') }}"
-                                                            alt="Profile Photo" class="img-thumbnail"
-                                                            style="width: 150px; height: 150px;">
+                                                        <x-img src="build/assets/image/slider1.jpg" id="profile-photo-preview" alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async" />
                                                     </div>
 
                                                     <input type="file" id="profile_photo_path"
@@ -661,10 +658,7 @@
                                                     class="col-md-4 col-form-label text-md-end">{{ __('ID Card') }}</label>
                                                 <div class="col-md-6">
                                                     <div class="mb-3">
-                                                        <img id="idcard-preview"
-                                                            src="{{ asset('build/assets/image/slider1.jpg') }}"
-                                                            alt="ID Card" class="img-thumbnail"
-                                                            style="width: 250px; height: 150px;">
+                                                        <x-img src="build/assets/image/slider1.jpg" id="idcard-preview" alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;" loading="lazy" decoding="async" />
                                                     </div>
                                                     <input type="file" id="id_card" name="id_card"
                                                         class="form-control @error('id_card') is-invalid @enderror"
@@ -1117,7 +1111,7 @@
                                                     <img id="guarantor1-passport-preview"
                                                         src="{{ old('guarantor1_passport_path', isset($guarantor1->guarantor1_passport_path) ? \App\Support\SecureDocument::url('passports', $guarantor1->guarantor1_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="Passport Photo" class="img-thumbnail d-block mb-2"
-                                                        style="width: 150px; height: 150px;">
+                                                        style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                                                     <input type="file" name="guarantor1_passport_path"
                                                         id="guarantor1_passport" class="form-control" accept="image/*"
                                                         onchange="previewImage('guarantor1_passport', 'guarantor1-passport-preview')"
@@ -1131,7 +1125,7 @@
                                                     <img id="guarantor1-signature-preview"
                                                         src="{{ old('guarantor1_signature_path', isset($guarantor1->guarantor1_signature_path) ? \App\Support\SecureDocument::url('signatures', $guarantor1->guarantor1_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="ID Card" class="img-thumbnail d-block mb-2"
-                                                        style="width: 150px; height: 150px;">
+                                                        style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                                                     <input type="file" name="guarantor1_signature_path"
                                                         id="guarantor1_signature" class="form-control" accept="image/*"
                                                         onchange="previewImage('guarantor1_signature', 'guarantor1-signature-preview')">
@@ -1244,7 +1238,7 @@
                                                     <img id="guarantor2-passport-preview"
                                                         src="{{ old('guarantor2_passport_path', isset($guarantor2->guarantor2_passport_path) ? \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="Passport Photo" class="img-thumbnail d-block mb-2"
-                                                        style="width: 150px; height: 150px;">
+                                                        style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                                                     <input type="file" name="guarantor2_passport_path"
                                                         id="guarantor2_passport" class="form-control" accept="image/*"
                                                         onchange="previewImage('guarantor2_passport', 'guarantor2-passport-preview')"
@@ -1258,7 +1252,7 @@
                                                     <img id="guarantor2-signature-preview"
                                                         src="{{ old('guarantor2_signature_path', isset($guarantor2->guarantor2_signature_path) ? \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
                                                         alt="ID Card" class="img-thumbnail d-block mb-2"
-                                                        style="width: 150px; height: 150px;">
+                                                        style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                                                     <input type="file" name="guarantor2_signature_path"
                                                         id="guarantor2_signature" class="form-control" accept="image/*"
                                                         onchange="previewImage('guarantor2_signature', 'guarantor2-signature-preview')">

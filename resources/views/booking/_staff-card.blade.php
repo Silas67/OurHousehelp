@@ -34,7 +34,7 @@
             @if($staff && $staff->profile_photo_path)
                 <img src="{{ asset('storage/' . $staff->profile_photo_path) }}"
                     alt="{{ $staff->name }}" class="rounded-circle"
-                    width="85" height="85" style="object-fit:cover;border:3px solid #e9ecef;">
+                    width="85" height="85" style="object-fit:cover;border:3px solid #e9ecef;" loading="lazy" decoding="async">
             @else
                 <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center"
                     style="width:85px;height:85px;border:3px solid #e9ecef;">
@@ -214,7 +214,7 @@
                 <div class="d-flex align-items-center gap-3 p-3 bg-light rounded mb-3">
                     @if($staff->profile_photo_path)
                         <img src="{{ asset('storage/' . $staff->profile_photo_path) }}"
-                            class="rounded-circle" width="55" height="55" style="object-fit:cover;">
+                            class="rounded-circle" width="55" height="55" style="object-fit:cover;" loading="lazy" decoding="async">
                     @else
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
                             style="width:55px;height:55px;">

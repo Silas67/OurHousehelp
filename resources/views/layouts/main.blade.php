@@ -19,10 +19,10 @@
         <div class="container-fluid ">
             <!-- Logo -->
             <a class="navbar-brand" href="/">
-                <img width="150px" src="{{ asset('build/assets/image/logo/ohh-log-b.png') }}" alt="Logo"
-                    class="d-none d-md-block">
-                <img width="100px" src="{{ asset('build/assets/image/logo/ohh-log-b.png') }}" alt="Logo"
-                    class="d-md-none">
+                <x-img width="150px" src="build/assets/image/logo/ohh-log-b.png" alt="Our House Help" loading="eager"
+                    class="d-none d-md-block" />
+                <x-img width="100px" src="build/assets/image/logo/ohh-log-b.png" alt="Our House Help" loading="eager"
+                    class="d-md-none" />
             </a>
 
             <!-- Mobile Menu Toggle (only shows on mobile) -->

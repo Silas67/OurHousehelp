@@ -166,8 +166,7 @@
                                 <!-- Modal Header with Logo -->
                                 <div class="modal-header bg-light">
                                     <div class="d-flex align-items-center w-100">
-                                        <img src="{{ asset('build/assets/image/logo/ohh-log.png') }}"
-                                            alt="Company Logo" height="50">
+                                        <x-img src="build/assets/image/logo/ohh-log.png" alt="Company Logo" height="50" loading="lazy" decoding="async" />
                                         <h5 class="modal-title mx-auto fw-bold">Payment Receipt</h5>
                                     </div>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -219,7 +218,7 @@
                                                 <h6 class="text-uppercase text-secondary">Receipt</h6>
                                                 @if (Str::endsWith($payment->receipt_path, ['.jpg', '.jpeg', '.png', '.gif']))
                                                     <img src="{{ asset('public/build/assets/image/receipt/' . $payment->receipt_path) }}"
-                                                        alt="Receipt Image" class="img-fluid border shadow-sm">
+                                                        alt="Receipt Image" class="img-fluid border shadow-sm" loading="lazy" decoding="async">
                                                 @elseif (Str::endsWith($payment->receipt_path, '.pdf'))
                                                     <embed
                                                         src="{{ asset('public/build/assets/image/receipt/' . $payment->receipt_path) }}"

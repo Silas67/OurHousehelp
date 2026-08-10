@@ -68,7 +68,7 @@
 
                                                         class="rounded-circle shadow" width="150" height="150"
 
-                                                        style="object-fit: cover;">
+                                                        style="object-fit: cover;" loading="lazy" decoding="async">
 
                                                     <label for="profile_photo_path"
 
@@ -1032,14 +1032,14 @@
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Passport Photo</p>
                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor1->guarantor1_passport_path) }}"
-                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
+                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                         @if($guarantor1->guarantor1_signature_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Signature</p>
                                                 <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor1->guarantor1_signature_path) }}"
-                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
+                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                     </div>
@@ -1072,14 +1072,14 @@
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Passport Photo</p>
                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) }}"
-                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
+                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                         @if($guarantor2->guarantor2_signature_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Signature</p>
                                                 <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) }}"
-                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;">
+                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
                                             </div>
                                         @endif
                                     </div>

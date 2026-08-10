@@ -572,7 +572,7 @@
                             <button type="button" class="remove-receipt-btn" id="remove-receipt-btn">
                                 <i class="fas fa-times"></i>
                             </button>
-                            <img src="${e.target.result}" alt="Receipt Preview" class="receipt-preview-img">
+                            <img src="${e.target.result}" alt="Receipt Preview" class="receipt-preview-img" loading="lazy" decoding="async">
                             <div class="file-name mt-2">${file.name}</div>
                         `;
 

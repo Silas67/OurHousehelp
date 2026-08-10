@@ -86,12 +86,9 @@
                                                             @if ($user->profile_photo_path)
                                                                 <img src="{{ $user->profile_photo_path ? asset('build/assets/image/profile_photo/' . $user->profile_photo_path) : 'default-avatar.png' }}"
                                                                     alt="Profile Photo" class="rounded-circle me-3"
-                                                                    width="100" height="100">
+                                                                    width="100" height="100" loading="lazy" decoding="async">
                                                             @else
-                                                                <img id="profile-photo-preview"
-                                                                    src="{{ asset('build/assets/image/slider1.jpg') }}"
-                                                                    alt="Profile Photo" class="img-thumbnail"
-                                                                    style="width: 150px; height: 150px;">
+                                                                <x-img src="build/assets/image/slider1.jpg" id="profile-photo-preview" alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async" />
                                                             @endif
                                                             <div>
                                                                 <h3 class="mb-0">{{ $user->name }}

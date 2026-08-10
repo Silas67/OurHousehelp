@@ -118,7 +118,7 @@
                                 <!-- Preview Section -->
                                 <div id="previewContainer" class="mb-3 text-center" style="display: none;">
                                     <h6>Receipt Preview:</h6>
-                                    <img id="receiptPreview" src="#" alt="Receipt Preview" class="img-fluid img-thumbnail" style="max-width: 300px;">
+                                    <img id="receiptPreview" src="#" alt="Receipt Preview" class="img-fluid img-thumbnail" style="max-width: 300px;" loading="lazy" decoding="async">
                                 </div>
                             
                                 <!-- Submit Button -->

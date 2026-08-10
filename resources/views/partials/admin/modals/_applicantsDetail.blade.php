@@ -13,12 +13,9 @@
                     @if ($user->profile_photo_path)
                         <img src="{{ $user->profile_photo_path ? asset('build/assets/image/profile_photo/' . $user->profile_photo_path) : 'default-avatar.png' }}"
                             alt="Profile Photo" class="rounded-circle me-3"
-                            width="100" height="100">
+                            width="100" height="100" loading="lazy" decoding="async">
                     @else
-                        <img id="profile-photo-preview"
-                            src="{{ asset('build/assets/image/slider1.jpg') }}"
-                            alt="Profile Photo" class="img-thumbnail"
-                            style="width: 150px; height: 150px;">
+                        <x-img src="build/assets/image/slider1.jpg" id="profile-photo-preview" alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async" />
                     @endif
                     <div>
                         <h3 class="mb-0">{{ $user->name }}
@@ -81,7 +78,7 @@
                     @if ($user->id_card)
                         <img src="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}"
                             alt="ID Card" class="img-fluid rounded"
-                            style="max-width: 200px;">
+                            style="max-width: 200px;" loading="lazy" decoding="async">
                     @else
                         <p>No ID card uploaded.</p>
                     @endif
@@ -108,12 +105,12 @@
                         @if ($guarantor->passport_path)
                             <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor->guarantor1_passport_path) }}"
                                 alt="Passport Photo" class="img-thumbnail"
-                                width="150" height="150">
+                                width="150" height="150" loading="lazy" decoding="async">
                         @endif
                         @if ($guarantor->signature_path)
                             <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor->guarantor1_signature_path) }}"
                                 alt="Signature" class="img-thumbnail" width="150"
-                                height="150">
+                                height="150" loading="lazy" decoding="async">
                         @endif
                     </div>
                 @endforeach
@@ -134,12 +131,12 @@
                         @if ($guarantor2->passport_path)
                             <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) }}"
                                 alt="Passport Photo" class="img-thumbnail"
-                                width="150" height="150">
+                                width="150" height="150" loading="lazy" decoding="async">
                         @endif
                         @if ($guarantor2->signature_path)
                             <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) }}"
                                 alt="Signature" class="img-thumbnail" width="150"
-                                height="150">
+                                height="150" loading="lazy" decoding="async">
                         @endif
                     </div>
                 @endforeach

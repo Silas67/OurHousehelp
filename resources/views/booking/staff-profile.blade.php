@@ -96,7 +96,7 @@
                             <img src="{{ asset('storage/' . $staff->profile_photo_path) }}"
                                 class="rounded-circle"
                                 width="88" height="88"
-                                style="object-fit: cover; border: 3px solid white; box-shadow: 0 0 0 2px #1D9E75;">
+                                style="object-fit: cover; border: 3px solid white; box-shadow: 0 0 0 2px #1D9E75;" loading="lazy" decoding="async">
                         @else
                             <div class="rounded-circle d-flex align-items-center justify-content-center"
                                 style="width: 88px; height: 88px; background: #E1F5EE; border: 3px solid white; box-shadow: 0 0 0 2px #1D9E75;">
