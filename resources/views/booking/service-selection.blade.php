@@ -611,7 +611,21 @@
                     breakdownHtml += '<div class="d-flex justify-content-between border-top mt-1 pt-1">';
                     breakdownHtml += '<small class="fw-bold">' + (isOneOff ? 'One-off visit price' : 'Monthly staff salary') + '</small>';
                     breakdownHtml += '<small class="fw-bold text-success">₦' + staffSalary.toLocaleString() + '</small>';
-                    breakdownHtml += '</div></div>';
+                    breakdownHtml += '</div>';
+
+                    // State the commitment period explicitly. This figure is a
+                    // MONTHLY rate, but the booking is recorded against the full
+                    // duration - without this line the client sees N67,000 while
+                    // admin sees N201,000 for the same booking.
+                    if (!isOneOff && months > 1) {
+                        breakdownHtml += '<div class="d-flex justify-content-between mt-1 pt-1 border-top">';
+                        breakdownHtml += '<small class="text-muted">Over ' + months + ' months</small>';
+                        breakdownHtml += '<small class="text-muted">₦' + staffSalary.toLocaleString() + ' &times; ' + months + ' = <span class="fw-semibold">₦' + (staffSalary * months).toLocaleString() + '</span></small>';
+                        breakdownHtml += '</div>';
+                        breakdownHtml += '<small class="text-muted d-block mt-1">You pay your staff directly each month.</small>';
+                    }
+
+                    breakdownHtml += '</div>';
 
                     const breakdownEl = document.getElementById('salaryBreakdown');
                     if (breakdownEl) breakdownEl.innerHTML = breakdownHtml;

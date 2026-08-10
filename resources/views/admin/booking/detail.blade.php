@@ -259,8 +259,20 @@
                     <h5 class="mb-0">Cost Breakdown</h5>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Service Cost:</span>
+                    {{-- grand_cost is a TOTAL for the whole booking period, not a
+                         monthly rate. The client is shown the monthly figure during
+                         service selection, so state the period and the per-month
+                         breakdown here or the two screens look contradictory. --}}
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>
+                            Service Cost
+                            @if($booking->billing_months > 1)
+                                <br><small class="text-muted">
+                                    total for {{ $booking->billing_months }} months
+                                    (₦{{ number_format($booking->monthly_service_cost) }}/month)
+                                </small>
+                            @endif
+                        </span>
                         <strong>₦{{ number_format($booking->grand_cost) }}</strong>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
@@ -271,6 +283,12 @@
                     <div class="d-flex justify-content-between mb-2">
                         <span>Express Matching:</span>
                         <strong>₦{{ number_format($booking->express_matching_cost) }}</strong>
+                    </div>
+                    @endif
+                    @if($booking->monthly_protection)
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Monthly Protection:</span>
+                        <strong>₦{{ number_format($booking->monthly_protection_cost) }}</strong>
                     </div>
                     @endif
                     <hr>

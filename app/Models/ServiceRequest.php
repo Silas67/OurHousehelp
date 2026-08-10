@@ -381,6 +381,32 @@ class ServiceRequest extends Model
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Number of months this booking is billed over.
+     *
+     * Mirrors BookingCostService::calculateStaffSalary() so that cost labels in
+     * the UI describe the same period the stored figures were computed for.
+     * grand_cost is a total for this many months, NOT a monthly rate.
+     */
+    public function getBillingMonthsAttribute(): int
+    {
+        if ((int) $this->duration_weeks === 1) {
+            return 1;
+        }
+
+        return max(1, (int) round(((int) $this->duration_weeks) / 4));
+    }
+
+    /**
+     * grand_cost expressed as a per-month figure, for display next to the total.
+     */
+    public function getMonthlyServiceCostAttribute(): float
+    {
+        return $this->billing_months > 0
+            ? round((float) $this->grand_cost / $this->billing_months)
+            : (float) $this->grand_cost;
+    }
+
     public function getTotalBookingCostAttribute(): float
     {
         return (float) $this->grand_cost

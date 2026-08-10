@@ -32,7 +32,13 @@
                     <table class="table table-borderless mb-0">
                         <tbody>
                             <tr>
-                                <td class="text-muted">Service Cost</td>
+                                <td class="text-muted">
+                                    Service Cost
+                                    @if($serviceRequest->billing_months > 1)
+                                        <br><small>total for {{ $serviceRequest->billing_months }} months
+                                        (₦{{ number_format($serviceRequest->monthly_service_cost) }}/month)</small>
+                                    @endif
+                                </td>
                                 <td class="text-end">₦{{ number_format($serviceRequest->grand_cost) }}</td>
                             </tr>
                             @if($serviceRequest->management_plan_cost > 0)
@@ -42,6 +48,20 @@
                                     <br><small>{{ $plan?->name ?? ucfirst($serviceRequest->management_plan) }}</small>
                                 </td>
                                 <td class="text-end">₦{{ number_format($serviceRequest->management_plan_cost) }}</td>
+                            </tr>
+                            @endif
+                            {{-- These are inside total_booking_cost, so they must be
+                                 listed or the breakdown will not sum to its own Total. --}}
+                            @if($serviceRequest->express_matching && $serviceRequest->express_matching_cost > 0)
+                            <tr>
+                                <td class="text-muted">Express Matching</td>
+                                <td class="text-end">₦{{ number_format($serviceRequest->express_matching_cost) }}</td>
+                            </tr>
+                            @endif
+                            @if($serviceRequest->monthly_protection && $serviceRequest->monthly_protection_cost > 0)
+                            <tr>
+                                <td class="text-muted">Monthly Protection</td>
+                                <td class="text-end">₦{{ number_format($serviceRequest->monthly_protection_cost) }}</td>
                             </tr>
                             @endif
                             <tr class="border-top">
