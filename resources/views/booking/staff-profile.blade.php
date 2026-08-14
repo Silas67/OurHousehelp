@@ -127,14 +127,12 @@
                                 @endif
                             </div>
 
-                            {{-- Verified badge --}}
+                            {{-- Verified badge. The old @else asserted "Verified" for
+                                 staff with no completed checks at all; the detailed
+                                 breakdown below replaces that claim. --}}
                             @if($staff->isFullyVerified())
                                 <span style="background: #E1F5EE; color: #0F6E56; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0;">
                                     <i class="fas fa-shield-alt me-1" style="font-size: 11px;"></i>Fully verified
-                                </span>
-                            @else
-                                <span style="background: #e8f4fd; color: #0a58ca; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 999px; white-space: nowrap; flex-shrink: 0;">
-                                    <i class="fas fa-check me-1" style="font-size: 11px;"></i>Verified
                                 </span>
                             @endif
                         </div>
@@ -155,6 +153,12 @@
                             @if($staff->availability)
                                 <span style="color: #1D9E75;"><i class="fas fa-circle me-1" style="font-size: 8px;"></i>Available</span>
                             @endif
+                        </div>
+
+                        {{-- Full verification breakdown: shows outstanding checks too,
+                             so the client can see exactly what has and has not been done. --}}
+                        <div class="mt-3">
+                            <x-trust-badges :staff="$staff" mode="full" />
                         </div>
 
                         {{-- Star Rating --}}

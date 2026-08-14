@@ -57,17 +57,18 @@
             </p>
         @endif
 
-        {{-- Verification --}}
+        {{-- Verification.
+             The old @else branch showed a blue "Verified" badge to everyone who
+             was not fully verified - including staff with no checks at all. That
+             asserted something we cannot back. Each badge below corresponds to a
+             record that actually exists. --}}
         <div class="mb-2">
             @if($staff && $staff->isFullyVerified())
                 <span class="badge bg-success" style="font-size:10px;">
                     <i class="fas fa-shield-alt me-1"></i>Fully Verified
                 </span>
-            @else
-                <span class="badge bg-info" style="font-size:10px;">
-                    <i class="fas fa-check me-1"></i>Verified
-                </span>
             @endif
+            <x-trust-badges :staff="$staff" mode="compact" />
         </div>
 
         {{-- Star Rating --}}
@@ -168,9 +169,11 @@
                 <div class="progress-bar bg-success" style="width:{{ $shortlistItem->match_score }}%"></div>
             </div>
             @if($shortlistItem->match_reasons)
-                <div class="d-flex flex-wrap gap-1 mt-1">
+                <div class="d-flex flex-wrap gap-1 mt-2 justify-content-center">
                     @foreach($shortlistItem->match_reasons as $reason)
-                        <span class="badge bg-light text-dark border" style="font-size:9px;">{{ $reason }}</span>
+                        <span class="match-reason">
+                            <i class="fas fa-circle-check" aria-hidden="true"></i>{{ $reason }}
+                        </span>
                     @endforeach
                 </div>
             @endif

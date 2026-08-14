@@ -14,33 +14,15 @@ app/Http/Controllers/ServiceController.php
 app/Http/Controllers/ServiceRequestController.php
 app/Http/Controllers/UserController.php
 app/Jobs/NotifyMatchedStaff.php
-app/Mail/PaymentReceiptMail.php
-app/Mail/WelcomeEmail.php
 app/Models/ServiceRequest.php
-app/Notifications/BankReceiptUploadedNotification.php
-app/Notifications/BookingPaymentReceivedNotification.php
-app/Notifications/CallRequestNotification.php
-app/Notifications/CreditPaymentNotification.php
-app/Notifications/InstallmentReminderNotification.php
-app/Notifications/JobFilledNotification.php
-app/Notifications/MonthlyProtectionRenewalNotification.php
-app/Notifications/NewClientRegisteredNotification.php
-app/Notifications/NewServiceRequestNotification.php
-app/Notifications/NewStaffRegisteredNotification.php
-app/Notifications/OrderCancelledNotification.php
-app/Notifications/ReplacementRequestNotification.php
-app/Notifications/ServiceRequestApprovedNotification.php
-app/Notifications/ServiceRequestStatusNotification.php
-app/Notifications/ShortlistReadyNotification.php
-app/Notifications/StaffAcceptedOfferNotification.php
-app/Notifications/StaffDetailsReleasedNotification.php
-app/Notifications/StaffMatchedNotification.php
-app/Notifications/StaffRespondedNotification.php
-app/Notifications/StaffSelectedNotification.php
-app/Notifications/StaffSelectionConfirmedNotification.php
-app/Notifications/UrgentRequestNotification.php
 app/Support/SecureDocument.php
 bootstrap/app.php
+build/assets/image/gallery/cleaning 3.jpg
+build/assets/image/gallery/cleaning 3.png
+build/assets/image/gallery/cook 2.jpg
+build/assets/image/gallery/cook 2.png
+build/assets/image/gallery/laundry 2.jpg
+build/assets/image/gallery/laundry 2.png
 package.json
 public/build/assets/app-BQ9uGAkl.css
 public/build/assets/fa-brands-400-D1LuMI3I.ttf

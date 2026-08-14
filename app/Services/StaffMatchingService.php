@@ -228,11 +228,25 @@ class StaffMatchingService
         return 0;
     }
 
+    /**
+     * Score the verification evidence held for a staff member (0-25).
+     *
+     * NOTE: this previously tested $staff->nin_verified, which is declared in
+     * the model's $fillable and $casts but does not exist as a column on the
+     * users table. Eloquent returned null for it, so the 8-point component
+     * never awarded anything and every staff member scored 8 points below the
+     * intended maximum. It now tests whether a NIN is actually recorded.
+     *
+     * address_confirmed and background_checked are real columns but are 0 for
+     * every staff member - nothing in the application writes them. They are
+     * kept here so scores rise automatically once a verification process
+     * populates them.
+     */
     private function scoreVerification(User $staff): int
     {
         $score = 0;
 
-        if ($staff->nin_verified) {
+        if (filled($staff->nin)) {
             $score += 8;
         }
         if ($staff->guarantors_forms_uploaded) {
@@ -336,9 +350,16 @@ class StaffMatchingService
             $reasons[] = 'Same state';
         }
 
-        // Verification
+        // Verification. isFullyVerified() requires id_verified,
+        // address_confirmed and background_checked, all of which are 0 for
+        // every staff member, so this reason never appeared. Fall back to the
+        // evidence actually on file so the client sees something true.
         if ($staff->isFullyVerified()) {
             $reasons[] = 'Fully verified';
+        } elseif (filled($staff->nin) && $staff->guarantors_forms_uploaded) {
+            $reasons[] = 'NIN + guarantors on file';
+        } elseif ($staff->guarantors_forms_uploaded) {
+            $reasons[] = 'Guarantors on file';
         }
 
         // Availability
