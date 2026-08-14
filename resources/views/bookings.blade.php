@@ -8,7 +8,9 @@
 
     <div class="container mt-4">
 
-
+        {{-- In-progress bookings surfaced at the top, so a client can always
+             get back into a shortlist they navigated away from. --}}
+        <x-resume-booking />
 
         @if (session('warning'))
 

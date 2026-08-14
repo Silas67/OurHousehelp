@@ -12,6 +12,11 @@
             </p>
         </div>
 
+        {{-- In-progress bookings. Sits above the "book a service" CTA so a
+             client who navigated away from their shortlist lands back on it
+             rather than starting a second booking. --}}
+        <x-resume-booking />
+
         <!-- Book a Service CTA -->
         <div class="card mb-4 border-primary">
             <div class="card-body text-center py-4">

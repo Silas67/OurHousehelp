@@ -382,6 +382,99 @@ class ServiceRequest extends Model
     */
 
     /**
+     * Statuses where the client still has something to do or see.
+     *
+     * Once a booking reaches one of these the client can navigate away and,
+     * until now, had no route back: the dashboard only offered "book a
+     * service" and the bookings page never linked to a shortlist. The only
+     * way back in was the notification email.
+     */
+    public const RESUMABLE_STATUSES = [
+        'matching',
+        'shortlisted',
+        'staff_selected',
+        'payment_pending',
+    ];
+
+    /**
+     * 'pending' is deliberately excluded: it is the initial state and covers
+     * ~199 historic rows where matching never started. Surfacing those would
+     * bury a genuinely active booking.
+     *
+     * The age guard stops long-abandoned requests reappearing as if live.
+     */
+    public function scopeResumable($query, int $withinDays = 60)
+    {
+        return $query->whereIn('matching_status', self::RESUMABLE_STATUSES)
+            ->where('status', '!=', 'cancelled')
+            ->where('created_at', '>=', now()->subDays($withinDays));
+    }
+
+    public function isResumable(): bool
+    {
+        return in_array($this->matching_status, self::RESUMABLE_STATUSES, true)
+            && $this->status !== 'cancelled';
+    }
+
+    /**
+     * Where this booking should send the client to carry on.
+     */
+    public function resumeUrl(): string
+    {
+        // A staff member already picked: go straight to their profile.
+        if ($this->matching_status === 'staff_selected' && $this->selected_staff_id) {
+            $shortlist = $this->shortlistedStaff()
+                ->where('staff_id', $this->selected_staff_id)
+                ->first();
+
+            if ($shortlist) {
+                return route('booking.staff-profile', [$this->id, $shortlist->id]);
+            }
+
+            return route('booking.management-plans', $this->id);
+        }
+
+        if ($this->matching_status === 'payment_pending') {
+            return route('booking.payment', $this->id);
+        }
+
+        // Anyone accepted yet? Then the shortlist is worth looking at.
+        $accepted = $this->shortlistedStaff()
+            ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
+            ->count();
+
+        return $accepted > 0
+            ? route('booking.shortlist', $this->id)
+            : route('booking.staff-matching', $this->id);
+    }
+
+    /**
+     * Short, client-facing description of what is waiting for them.
+     */
+    public function resumeLabel(): string
+    {
+        if ($this->matching_status === 'payment_pending') {
+            return 'Payment needed to confirm your booking';
+        }
+
+        if ($this->matching_status === 'staff_selected') {
+            return 'You selected a staff member - finish your booking';
+        }
+
+        $accepted = $this->shortlistedStaff()
+            ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
+            ->count();
+
+        if ($accepted > 0) {
+            return $accepted === 1
+                ? '1 staff member accepted - view your shortlist'
+                : $accepted . ' staff members accepted - view your shortlist';
+        }
+
+        return 'We are still finding staff for you';
+    }
+
+    /**
      * Number of months this booking is billed over.
      *
      * Mirrors BookingCostService::calculateStaffSalary() so that cost labels in

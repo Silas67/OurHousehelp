@@ -46,6 +46,24 @@ class BookingController extends Controller
      */
     public function showServiceSelection()
     {
+        // Warn and block if a booking is already in flight.
+        //
+        // Starting a second request while staff are mid-response splits the
+        // client's attention, notifies another batch of staff about a job the
+        // client may not follow through on, and burns a credit. Send them back
+        // to the booking that already has people waiting on it.
+        $inFlight = ServiceRequest::resumable()
+            ->where('user_id', Auth::id())
+            ->whereIn('matching_status', ['matching', 'shortlisted', 'staff_selected', 'payment_pending'])
+            ->latest()
+            ->first();
+
+        if ($inFlight) {
+            return redirect($inFlight->resumeUrl())
+                ->with('warning', 'You already have a booking in progress - ' . lcfirst($inFlight->resumeLabel())
+                    . '. Please finish or cancel it before starting another.');
+        }
+
         $services = Service::all();
         $packages = Package::all();
         $apartments = Apartments::all();
