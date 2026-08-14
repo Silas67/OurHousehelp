@@ -45,7 +45,8 @@
 
     <div class="container py-4">
         <h2>Bonus Usage Logs</h2>
-        <table class="table table-bordered">
+        <div class="table-responsive">
+<table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Coupon</th>
@@ -67,6 +68,7 @@
                 @endforeach
             </tbody>
         </table>
+</div>
 
         {{ $usages->links() }}
     </div>

@@ -32,7 +32,7 @@
         {{-- Photo --}}
         <div class="mb-2">
             @if($staff && $staff->profile_photo_path)
-                <img src="{{ asset('storage/' . $staff->profile_photo_path) }}"
+                <img src="{{ $staff->profile_photo_url }}"
                     alt="{{ $staff->name }}" class="rounded-circle"
                     width="85" height="85" style="object-fit:cover;border:3px solid #e9ecef;" loading="lazy" decoding="async">
             @else
@@ -216,7 +216,7 @@
                 {{-- Staff summary --}}
                 <div class="d-flex align-items-center gap-3 p-3 bg-light rounded mb-3">
                     @if($staff->profile_photo_path)
-                        <img src="{{ asset('storage/' . $staff->profile_photo_path) }}"
+                        <img src="{{ $staff->profile_photo_url }}"
                             class="rounded-circle" width="55" height="55" style="object-fit:cover;" loading="lazy" decoding="async">
                     @else
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"

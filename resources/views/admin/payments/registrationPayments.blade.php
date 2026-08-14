@@ -3,7 +3,8 @@
 @section('registrationPayments')
     <div class="container">
         <h3>Registration Payments</h3>
-        <table class="table table-bordered mt-3">
+        <div class="table-responsive">
+<table class="table table-bordered mt-3">
             <thead>
                 <tr>
                     <th>User</th>
@@ -44,7 +45,8 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>
+        </table>
+</div>
 
         {{ $payments->links() }}
     </div>

@@ -141,20 +141,35 @@ class LiveOutServiceRequestController extends Controller
             \Log::error('ShortlistAccept: Failed to notify admins: ' . $e->getMessage());
         }
 
-        // Check if enough staff accepted to create client shortlist
         $serviceRequest = $shortlist->serviceRequest;
         $acceptedCount = $serviceRequest->shortlistedStaff()
             ->whereIn('status', ['accepted', 'shortlisted'])
             ->count();
 
+        // Tell the client on the FIRST acceptance.
+        //
+        // This previously fired only once three staff had accepted, but
+        // BookingController::showStaffMatching sends the client to their
+        // shortlist as soon as ANY staff accepts. With one or two acceptances
+        // the shortlist was viewable and the client was never told - while this
+        // method still returned "The client will be notified".
+        //
+        // ShortlistReadyNotification is used rather than
+        // StaffAcceptedOfferNotification because the latter includes the staff
+        // member's phone and email, which this flow withholds until the booking
+        // is paid for (see ServiceRequest::isStaffDetailsVisible).
+        if ($acceptedCount === 1 && $serviceRequest->user) {
+            try {
+                $serviceRequest->user->notify(new ShortlistReadyNotification($serviceRequest));
+            } catch (\Exception $e) {
+                \Log::error('ShortlistAccept: Failed to notify client: ' . $e->getMessage());
+            }
+        }
+
+        // Promote to the curated client shortlist once enough have accepted.
         if ($acceptedCount >= 3) {
             $matchingService = app(StaffMatchingService::class);
-            $promoted = $matchingService->promoteToClientShortlist($serviceRequest);
-
-            // Notify client that shortlist is ready
-            if ($promoted >= 3 && $serviceRequest->user) {
-                $serviceRequest->user->notify(new ShortlistReadyNotification($serviceRequest));
-            }
+            $matchingService->promoteToClientShortlist($serviceRequest);
         }
 
         return redirect()->back()->with('success', 'You have accepted this offer. The client will be notified.');

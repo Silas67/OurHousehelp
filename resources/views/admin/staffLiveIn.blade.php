@@ -24,7 +24,8 @@
                     @if ($users->isEmpty())
                         <p>No users available at the moment.</p>
                     @else
-                        <table class="table table-striped" id="users-table">
+                        <div class="table-responsive">
+<table class="table table-striped" id="users-table">
                             <thead>
                                 <tr>
                                     <th>No.</th>
@@ -59,6 +60,7 @@
                                 @endforeach
                             </tbody>
                         </table>
+</div>
                     @endif
                 </div>
             </div>

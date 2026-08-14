@@ -18,3 +18,76 @@
 @import '@fortawesome/fontawesome-free/css/solid.min.css';
 @import '@fortawesome/fontawesome-free/css/regular.min.css';
 @import '@fortawesome/fontawesome-free/css/brands.min.css';
+
+/* ------------------------------------------------------------------
+   Admin data tables
+   ------------------------------------------------------------------
+   The wrappers already carry .table-responsive, so the tables could
+   scroll - but cells wrapped onto several lines first, which is what
+   made rows look scrambled on narrow screens rather than simply
+   scrolling. Keeping cell content on one line lets the horizontal
+   scroll do its job.
+   ------------------------------------------------------------------ */
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Hint that there is more content sideways. */
+    scrollbar-width: thin;
+}
+
+.table-responsive > .table > thead > tr > th,
+.table-responsive > .table > tbody > tr > td {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+/* Let genuinely long free text wrap instead of stretching the table. */
+.table-responsive > .table td.wrap,
+.table-responsive > .table td[data-wrap] {
+    white-space: normal;
+    min-width: 220px;
+}
+
+/* Keep row action buttons on one line. */
+.table-responsive > .table td .btn {
+    white-space: nowrap;
+}
+.table-responsive > .table td .btn + .btn {
+    margin-left: 4px;
+}
+
+/* Sticky header so column meaning survives a long scroll. */
+.table-responsive > .table > thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: var(--bs-body-bg, #fff);
+}
+
+/* Navbar profile link: avatar + name rather than a bare text link. */
+.navbar-profile {
+    color: #333;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    border-radius: 999px;
+}
+.navbar-profile:hover {
+    background: rgba(0, 0, 0, .04);
+    color: #000;
+}
+.navbar-profile-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .table-responsive > .table {
+        font-size: 13px;
+    }
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > tbody > tr > td {
+        padding: 8px 10px;
+    }
+}

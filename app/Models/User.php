@@ -833,6 +833,48 @@ class User extends Authenticatable
 
 
 
+    /**
+     * Resolve a profile photo URL across both locations this app has used.
+     *
+     * profile_photo_path is a bare filename, but the application reads it from
+     * two different directories: 7 views use build/assets/image/profile_photo/
+     * and 6 use storage/. Jetstream's own accessor assumes storage/ only, so a
+     * photo saved to one location renders as a broken image wherever the other
+     * is assumed - which is why staff photos load on some screens and not others.
+     *
+     * This checks disk and returns whichever actually holds the file, falling
+     * back to Jetstream's generated initials avatar.
+     */
+    public function profilePhotoUrl(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::get(function () {
+            $path = $this->profile_photo_path;
+
+            if (blank($path)) {
+                return $this->defaultProfilePhotoUrl();
+            }
+
+            // Already a full URL (some records store one).
+            if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                return $path;
+            }
+
+            $candidates = [
+                'storage/' . $path,
+                'build/assets/image/profile_photo/' . $path,
+                $path,
+            ];
+
+            foreach ($candidates as $candidate) {
+                if (is_file(public_path($candidate))) {
+                    return asset($candidate);
+                }
+            }
+
+            return $this->defaultProfilePhotoUrl();
+        });
+    }
+
     public function getLanguagesListAttribute(): string
 
     {

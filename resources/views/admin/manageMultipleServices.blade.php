@@ -9,7 +9,8 @@
         @if ($multipleServices->isEmpty())
             <p class="text-center">No multiple services available.</p>
         @else
-            <table class="table table-bordered table-striped">
+            <div class="table-responsive">
+<table class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>#</th> <!-- Column for row numbering -->
@@ -47,6 +48,7 @@
                     @endforeach
                 </tbody>
             </table>
+</div>
         @endif
     </div>
 @endsection

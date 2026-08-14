@@ -27,7 +27,8 @@
                         @if ($admin->isEmpty())
                             <p>No admin users available at the moment.</p>
                         @else
-                            <table class="table table-striped" id="admin-users-table">
+                            <div class="table-responsive">
+<table class="table table-striped" id="admin-users-table">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -147,6 +148,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+</div>
 
                             <div class="d-block text-center card-footer">
                                 <div class="d-flex justify-content-center mt-4">

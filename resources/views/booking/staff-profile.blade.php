@@ -93,7 +93,7 @@
                     {{-- Avatar with availability dot --}}
                     <div style="position: relative; flex-shrink: 0;">
                         @if($staff->profile_photo_path)
-                            <img src="{{ asset('storage/' . $staff->profile_photo_path) }}"
+                            <img src="{{ $staff->profile_photo_url }}"
                                 class="rounded-circle"
                                 width="88" height="88"
                                 style="object-fit: cover; border: 3px solid white; box-shadow: 0 0 0 2px #1D9E75;" loading="lazy" decoding="async">
