@@ -5,9 +5,8 @@ namespace App\Notifications;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CreditPaymentNotification extends Notification implements ShouldQueue
+class CreditPaymentNotification extends Notification
 {
     use Queueable;
 

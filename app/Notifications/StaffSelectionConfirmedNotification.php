@@ -6,9 +6,8 @@ use App\Models\ServiceRequest;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class StaffSelectionConfirmedNotification extends Notification implements ShouldQueue
+class StaffSelectionConfirmedNotification extends Notification
 {
     use Queueable;
 

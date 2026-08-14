@@ -7,9 +7,8 @@ use App\Models\StaffShortlist;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class StaffMatchedNotification extends Notification implements ShouldQueue
+class StaffMatchedNotification extends Notification
 {
     use Queueable;
 

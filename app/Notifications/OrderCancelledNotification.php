@@ -5,9 +5,8 @@ namespace App\Notifications;
 use App\Models\ServiceRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class OrderCancelledNotification extends Notification implements ShouldQueue
+class OrderCancelledNotification extends Notification
 {
     use Queueable;
 

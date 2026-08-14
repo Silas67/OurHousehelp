@@ -6,9 +6,8 @@ use App\Models\MonthlySubscription;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MonthlyProtectionRenewalNotification extends Notification implements ShouldQueue
+class MonthlyProtectionRenewalNotification extends Notification
 {
     use Queueable;
 

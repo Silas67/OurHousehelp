@@ -6,9 +6,8 @@ use App\Models\RegistrationPayment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class PaymentReceiptMail extends Mailable implements ShouldQueue
+class PaymentReceiptMail extends Mailable
 {
     use Queueable, SerializesModels;
 

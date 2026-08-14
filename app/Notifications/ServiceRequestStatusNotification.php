@@ -6,9 +6,8 @@ use App\Models\ServiceRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ServiceRequestStatusNotification extends Notification implements ShouldQueue
+class ServiceRequestStatusNotification extends Notification
 {
     use Queueable;
 
