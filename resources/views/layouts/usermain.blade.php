@@ -8,6 +8,12 @@
          loaded Bootstrap 5.3.1, 5.3.0 AND 4.6.2 together from three CDNs. --}}
     @vite(['resources/css/ui.css', 'resources/js/ui.js'])
 
+    {{-- PWA: installable app manifest + theme colour --}}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2A2D5A">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description" content="Get house helps to do cleanings">
@@ -130,6 +136,7 @@
          Popper. No view under this layout uses jQuery, and Bootstrap 5 bundles
          Popper itself. --}}
     <script src="{{ asset('build/assets/js/userscript.js') }}"></script>
+    <script src="{{ asset('js/pwa.js') }}" defer></script>
 
     <script>
         window.addEventListener('load', function() {

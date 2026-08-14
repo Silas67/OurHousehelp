@@ -1128,6 +1128,10 @@ Route::get('/packages/{package}/services', function ($packageId) {
 
 
 
+// Served by the service worker when the network is unavailable. Must stay
+// public and dependency-free - see resources/views/offline.blade.php.
+Route::view('/offline', 'offline')->name('offline');
+
 Route::get('/maintenance', [PagesController::class, 'maintenance'])->name('maintenance');
 
 Route::get('/coming-soon', [PagesController::class, 'comingsoon'])->name('comingsoon');

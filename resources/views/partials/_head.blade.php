@@ -37,6 +37,12 @@
          this layout (the feedback modal in main.blade.php) could never have
          worked. It is now driven by the native Bootstrap 5 API. --}}
     @vite(['resources/css/ui.css', 'resources/js/ui.js'])
+
+    {{-- PWA: installable app manifest + theme colour --}}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2A2D5A">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
     <link href="{{ asset('build/assets/css/style.css') }}" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
 </head>

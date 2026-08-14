@@ -577,6 +577,7 @@
 
     {{-- Bootstrap JS ships via @vite in the head partial. --}}
     <script src="{{ asset('build/assets/js/script.js') }}"></script>
+    <script src="{{ asset('js/pwa.js') }}" defer></script>
 </body>
 
 </html>
