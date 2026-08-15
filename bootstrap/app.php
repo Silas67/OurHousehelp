@@ -28,6 +28,24 @@ $app = Application::configure(basePath: dirname(__DIR__))
         //
     })->create();
 
+/*
+ * Point public_path() at the directory the web server actually serves.
+ *
+ * This project is deployed on cPanel-style hosting where the document root is
+ * <base>/public_html, while Laravel's default public path is <base>/public.
+ * The two were different directories, so every public_path() call - uploads in
+ * particular - wrote files somewhere no URL could ever reach them. New profile
+ * photos, ID cards and receipts all landed in <base>/public and 404'd.
+ *
+ * Detecting the directory rather than hardcoding a path keeps local
+ * development (which has no public_html) on the framework default.
+ */
+$publicHtml = $app->basePath('public_html');
+
+if (is_dir($publicHtml)) {
+    $app->usePublicPath($publicHtml);
+}
+
 // Bind our console kernel over the framework default. It supplies the
 // symfony/console >= 7.4 compatibility shim (see App\Console\Artisan) and, as a
 // side effect, finally activates the schedule defined in App\Console\Kernel -
