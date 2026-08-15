@@ -78,11 +78,16 @@
                             <a class="nav-link d-flex align-items-center gap-2 navbar-profile"
                                 href="{{ route('applicantprofile', ['id' => Auth::user()->id]) }}"
                                 title="View your profile">
+                                {{-- onerror: the no-photo fallback is ui-avatars.com, an
+                                     external service. If it is slow or blocked the image
+                                     renders as a broken icon, so hide it and let the name
+                                     stand alone rather than showing breakage. --}}
                                 <img src="{{ Auth::user()->profile_photo_url }}"
                                     alt="" width="30" height="30"
                                     class="rounded-circle"
                                     style="object-fit:cover;border:1px solid #dee2e6;"
-                                    loading="lazy" decoding="async">
+                                    loading="lazy" decoding="async"
+                                    onerror="this.style.display='none'">
                                 <span class="navbar-profile-name d-none d-sm-inline">
                                     {{ Str::limit(Auth::user()->name, 14) }}
                                 </span>

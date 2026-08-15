@@ -842,8 +842,19 @@ class User extends Authenticatable
      * photo saved to one location renders as a broken image wherever the other
      * is assumed - which is why staff photos load on some screens and not others.
      *
-     * This checks disk and returns whichever actually holds the file, falling
-     * back to Jetstream's generated initials avatar.
+     * This checks disk and returns whichever actually holds the file.
+     *
+     * IMPORTANT: the check must look under more than public_path(). On this
+     * project's production hosting the web root and Laravel's public_path()
+     * are different directories - public_path() resolves to <root>/public
+     * while the images are served from <root>/build/assets/image/... Checking
+     * only public_path() made every lookup fail there, so every photo fell
+     * through to the generated initials avatar and rendered broken.
+     *
+     * If no root can confirm the file, the historical build/assets path is
+     * returned rather than the avatar: a URL that may 404 is no worse than
+     * what the views did before this accessor existed, whereas the avatar
+     * hides a photo that is actually present.
      */
     public function profilePhotoUrl(): \Illuminate\Database\Eloquent\Casts\Attribute
     {
@@ -860,18 +871,26 @@ class User extends Authenticatable
             }
 
             $candidates = [
-                'storage/' . $path,
                 'build/assets/image/profile_photo/' . $path,
+                'storage/' . $path,
                 $path,
             ];
 
+            $roots = array_unique(array_filter([
+                public_path(),
+                $_SERVER['DOCUMENT_ROOT'] ?? null,
+                base_path(),
+            ]));
+
             foreach ($candidates as $candidate) {
-                if (is_file(public_path($candidate))) {
-                    return asset($candidate);
+                foreach ($roots as $root) {
+                    if (is_file(rtrim($root, '/\\') . '/' . $candidate)) {
+                        return asset($candidate);
+                    }
                 }
             }
 
-            return $this->defaultProfilePhotoUrl();
+            return asset('build/assets/image/profile_photo/' . $path);
         });
     }
 
