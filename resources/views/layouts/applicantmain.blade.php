@@ -53,7 +53,7 @@
                 <span class="burger-icon" id="burger-icon">
                     <i class="fas fa-bars"></i>
                 </span>
-                <a class="navbar-brand" href="/"><x-img width="130px"
+                <a class="navbar-brand" href="/"><x-img width="130"
                         src="build/assets/image/logo/ohh-log-b.png" loading="eager" alt="Logo"/></a>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">

@@ -19,9 +19,9 @@
         <div class="container-fluid ">
             <!-- Logo -->
             <a class="navbar-brand" href="/">
-                <x-img width="150px" src="build/assets/image/logo/ohh-log-b.png" alt="Our House Help" loading="eager"
+                <x-img width="150" src="build/assets/image/logo/ohh-log-b.png" alt="Our House Help" loading="eager"
                     class="d-none d-md-block" />
-                <x-img width="100px" src="build/assets/image/logo/ohh-log-b.png" alt="Our House Help" loading="eager"
+                <x-img width="100" src="build/assets/image/logo/ohh-log-b.png" alt="Our House Help" loading="eager"
                     class="d-md-none" />
             </a>
 

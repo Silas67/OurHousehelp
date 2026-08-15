@@ -65,6 +65,34 @@
     background: var(--bs-body-bg, #fff);
 }
 
+/* ------------------------------------------------------------------
+   Navbar brand logo
+   ------------------------------------------------------------------
+   The markup carried width="150px", which is invalid - the HTML width
+   attribute takes a bare integer, so browsers discarded it and fell
+   back to the image's intrinsic size (ohh-log-b.png is 6845x1543).
+   That is what made the header so tall.
+
+   Sizing by height here keeps the bar consistent whichever logo file a
+   layout uses, since the two differ wildly in aspect ratio (4.44:1 vs
+   1.02:1). width:auto preserves proportions.
+   ------------------------------------------------------------------ */
+.navbar-brand img,
+.navbar-brand picture img {
+    height: 42px;
+    width: auto;
+    max-width: 190px;
+    object-fit: contain;
+}
+
+@media (max-width: 767.98px) {
+    .navbar-brand img,
+    .navbar-brand picture img {
+        height: 34px;
+        max-width: 150px;
+    }
+}
+
 /* Navbar profile link: avatar + name rather than a bare text link. */
 .navbar-profile {
     color: #333;
