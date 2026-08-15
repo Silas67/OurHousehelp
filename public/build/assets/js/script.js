@@ -13,9 +13,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let maxDaysPerWeek = 0;
 
     // Mobile menu toggle
-    mobileMenu.addEventListener("click", () => {
-        navLinks.classList.toggle("active");
-    });
+    // Guarded: these elements do not exist on every page, and an
+    // unguarded lookup threw, aborting the rest of this handler.
+    if (mobileMenu && navLinks) {
+        mobileMenu.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
+        });
+    }
 
     // Package selection change
     packageSelect.addEventListener("change", function () {
@@ -149,7 +153,9 @@ function formatTime(time) {
 }
 
 // Event listener for package selection
-document.getElementById("package").addEventListener("change", function () {
+// Guarded: #package only exists on the booking pages.
+const packageSelectEl = document.getElementById("package");
+if (packageSelectEl) packageSelectEl.addEventListener("change", function () {
     const selectedOption = this.options[this.selectedIndex];
     const workingHoursStart = JSON.parse(
         selectedOption.getAttribute("data-working-hours-start")

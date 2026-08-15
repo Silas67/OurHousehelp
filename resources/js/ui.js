@@ -12,3 +12,39 @@
 import * as bootstrap from 'bootstrap';
 
 window.bootstrap = bootstrap;
+
+/*
+ * Keep content clear of the fixed navbar.
+ *
+ * style.css pins .navbar with position:fixed and compensates with a hardcoded
+ * `body { padding-top: 60px }`. The header is taller than that at most widths -
+ * the logo alone is ~130px - so the first section of every public page was
+ * sliding underneath it. The offset also changes as the nav wraps on narrow
+ * screens, which no single fixed value can cover.
+ *
+ * Measuring the rendered header avoids guessing. Only applies when the navbar
+ * really is fixed, so the dashboard layouts (whose navbar sits inside the
+ * scrolling content area) are untouched.
+ */
+function offsetFixedNavbar() {
+    var nav = document.querySelector('.navbar');
+    if (!nav) return;
+
+    if (window.getComputedStyle(nav).position !== 'fixed') {
+        return;
+    }
+
+    var height = nav.offsetHeight;
+    if (height > 0) {
+        document.body.style.paddingTop = height + 'px';
+    }
+}
+
+window.addEventListener('DOMContentLoaded', offsetFixedNavbar);
+window.addEventListener('load', offsetFixedNavbar);
+
+var resizeTimer;
+window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(offsetFixedNavbar, 150);
+});

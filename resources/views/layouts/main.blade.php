@@ -568,10 +568,14 @@
     <script>
         // Wait until the page has fully loaded before hiding the preloader
         window.addEventListener('load', function() {
-            // Hide preloader after loading
-            document.getElementById('preloader').style.display = 'none';
-            // Show the main content
-            document.getElementById('main-content').style.display = 'block';
+            // Guarded: this layout has #preloader but no #main-content, so the
+            // second line threw "Cannot read properties of null" on every page
+            // using layouts.main.
+            var preloader = document.getElementById('preloader');
+            if (preloader) preloader.style.display = 'none';
+
+            var main = document.getElementById('main-content');
+            if (main) main.style.display = 'block';
         });
     </script>
 
