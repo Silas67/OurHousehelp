@@ -30,7 +30,7 @@
 
                                 @if($user->profile_photo_path)
 
-                                        <img src="{{ asset('public/build/assets/image/profile_photo/' . $user->profile_photo_path) }}"
+                                        <img src="{{ asset('build/assets/image/profile_photo/' . $user->profile_photo_path) }}"
 
                                          class="img-thumbnail rounded-circle shadow" 
 
@@ -338,7 +338,7 @@
 
                                             @if($user->id_card)
 
-                                                <img src="{{ asset('public/build/assets/image/idcards/' .$user->id_card) }}" 
+                                                <img src="{{ asset('build/assets/image/idcards/' .$user->id_card) }}" 
 
                                                      class="img-fluid rounded border" 
 
@@ -348,7 +348,7 @@
 
                                                 <div class="mt-3">
 
-                                                    <a href="{{ asset('public/build/assets/image/idcards/' .$user->id_card) }}" 
+                                                    <a href="{{ asset('build/assets/image/idcards/' .$user->id_card) }}" 
 
                                                        class="btn btn-sm btn-outline-primary" 
 
@@ -400,7 +400,7 @@
 
                                                             {{ $document->name }}
 
-                                                            <a href="{{ asset('public/build/assets/image/idcards/' .$document->path) }}" 
+                                                            <a href="{{ asset('build/assets/image/idcards/' .$document->path) }}" 
 
                                                                class="btn btn-sm btn-outline-secondary" 
 

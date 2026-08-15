@@ -14,7 +14,7 @@
                 <div class="row">
                     <!-- Profile Photo Column -->
                     <div class="col-md-4 text-center mb-3">
-                        <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
+                        <img src="{{ asset('build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                             alt="{{ $househelp->name }}'s photo" 
                             class="img-fluid rounded-circle border border-3 border-primary"
                             style="width: 180px; height: 180px; object-fit: cover;" loading="lazy" decoding="async">

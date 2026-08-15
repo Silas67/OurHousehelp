@@ -165,7 +165,7 @@
                                     <!-- Card Body with Photo and Basic Info -->
                                     <div class="card-body">
                                         <div class="text-center mb-3">
-                                            <img src="{{ $househelp->profile_photo_path ? asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
+                                            <img src="{{ $househelp->profile_photo_path ? asset('build/assets/image/profile_photo/' . $househelp->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
                                                 alt="{{ $househelp->name }}'s photo"
                                                 class="img-fluid rounded-circle border border-3 border-primary"
                                                 style="width: 120px; height: 120px; object-fit: cover; cursor: pointer"
@@ -258,7 +258,7 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
+                                                <img src="{{ asset('build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                                                     alt="{{ $househelp->name }}'s photo" class="img-fluid rounded mb-3"
                                                     style="width: 100%; max-height: 200px; object-fit: contain;" loading="lazy" decoding="async">
                                             </div>

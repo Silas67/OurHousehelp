@@ -64,7 +64,7 @@
 
                                                     <img id="profile-preview"
 
-                                                        src="{{ $user->profile_photo_path ? asset('public/build/assets/image/profile_photo/' . $user->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
+                                                        src="{{ $user->profile_photo_path ? asset('build/assets/image/profile_photo/' . $user->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
 
                                                         class="rounded-circle shadow" width="150" height="150"
 

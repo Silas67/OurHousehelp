@@ -86,7 +86,7 @@
                         <div class="col-md-6">
                             <label for="guarantor2_passport" class="form-label">Passport Photo:</label>
                             <img id="guarantor2-passport-preview"
-                                src="{{ old('guarantor2_passport_path', isset($guarantor2->guarantor2_passport_path) ? asset('public/build/assets/image/passports/' . $guarantor2->guarantor2_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
+                                src="{{ old('guarantor2_passport_path', isset($guarantor2->guarantor2_passport_path) ? asset('build/assets/image/passports/' . $guarantor2->guarantor2_passport_path) : asset('build/assets/image/slider1.jpg')) }}"
                                 alt="Passport Photo" class="img-thumbnail d-block mb-2"
                                 style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                             <input type="file" name="guarantor2_passport_path" id="guarantor2_passport" class="form-control"
@@ -97,7 +97,7 @@
                         <div class="col-md-6">
                             <label for="guarantor2_signature" class="form-label">ID Card:</label>
                             <img id="guarantor2-signature-preview"
-                                src="{{ old('guarantor2_signature_path', isset($guarantor2->guarantor2_signature_path) ? asset('public/build/assets/image/signatures/' . $guarantor2->guarantor2_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
+                                src="{{ old('guarantor2_signature_path', isset($guarantor2->guarantor2_signature_path) ? asset('build/assets/image/signatures/' . $guarantor2->guarantor2_signature_path) : asset('build/assets/image/slider1.jpg')) }}"
                                 alt="ID Card" class="img-thumbnail d-block mb-2"
                                 style="width: 150px; height: 150px;" loading="lazy" decoding="async">
                             <input type="file" name="guarantor2_signature_path" id="guarantor2_signature"

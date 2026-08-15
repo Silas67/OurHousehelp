@@ -137,7 +137,7 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
+                                        <img src="{{ asset('build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                                             alt="{{ $househelp->name }}'s photo" class="img-fluid rounded mb-3"
                                             style="width: 100%; max-height: 200px; object-fit: contain;" loading="lazy" decoding="async">
                                     </div>
@@ -175,7 +175,7 @@
                                     @include('partials._subscribe')
                                     <br>
 
-                                    <img src="{{ asset('public/build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
+                                    <img src="{{ asset('build/assets/image/profile_photo/' . $househelp->profile_photo_path) }}"
                                         alt="{{ $househelp->name }}'s photo" class="img-fluid rounded mb-3"
                                         style="width: 100%; max-height: 200px; object-fit: cover;" loading="lazy" decoding="async">
                                     <p><strong>Name:</strong> {{ $househelp->name }} {{ $househelp->last_name }}

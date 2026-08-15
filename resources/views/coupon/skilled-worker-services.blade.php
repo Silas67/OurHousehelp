@@ -142,7 +142,7 @@
                                 <!-- Profile Image -->
                                 <div class="text-center mb-3">
                                     <div class="position-relative d-inline-block">
-                                        <img src="{{ $worker->profile_photo_path ? asset('public/build/assets/image/profile_photo/' . $worker->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
+                                        <img src="{{ $worker->profile_photo_path ? asset('build/assets/image/profile_photo/' . $worker->profile_photo_path) : asset('build/assets/image/slider1.jpg') }}"
                                             class="rounded-circle border border-3 border-white shadow-sm"
                                             style="width: 100px; height: 100px; object-fit: cover;" loading="lazy" decoding="async">
                                         <span

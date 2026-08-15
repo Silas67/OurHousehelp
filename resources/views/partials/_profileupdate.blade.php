@@ -358,7 +358,7 @@
 
                             <img id="profile-photo-preview"
 
-                                src="{{ asset('public/build/assets/image/profile_photo/' . Auth::user()->profile_photo_path) }}"
+                                src="{{ asset('build/assets/image/profile_photo/' . Auth::user()->profile_photo_path) }}"
 
                                 alt="Profile Photo" class="img-thumbnail" style="width: 150px; height: 150px;" loading="lazy" decoding="async">
 
@@ -1356,7 +1356,7 @@
 
                             <img id="idcard-preview"
 
-                                src="{{ asset('public/build/assets/image/idcards/' . Auth::user()->id_card) }}"
+                                src="{{ asset('build/assets/image/idcards/' . Auth::user()->id_card) }}"
 
                                 alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;" loading="lazy" decoding="async">
 
