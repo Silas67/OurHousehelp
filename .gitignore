@@ -61,3 +61,8 @@ Thumbs.db
 
 # Generated package/service manifests
 /bootstrap/cache/*.php
+
+# Stray duplicate of public/build - a 274-byte manifest.json here (app.css/app.js
+# only, no ui entries) was uploaded over the real one and took the live site down
+# with "Unable to locate file in Vite manifest". Nothing references this path.
+/build/
