@@ -338,7 +338,7 @@
 
                                             @if($user->id_card)
 
-                                                <img src="{{ asset('build/assets/image/idcards/' .$user->id_card) }}" 
+                                                <img src="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}" 
 
                                                      class="img-fluid rounded border" 
 
@@ -348,7 +348,7 @@
 
                                                 <div class="mt-3">
 
-                                                    <a href="{{ asset('build/assets/image/idcards/' .$user->id_card) }}" 
+                                                    <a href="{{ \App\Support\SecureDocument::url('idcards', $user->id_card) }}" 
 
                                                        class="btn btn-sm btn-outline-primary" 
 
@@ -400,7 +400,7 @@
 
                                                             {{ $document->name }}
 
-                                                            <a href="{{ asset('build/assets/image/idcards/' .$document->path) }}" 
+                                                            <a href="{{ \App\Support\SecureDocument::url('idcards', $document->path) }}" 
 
                                                                class="btn btn-sm btn-outline-secondary" 
 

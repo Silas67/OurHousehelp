@@ -217,14 +217,14 @@
                                             <div class="mt-4 text-center">
                                                 <h6 class="text-uppercase text-secondary">Receipt</h6>
                                                 @if (Str::endsWith($payment->receipt_path, ['.jpg', '.jpeg', '.png', '.gif']))
-                                                    <img src="{{ asset('build/assets/image/receipt/' . $payment->receipt_path) }}"
+                                                    <img src="{{ \App\Support\SecureDocument::url('receipts', $payment->receipt_path) }}"
                                                         alt="Receipt Image" class="img-fluid border shadow-sm" loading="lazy" decoding="async">
                                                 @elseif (Str::endsWith($payment->receipt_path, '.pdf'))
                                                     <embed
-                                                        src="{{ asset('build/assets/image/receipt/' . $payment->receipt_path) }}"
+                                                        src="{{ \App\Support\SecureDocument::url('receipts', $payment->receipt_path) }}"
                                                         type="application/pdf" width="100%" height="400px">
                                                 @else
-                                                    <a href="{{ asset('build/assets/image/receipt/' . $payment->receipt_path) }}"
+                                                    <a href="{{ \App\Support\SecureDocument::url('receipts', $payment->receipt_path) }}"
                                                         class="btn btn-outline-primary btn-sm" download>
                                                         Download Receipt
                                                     </a>

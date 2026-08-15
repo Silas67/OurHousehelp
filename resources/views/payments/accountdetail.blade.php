@@ -49,7 +49,7 @@
                         @if ($plan->receipt_path)
                             <div class="mt-4">
                                 <h5>Uploaded Receipt:</h5>
-                                <a href="{{ asset('build/assets/image/receipt/' . $plan->receipt_path) }}"
+                                <a href="{{ \App\Support\SecureDocument::url('receipts', $plan->receipt_path) }}"
                                     target="_blank">View Receipt</a>
                             </div>
                         @endif

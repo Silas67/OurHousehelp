@@ -1356,7 +1356,7 @@
 
                             <img id="idcard-preview"
 
-                                src="{{ asset('build/assets/image/idcards/' . Auth::user()->id_card) }}"
+                                src="{{ \App\Support\SecureDocument::url('idcards', Auth::user()->id_card) }}"
 
                                 alt="ID Card" class="img-thumbnail" style="width: 250px; height: 150px;" loading="lazy" decoding="async">
 
