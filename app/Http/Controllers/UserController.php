@@ -52,6 +52,9 @@ class UserController extends Controller
 
 {
 
+    /** Session key holding a profile photo parked across a failed validation. */
+    private const PENDING_PHOTO_KEY = 'pending_profile_photo';
+
 
 
     public function update(Request $request)
@@ -1212,6 +1215,15 @@ class UserController extends Controller
 
     {
 
+        // Park the profile photo before validating. A browser cannot repopulate
+        // a file input, so without this a validation error anywhere in the form
+        // - including step 6 - forced the applicant back to step 1 to re-upload.
+        $pendingPhoto = \App\Support\PendingUpload::keep(
+            $request,
+            'profile_photo_path',
+            self::PENDING_PHOTO_KEY
+        );
+
         // Validation
 
         $validated = $request->validate([
@@ -1246,7 +1258,7 @@ class UserController extends Controller
 
             'years_of_experience' => 'required|string',
 
-            'profile_photo_path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            'profile_photo_path' => ($pendingPhoto ? 'nullable' : 'required') . '|image|mimes:jpg,png,jpeg|max:2048',
 
             'address' => 'required|string|max:2048',
 
@@ -1323,13 +1335,21 @@ class UserController extends Controller
 
             // File uploads for user
 
+            // The photo was parked before validation, so it is taken from there
+            // rather than from the request - it may have been uploaded on an
+            // earlier attempt that failed validation.
             $profilePhotoPath = null;
 
-            if ($request->hasFile('profile_photo_path')) {
+            $parked = \App\Support\PendingUpload::stored(self::PENDING_PHOTO_KEY);
 
-                $profilePhotoPath = time() . '_profile.' . $request->file('profile_photo_path')->getClientOriginalExtension();
+            if ($parked) {
+                $profilePhotoPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo($parked, PATHINFO_EXTENSION);
 
-                $request->file('profile_photo_path')->move(public_path('build/assets/image/profile_photo'), $profilePhotoPath);
+                $profilePhotoPath = \App\Support\PendingUpload::commit(
+                    self::PENDING_PHOTO_KEY,
+                    public_path('build/assets/image/profile_photo'),
+                    $profilePhotoPath
+                );
             }
 
 

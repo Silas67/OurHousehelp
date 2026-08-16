@@ -125,10 +125,31 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         @error('religion')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Profile Photo <span class="text-danger">*</span></label>
+                                        @php
+                                            // A photo parked by an earlier failed submit. The applicant
+                                            // does not have to pick it again.
+                                            $keptPhoto = \App\Support\PendingUpload::stored('pending_profile_photo');
+                                        @endphp
+
+                                        <label class="form-label fw-semibold">
+                                            Profile Photo
+                                            @unless($keptPhoto)<span class="text-danger">*</span>@endunless
+                                        </label>
+
                                         <input type="file" name="profile_photo_path" class="form-control @error('profile_photo_path') is-invalid @enderror"
-                                            accept="image/*" onchange="previewPhoto(this)" required>
-                                        @error('profile_photo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                            accept="image/*" onchange="previewPhoto(this)" @unless($keptPhoto) required @endunless>
+                                        @error('profile_photo_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
+
+                                        @if($keptPhoto)
+                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
+                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
+                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
+                                                <small style="color:#0F6E56;">
+                                                    Your photo was saved - you only need to choose a new file if you want to change it.
+                                                </small>
+                                            </div>
+                                        @endif
+
                                         <img id="photoPreview" src="#" alt="Preview"
                                             style="display:none;width:70px;height:70px;object-fit:cover;border-radius:50%;margin-top:8px;border:3px solid #0F6E56;" loading="lazy" decoding="async">
                                     </div>
@@ -165,6 +186,18 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             value="{{ old('address') }}" required placeholder="House No, Street, Area" onblur="validateField(this, 'Residential address')">
                                         @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+                                    {{-- Landmark sits directly under the address it qualifies,
+                                         full width, so the origin fields below start a clean row. --}}
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">Landmark <span class="text-danger">*</span></label>
+                                        <input type="text" name="landmark" class="form-control @error('landmark') is-invalid @enderror"
+                                            value="{{ old('landmark', $user->landmark ?? '') }}" required
+                                            placeholder="e.g. Near Total Filling Station" onblur="validateField(this, 'Landmark')">
+                                        @error('landmark')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
+
+                                    {{-- Origin: country, state and LGA read as one group, so they
+                                         share a row. --}}
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Country of Origin <span class="text-danger">*</span></label>
                                         <select name="country" class="form-select @error('country') is-invalid @enderror" required onchange="validateSelect(this, 'country of origin')">
@@ -186,16 +219,15 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         @error('state_of_origin')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                     <div class="col-md-4">
-                                        <label class="form-label fw-semibold">State of Residence <span class="text-danger">*</span></label>
-                                        <select name="state_of_residence" class="form-select @error('state_of_residence') is-invalid @enderror" required onchange="validateSelect(this, 'state of residence')">
-                                            <option value="">Select state</option>
-                                            @foreach($nigerianStates as $state)
-                                            <option value="{{ $state }}" {{ old('state_of_residence', $user->state_of_residence ?? '') == $state ? 'selected' : '' }}>{{ $state }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('state_of_residence')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        <label class="form-label fw-semibold">LGA of Origin <span class="text-danger">*</span></label>
+                                        <input type="text" name="lga_of_origin" class="form-control @error('lga_of_origin') is-invalid @enderror"
+                                            value="{{ old('lga_of_origin', $user->lga_of_origin ?? '') }}" required
+                                            placeholder="e.g. Ikeja, Surulere" onblur="validateField(this, 'LGA of origin')">
+                                        @error('lga_of_origin')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-4">
+
+                                    {{-- Residence --}}
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold">Country of Residence <span class="text-danger">*</span></label>
                                         <select name="country_of_residence" class="form-select @error('country_of_residence') is-invalid @enderror" required onchange="validateSelect(this, 'country of residence')">
                                             <option value="">Select country</option>
@@ -205,19 +237,15 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         </select>
                                         @error('country_of_residence')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">LGA of Origin <span class="text-danger">*</span></label>
-                                        <input type="text" name="lga_of_origin" class="form-control @error('lga_of_origin') is-invalid @enderror"
-                                            value="{{ old('lga_of_origin', $user->lga_of_origin ?? '') }}" required
-                                            placeholder="e.g. Ikeja, Surulere" onblur="validateField(this, 'LGA of origin')">
-                                        @error('lga_of_origin')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Landmark <span class="text-danger">*</span></label>
-                                        <input type="text" name="landmark" class="form-control @error('landmark') is-invalid @enderror"
-                                            value="{{ old('landmark', $user->landmark ?? '') }}" required
-                                            placeholder="e.g. Near Total Filling Station" onblur="validateField(this, 'Landmark')"  >
-                                        @error('landmark')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">State of Residence <span class="text-danger">*</span></label>
+                                        <select name="state_of_residence" class="form-select @error('state_of_residence') is-invalid @enderror" required onchange="validateSelect(this, 'state of residence')">
+                                            <option value="">Select state</option>
+                                            @foreach($nigerianStates as $state)
+                                            <option value="{{ $state }}" {{ old('state_of_residence', $user->state_of_residence ?? '') == $state ? 'selected' : '' }}>{{ $state }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('state_of_residence')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
@@ -766,26 +794,44 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
         panel.querySelectorAll('.step-error-msg').forEach(e => e.remove());
         panel.querySelectorAll('.is-invalid').forEach(f => f.classList.remove('is-invalid'));
 
-        panel.querySelectorAll('[required]').forEach(f => {
-            // Skip disabled fields
-            if (f.disabled) return;
+        // Check every field in the panel, not just required ones: a wrongly
+        // formatted optional value should be caught here too, rather than
+        // surviving to the server and bouncing the whole form back.
+        panel.querySelectorAll('input, select, textarea').forEach(f => {
+            if (f.disabled || f.type === 'hidden' || f.type === 'button') return;
 
-            const isEmpty = f.type === 'file'
-                ? f.files.length === 0
-                : !f.value.trim();
+            const isRequired = f.hasAttribute('required');
+            const isEmpty = f.type === 'file' ? f.files.length === 0 : !f.value.trim();
+
+            // Nothing to check on an untouched optional field.
+            if (!isRequired && isEmpty) return;
+
+            let problem = null;
 
             if (isEmpty) {
+                problem = getFieldLabel(f) + ' is required.';
+            } else if (typeof f.checkValidity === 'function' && !f.checkValidity()) {
+                // Native constraint validation covers type=email, minlength,
+                // maxlength, pattern, min/max and step.
+                problem = f.validationMessage || ('Please check ' + getFieldLabel(f) + '.');
+            } else if (f.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(f.value.trim())) {
+                problem = 'Enter a valid email address, e.g. name@example.com.';
+            } else if (f.name === 'phone' && !/^0\d{10}$/.test(f.value.trim())) {
+                problem = 'Enter an 11-digit phone number starting with 0.';
+            } else if (f.name === 'nin' && !/^\d{11}$/.test(f.value.trim())) {
+                problem = 'NIN must be exactly 11 digits.';
+            }
+
+            if (problem) {
                 f.classList.add('is-invalid');
                 valid = false;
 
-                // Add error message below field if not already there
                 const existing = f.parentElement.querySelector('.step-error-msg');
                 if (!existing) {
-                    const label = getFieldLabel(f);
                     const msg = document.createElement('div');
                     msg.className = 'step-error-msg text-danger small mt-1';
                     msg.style.fontWeight = '500';
-                    msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>' + label + ' is required.';
+                    msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>' + problem;
                     f.parentElement.appendChild(msg);
                 }
 

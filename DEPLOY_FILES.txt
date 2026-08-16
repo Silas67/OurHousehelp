@@ -1,103 +1,121 @@
-app/Console/Artisan.php
-app/Console/Kernel.php
-app/Http/Controllers/AdminController.php
-app/Http/Controllers/Api/RegisterController.php
-app/Http/Controllers/ApplicantController.php
-app/Http/Controllers/BookingController.php
-app/Http/Controllers/Guarantor2Controller.php
-app/Http/Controllers/GuarantorController.php
-app/Http/Controllers/PagesController.php
-app/Http/Controllers/PaymentController.php
-app/Http/Controllers/RegistrationPaymentController.php
-app/Http/Controllers/SecureDocumentController.php
-app/Http/Controllers/ServiceController.php
-app/Http/Controllers/ServiceRequestController.php
-app/Http/Controllers/UserController.php
-app/Jobs/NotifyMatchedStaff.php
-app/Models/ServiceRequest.php
-app/Support/SecureDocument.php
-bootstrap/app.php
-build/assets/image/gallery/cleaning 3.jpg
-build/assets/image/gallery/cleaning 3.png
-build/assets/image/gallery/cook 2.jpg
-build/assets/image/gallery/cook 2.png
-build/assets/image/gallery/laundry 2.jpg
-build/assets/image/gallery/laundry 2.png
-package.json
-public/build/assets/app-BQ9uGAkl.css
-public/build/assets/fa-brands-400-D1LuMI3I.ttf
-public/build/assets/fa-brands-400-D_cYUPeE.woff2
-public/build/assets/fa-regular-400-BjRzuEpd.woff2
-public/build/assets/fa-regular-400-DZaxPHgR.ttf
-public/build/assets/fa-solid-900-CTAAxXor.woff2
-public/build/assets/fa-solid-900-D0aA9rwL.ttf
-public/build/assets/ui-1DaLTNIu.css
-public/build/assets/ui-CF6tM1_e.js
-public/build/manifest.json
-resources/css/ui.css
-resources/js/ui.js
-resources/views/admin/allservices.blade.php
-resources/views/admin/booking/detail.blade.php
-resources/views/admin/clients.blade.php
-resources/views/admin/edithousehelp.blade.php
-resources/views/admin/faqs/index.blade.php
-resources/views/admin/manageMultipleServices.blade.php
-resources/views/admin/orderAdminDetail.blade.php
-resources/views/admin/payments/_payments_table.blade.php
-resources/views/admin/payments/showRegistrationPayments.blade.php
-resources/views/admin/skilledworkerslist.blade.php
-resources/views/admin/staffs.blade.php
-resources/views/applicant/show.blade.php
-resources/views/applicant/speciality.blade.php
-resources/views/applicantpositions.blade.php
-resources/views/archived.blade.php
-resources/views/auth/applicantregister.blade.php
-resources/views/booking/_staff-card.blade.php
-resources/views/booking/payment.blade.php
-resources/views/booking/service-selection.blade.php
-resources/views/booking/staff-details.blade.php
-resources/views/booking/staff-matching.blade.php
-resources/views/booking/staff-profile.blade.php
-resources/views/booking/trust-assurance.blade.php
-resources/views/coming-soon.blade.php
-resources/views/components/img.blade.php
-resources/views/coupon/skilled-worker-services.blade.php
-resources/views/coupon/worker-details.blade.php
-resources/views/couponSkilledWorkerServices.blade.php
-resources/views/househelprequest.blade.php
-resources/views/layouts/adminmain.blade.php
-resources/views/layouts/applicantmain.blade.php
-resources/views/layouts/main.blade.php
-resources/views/layouts/usermain.blade.php
-resources/views/liveouts/househelpapply.blade.php
-resources/views/liveouts/liveouts.blade.php
-resources/views/multiple.blade.php
-resources/views/multiple4.blade.php
-resources/views/navigation-menu.blade.php
-resources/views/partials/_head.blade.php
-resources/views/partials/_payments.blade.php
-resources/views/partials/_profileupdate.blade.php
-resources/views/partials/_searchForHouseHelp.blade.php
-resources/views/partials/_searchForHousehelpsorskills.blade.php
-resources/views/partials/_serviceRequestDetails.blade.php
-resources/views/partials/_serviceRequestDetailsMulti.blade.php
-resources/views/partials/admin/modals/_applicantInfo.blade.php
-resources/views/partials/admin/modals/_applicantsDetail.blade.php
-resources/views/partials/admin/modals/_registerNewUsers.blade.php
-resources/views/partials/applicant/_guarantors.blade.php
-resources/views/partials/applicant/_guarantors_two.blade.php
-resources/views/partials/applicant/_prefrence.blade.php
-resources/views/partials/modals/_applicantProfileModal.blade.php
-resources/views/payments/accountdetail.blade.php
-resources/views/payments/accountdetailskill.blade.php
-resources/views/pdfs/guarantor.blade.php
-resources/views/profile/update-profile-information-form.blade.php
-resources/views/service-requests/registration.blade.php
-resources/views/skilledworkers/skilledworkers.blade.php
-resources/views/welcome-index.blade.php
-resources/views/welcome.blade.php
-routes/web.php
-scripts/add_should_queue.php
-scripts/migrate_docs.php
-scripts/optimize_images.php
-vite.config.js
+MOD .gitignore
+NEW app/Console/Artisan.php
+MOD app/Console/Kernel.php
+MOD app/Http/Controllers/AdminController.php
+MOD app/Http/Controllers/Api/RegisterController.php
+MOD app/Http/Controllers/ApplicantController.php
+MOD app/Http/Controllers/BookingController.php
+MOD app/Http/Controllers/Guarantor2Controller.php
+MOD app/Http/Controllers/GuarantorController.php
+MOD app/Http/Controllers/LiveOutServiceRequestController.php
+MOD app/Http/Controllers/PagesController.php
+MOD app/Http/Controllers/PaymentController.php
+MOD app/Http/Controllers/RegistrationPaymentController.php
+NEW app/Http/Controllers/SecureDocumentController.php
+MOD app/Http/Controllers/ServiceController.php
+MOD app/Http/Controllers/ServiceRequestController.php
+MOD app/Http/Controllers/UserController.php
+NEW app/Jobs/NotifyMatchedStaff.php
+MOD app/Models/ServiceRequest.php
+MOD app/Models/User.php
+MOD app/Services/StaffMatchingService.php
+NEW app/Support/SecureDocument.php
+MOD bootstrap/app.php
+MOD package-lock.json
+MOD package.json
+NEW public/build/assets/app-BQ9uGAkl.css
+NEW public/build/assets/fa-brands-400-D1LuMI3I.ttf
+NEW public/build/assets/fa-brands-400-D_cYUPeE.woff2
+NEW public/build/assets/fa-regular-400-BjRzuEpd.woff2
+NEW public/build/assets/fa-regular-400-DZaxPHgR.ttf
+NEW public/build/assets/fa-solid-900-CTAAxXor.woff2
+NEW public/build/assets/fa-solid-900-D0aA9rwL.ttf
+MOD public/build/assets/js/script.js
+NEW public/build/assets/ui-CM0JoT4L.css
+NEW public/build/assets/ui-DFDqLw4j.js
+MOD public/build/manifest.json
+NEW public/icons/badge-96.png
+NEW public/icons/icon-192.png
+NEW public/icons/icon-512.png
+NEW public/icons/icon-maskable-512.png
+NEW public/js/pwa.js
+NEW public/manifest.json
+MOD public/sw.js
+NEW resources/css/ui.css
+NEW resources/js/ui.js
+MOD resources/views/admin/allservices.blade.php
+MOD resources/views/admin/booking/detail.blade.php
+MOD resources/views/admin/clients.blade.php
+MOD resources/views/admin/edithousehelp.blade.php
+MOD resources/views/admin/faqs/index.blade.php
+MOD resources/views/admin/manageMultipleServices.blade.php
+MOD resources/views/admin/orderAdminDetail.blade.php
+MOD resources/views/admin/payments/_payments_table.blade.php
+MOD resources/views/admin/payments/registrationPayments.blade.php
+MOD resources/views/admin/payments/showRegistrationPayments.blade.php
+MOD resources/views/admin/settings.blade.php
+MOD resources/views/admin/skilledworkerslist.blade.php
+MOD resources/views/admin/staffLiveIn.blade.php
+MOD resources/views/admin/staffs.blade.php
+MOD resources/views/applicant/show.blade.php
+MOD resources/views/applicant/speciality.blade.php
+MOD resources/views/applicantpositions.blade.php
+MOD resources/views/archived.blade.php
+MOD resources/views/auth/applicantregister.blade.php
+MOD resources/views/booking/_staff-card.blade.php
+MOD resources/views/booking/payment.blade.php
+MOD resources/views/booking/service-selection.blade.php
+MOD resources/views/booking/staff-details.blade.php
+MOD resources/views/booking/staff-matching.blade.php
+MOD resources/views/booking/staff-profile.blade.php
+MOD resources/views/booking/trust-assurance.blade.php
+MOD resources/views/bookings.blade.php
+MOD resources/views/coming-soon.blade.php
+NEW resources/views/components/img.blade.php
+NEW resources/views/components/resume-booking.blade.php
+NEW resources/views/components/trust-badges.blade.php
+MOD resources/views/coupon/skilled-worker-services.blade.php
+MOD resources/views/coupon/worker-details.blade.php
+MOD resources/views/couponSkilledWorkerServices.blade.php
+MOD resources/views/dashboard.blade.php
+MOD resources/views/househelprequest.blade.php
+MOD resources/views/layouts/adminmain.blade.php
+MOD resources/views/layouts/applicantmain.blade.php
+MOD resources/views/layouts/main.blade.php
+MOD resources/views/layouts/usermain.blade.php
+MOD resources/views/liveouts/househelpapply.blade.php
+MOD resources/views/liveouts/liveouts.blade.php
+MOD resources/views/multiple.blade.php
+MOD resources/views/multiple4.blade.php
+MOD resources/views/navigation-menu.blade.php
+NEW resources/views/offline.blade.php
+NEW resources/views/partials/_flash.blade.php
+MOD resources/views/partials/_head.blade.php
+MOD resources/views/partials/_payments.blade.php
+MOD resources/views/partials/_profileupdate.blade.php
+MOD resources/views/partials/_searchForHouseHelp.blade.php
+MOD resources/views/partials/_searchForHousehelpsorskills.blade.php
+MOD resources/views/partials/_serviceRequestDetails.blade.php
+MOD resources/views/partials/_serviceRequestDetailsMulti.blade.php
+MOD resources/views/partials/admin/_packages.blade.php
+MOD resources/views/partials/admin/modals/_applicantInfo.blade.php
+MOD resources/views/partials/admin/modals/_applicantsDetail.blade.php
+MOD resources/views/partials/admin/modals/_registerNewUsers.blade.php
+MOD resources/views/partials/applicant/_guarantors.blade.php
+MOD resources/views/partials/applicant/_guarantors_two.blade.php
+MOD resources/views/partials/applicant/_prefrence.blade.php
+MOD resources/views/partials/modals/_applicantProfileModal.blade.php
+MOD resources/views/payments/accountdetail.blade.php
+MOD resources/views/payments/accountdetailskill.blade.php
+MOD resources/views/pdfs/guarantor.blade.php
+MOD resources/views/profile/update-profile-information-form.blade.php
+MOD resources/views/service-requests/registration.blade.php
+MOD resources/views/skilledworkers/skilledworkers.blade.php
+MOD resources/views/welcome-index.blade.php
+MOD resources/views/welcome.blade.php
+MOD routes/web.php
+NEW scripts/add_should_queue.php
+NEW scripts/make_pwa_icons.php
+NEW scripts/migrate_docs.php
+NEW scripts/optimize_images.php
+MOD vite.config.js

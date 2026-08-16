@@ -130,8 +130,11 @@
                         </div>
                     </div>
 
-                    {{-- ── WHY REGISTER — Collapsible ── --}}
-                    <div class="mt-3">
+                    {{-- ── WHY REGISTER — Collapsible ──
+                         Client-facing only: it describes staff vetting and the client
+                         qualification fee, which is confusing for someone registering
+                         AS staff. Hidden when the Staff option is selected. --}}
+                    <div class="mt-3" id="why-register-block">
                         <div class="card border-0 shadow-sm">
                             <div class="card-header bg-white d-flex justify-content-between align-items-center"
                                 style="cursor:pointer;" data-bs-toggle="collapse" data-bs-target="#whyRegister">
@@ -212,6 +215,7 @@
             const applicantCard = document.getElementById('card-applicant');
             const clientForm = document.getElementById('client-form');
             const applicantForm = document.getElementById('applicant-form');
+            const whyBlock = document.getElementById('why-register-block');
 
             if (type === 'client') {
                 clientCard.style.background = '#f0fff4';
@@ -222,6 +226,7 @@
                 applicantCard.querySelector('i').className = 'fas fa-broom fa-2x mb-2 text-muted';
                 clientForm.style.display = 'block';
                 applicantForm.style.display = 'none';
+                if (whyBlock) whyBlock.style.display = 'block';
             } else {
                 applicantCard.style.background = '#f0fff4';
                 applicantCard.style.borderColor = '#0F6E56';
@@ -232,6 +237,8 @@
                 clientCard.querySelector('i').style.color = '#adb5bd';
                 clientForm.style.display = 'none';
                 applicantForm.style.display = 'block';
+                // Client-oriented copy; irrelevant to a staff applicant.
+                if (whyBlock) whyBlock.style.display = 'none';
             }
         }
 
