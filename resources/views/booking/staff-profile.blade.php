@@ -339,18 +339,20 @@
                                 @if($serviceRequest->payment_status !== 'Paid')
                                     {{-- Payment not yet done --}}
                                     <div class="text-center mt-3">
-                                        <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
-                                            <a href="{{ route('booking.payment', $serviceRequest->id) }}" class="btn btn-success btn-lg px-5">
-                                                Proceed to Payment <i class="fas fa-arrow-right ms-2"></i>
-                                            </a>
-                                            {{-- Cancel stays available right up to payment; cancelOrder()
-                                                 refuses once a company-managed booking is paid. --}}
-                                            <button type="button" class="btn btn-outline-danger btn-lg px-4"
+                                        <a href="{{ route('booking.payment', $serviceRequest->id) }}" class="btn btn-success btn-lg px-5">
+                                            Proceed to Payment <i class="fas fa-arrow-right ms-2"></i>
+                                        </a>
+                                        <p class="text-muted small mt-2 mb-0">Complete your payment to confirm deployment.</p>
+
+                                        {{-- Secondary, and visually quieter than the primary action.
+                                             Cancel stays available right up to payment; cancelOrder()
+                                             refuses once a company-managed booking is paid. --}}
+                                        <div class="mt-3">
+                                            <button type="button" class="btn btn-outline-danger btn-sm px-3"
                                                 data-bs-toggle="modal" data-bs-target="#cancelBookingModal">
-                                                <i class="fas fa-times-circle me-2"></i>Cancel
+                                                <i class="fas fa-times-circle me-1"></i>Cancel booking
                                             </button>
                                         </div>
-                                        <p class="text-muted small mt-2">Complete your payment to confirm deployment.</p>
                                     </div>
                                 @else
                                     {{-- Payment approved — show staff contact --}}
