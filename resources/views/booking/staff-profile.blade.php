@@ -339,9 +339,17 @@
                                 @if($serviceRequest->payment_status !== 'Paid')
                                     {{-- Payment not yet done --}}
                                     <div class="text-center mt-3">
-                                        <a href="{{ route('booking.payment', $serviceRequest->id) }}" class="btn btn-success btn-lg px-5">
-                                            Proceed to Payment <i class="fas fa-arrow-right ms-2"></i>
-                                        </a>
+                                        <div class="d-flex flex-wrap gap-2 justify-content-center align-items-center">
+                                            <a href="{{ route('booking.payment', $serviceRequest->id) }}" class="btn btn-success btn-lg px-5">
+                                                Proceed to Payment <i class="fas fa-arrow-right ms-2"></i>
+                                            </a>
+                                            {{-- Cancel stays available right up to payment; cancelOrder()
+                                                 refuses once a company-managed booking is paid. --}}
+                                            <button type="button" class="btn btn-outline-danger btn-lg px-4"
+                                                data-bs-toggle="modal" data-bs-target="#cancelBookingModal">
+                                                <i class="fas fa-times-circle me-2"></i>Cancel
+                                            </button>
+                                        </div>
                                         <p class="text-muted small mt-2">Complete your payment to confirm deployment.</p>
                                     </div>
                                 @else
@@ -379,4 +387,75 @@
 
     </div>
 </div>
+
+{{-- Cancel confirmation --}}
+<div class="modal fade" id="cancelBookingModal" tabindex="-1" aria-labelledby="cancelBookingLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelBookingLabel">Cancel this booking?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">
+                    This releases the staff member you selected and closes the job for
+                    anyone we notified.
+                </p>
+                <p class="mb-0 text-muted" style="font-size:14px;">
+                    <i class="fas fa-coins me-1" style="color:#BA7517;"></i>
+                    Your booking credit will be refunded, so you can book again whenever
+                    you are ready.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Keep this booking
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                    <i class="fas fa-times-circle me-1"></i> Yes, cancel booking
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Same endpoint and contract as the shortlist and staff-matching screens.
+(function () {
+    var trigger = document.getElementById('confirmCancelBtn');
+    if (!trigger) return;
+
+    trigger.addEventListener('click', function () {
+        var btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Cancelling...';
+
+        fetch(@json(route('booking.cancel-order', $serviceRequest->id)), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+            },
+            credentials: 'same-origin',
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.success) {
+                window.location.href = data.redirect || @json(route('dashboard'));
+            } else {
+                alert(data.message || 'Could not cancel this booking.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-times-circle me-1"></i> Yes, cancel booking';
+            }
+        })
+        .catch(function () {
+            alert('Something went wrong. Please try again.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-times-circle me-1"></i> Yes, cancel booking';
+        });
+    });
+})();
+</script>
+
 @endsection
