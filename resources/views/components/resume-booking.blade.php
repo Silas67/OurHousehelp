@@ -23,7 +23,6 @@
 @once
     <style>
         .resume-card {
-            position: relative;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -32,17 +31,22 @@
             border: 1px solid #BBD8F7;
             border-left: 4px solid #1c4b91;
             border-radius: 10px;
-            /* extra right padding so the dismiss control never overlaps text */
-            padding: 14px 46px 14px 18px;
+            padding: 14px 18px;
             margin-bottom: 14px;
         }
 
+        /* Continue and cancel sit together on one baseline, centred as a pair. */
+        .resume-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
         .resume-dismiss {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 26px;
-            height: 26px;
+            width: 34px;
+            height: 34px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -82,9 +86,11 @@
         .resume-body { flex: 1 1 240px; min-width: 0; }
         .resume-title { font-weight: 600; font-size: 15px; margin: 0; color: #14243d; }
         .resume-meta { font-size: 13px; color: #5b6b80; margin: 2px 0 0; }
-        .resume-action { flex-shrink: 0; }
         @media (max-width: 575px) {
-            .resume-action, .resume-action .btn { width: 100%; }
+            .resume-card { justify-content: center; text-align: center; }
+            .resume-body { text-align: center; }
+            .resume-action { width: 100%; }
+            .resume-action .btn { flex: 1 1 auto; }
         }
     </style>
 @endonce
@@ -117,19 +123,19 @@
                 {{ $isReady ? 'Continue' : 'Check progress' }}
                 <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
             </a>
-        </div>
 
-        {{-- An in-flight booking blocks starting a new one, so cancelling has to be
-             reachable from here too - not only from inside the flow. This navigates
-             to the confirmation rather than cancelling outright, so a stray click
-             cannot destroy a booking. --}}
-        @if ($booking->payment_status !== 'Paid')
-            <a href="{{ route('booking.staff-matching', $booking->id) }}"
-               class="resume-dismiss"
-               title="Cancel this booking"
-               aria-label="Cancel this booking">
-                <i class="fas fa-times" aria-hidden="true"></i>
-            </a>
-        @endif
+            {{-- An in-flight booking blocks starting a new one, so cancelling has to
+                 be reachable from here too - not only from inside the flow. This
+                 navigates to the confirmation rather than cancelling outright, so a
+                 stray click cannot destroy a booking. --}}
+            @if ($booking->payment_status !== 'Paid')
+                <a href="{{ route('booking.staff-matching', $booking->id) }}"
+                   class="resume-dismiss"
+                   title="Cancel this booking"
+                   aria-label="Cancel this booking">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </a>
+            @endif
+        </div>
     </div>
 @endforeach
