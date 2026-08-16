@@ -61,7 +61,7 @@ class BookingController extends Controller
         if ($inFlight) {
             return redirect($inFlight->resumeUrl())
                 ->with('warning', 'You already have a booking in progress - ' . lcfirst($inFlight->resumeLabel())
-                    . '. Please finish or cancel it before starting another.');
+                    . '. Finish it, or cancel it below to free up your credit and book something else.');
         }
 
         $services = Service::all();

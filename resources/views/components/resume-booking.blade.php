@@ -83,12 +83,22 @@
             </p>
         </div>
 
-        <div class="resume-action">
+        <div class="resume-action d-flex flex-column gap-1">
             <a href="{{ $booking->resumeUrl() }}"
                class="btn {{ $isReady ? 'btn-success' : 'btn-outline-primary' }}">
                 {{ $isReady ? 'Continue' : 'Check progress' }}
                 <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
             </a>
+
+            {{-- An in-flight booking blocks starting a new one, so cancelling has to
+                 be reachable from here too - not only from inside the flow. --}}
+            @if ($booking->payment_status !== 'Paid')
+                <a href="{{ route('booking.staff-matching', $booking->id) }}"
+                   class="btn btn-link btn-sm text-danger p-0"
+                   style="font-size:12.5px;text-decoration:none;">
+                    Cancel booking
+                </a>
+            @endif
         </div>
     </div>
 @endforeach

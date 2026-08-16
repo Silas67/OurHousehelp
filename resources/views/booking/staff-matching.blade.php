@@ -99,6 +99,18 @@
                     </div>
                 </div>
 
+                {{-- Cancel. Previously the only cancel button lived on the shortlist
+                     page, which a client cannot reach until a staff member accepts -
+                     so a request sitting in "matching" for the usual 24-96h could
+                     neither be cancelled nor replaced with a new one. --}}
+                <div class="text-center mb-4">
+                    <button type="button" class="btn btn-link text-danger p-0"
+                        style="font-size:14px;text-decoration:none;"
+                        data-bs-toggle="modal" data-bs-target="#cancelBookingModal">
+                        <i class="fas fa-times-circle me-1"></i>Cancel this booking
+                    </button>
+                </div>
+
                 <!-- Request summary -->
                 <details class="summary-block">
                     <summary class="fw-bold">Your request summary</summary>
@@ -110,6 +122,37 @@
                     </div>
                 </details>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Cancel confirmation --}}
+<div class="modal fade" id="cancelBookingModal" tabindex="-1" aria-labelledby="cancelBookingLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelBookingLabel">Cancel this booking?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">
+                    We'll stop looking for staff and let anyone already notified know the
+                    job is closed.
+                </p>
+                <p class="mb-0 text-muted" style="font-size:14px;">
+                    <i class="fas fa-coins me-1" style="color:#BA7517;"></i>
+                    Your booking credit will be refunded, so you can book again whenever
+                    you're ready.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    Keep looking
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmCancelBtn">
+                    <i class="fas fa-times-circle me-1"></i> Yes, cancel booking
+                </button>
             </div>
         </div>
     </div>
@@ -145,6 +188,40 @@
 .summary-block { border-top:1px solid #e9ecef; padding-top:16px; }
 .summary-block summary { cursor:pointer; }
 </style>
+
+<script>
+// Cancel booking handler (same contract as the shortlist page).
+document.getElementById('confirmCancelBtn').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Cancelling...';
+
+    fetch(@json(route('booking.cancel-order', $serviceRequest->id)), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+        },
+        credentials: 'same-origin',
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+        if (data.success) {
+            window.location.href = data.redirect || @json(route('dashboard'));
+        } else {
+            alert(data.message || 'Could not cancel this booking.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-times-circle me-1"></i> Yes, cancel booking';
+        }
+    })
+    .catch(function () {
+        alert('Something went wrong. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-times-circle me-1"></i> Yes, cancel booking';
+    });
+});
+</script>
 
 <script>
 (function () {
