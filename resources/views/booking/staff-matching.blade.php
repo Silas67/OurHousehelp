@@ -103,11 +103,10 @@
                      page, which a client cannot reach until a staff member accepts -
                      so a request sitting in "matching" for the usual 24-96h could
                      neither be cancelled nor replaced with a new one. --}}
-                <div class="text-center mb-4">
-                    <button type="button" class="btn btn-link text-danger p-0"
-                        style="font-size:14px;text-decoration:none;"
+                <div class="d-grid d-sm-flex justify-content-sm-center mb-4">
+                    <button type="button" class="btn btn-outline-danger px-4"
                         data-bs-toggle="modal" data-bs-target="#cancelBookingModal">
-                        <i class="fas fa-times-circle me-1"></i>Cancel this booking
+                        <i class="fas fa-times-circle me-2"></i>Cancel this booking
                     </button>
                 </div>
 
