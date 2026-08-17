@@ -113,6 +113,25 @@ class PendingUpload
         return $filename;
     }
 
+    /**
+     * Move the parked file onto a Laravel disk directory (used for the private
+     * document store) and clear the session.
+     */
+    public static function commitToDisk(string $sessionKey, string $diskDirectory, string $filename, string $disk = 'local'): ?string
+    {
+        $source = self::path($sessionKey);
+
+        if (!$source) {
+            return null;
+        }
+
+        Storage::disk($disk)->putFileAs($diskDirectory, new \Illuminate\Http\File($source), $filename);
+
+        self::forget($sessionKey);
+
+        return $filename;
+    }
+
     public static function forget(string $sessionKey): void
     {
         $name = session($sessionKey);

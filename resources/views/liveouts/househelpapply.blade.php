@@ -1,6 +1,15 @@
 @extends('layouts.main')
 
 @section('liveins')
+
+@php
+    // Files parked by an earlier failed submit (see App\Support\PendingUpload).
+    $kept_id_card = \App\Support\PendingUpload::stored('pending_id_card');
+    $kept_guarantor1_passport_path = \App\Support\PendingUpload::stored('pending_g1_passport');
+    $kept_guarantor1_signature_path = \App\Support\PendingUpload::stored('pending_g1_signature');
+    $kept_guarantor2_passport_path = \App\Support\PendingUpload::stored('pending_g2_passport');
+    $kept_guarantor2_signature_path = \App\Support\PendingUpload::stored('pending_g2_signature');
+@endphp
 @php
 $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','FCT Abuja'];
 @endphp
@@ -308,6 +317,13 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <label class="form-label fw-semibold">ID Card Upload</label>
                                         <input type="file" name="id_card" class="form-control @error('id_card') is-invalid @enderror"
                                             accept="image/*,.pdf" onchange="previewIdCard(this)" onchange="validateFile(this, 'ID card')">
+                                        @if($kept_id_card)
+                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
+                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
+                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
+                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
+                                            </div>
+                                        @endif
                                         <small class="text-muted">Upload a clear photo of your NIN slip, driver's licence, voter's card or international passport</small>
                                         @error('id_card')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                         <img id="idcard-preview" src="#" alt="ID Card Preview"
@@ -512,8 +528,15 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <label class="form-label fw-semibold">Passport Photo <span class="text-danger">*</span></label>
                                         <input type="file" name="guarantor1_passport_path"
                                             class="form-control @error('guarantor1_passport_path') is-invalid @enderror"
-                                            accept="image/jpeg,image/png,image/jpg" required
+                                            accept="image/jpeg,image/png,image/jpg" @unless($kept_guarantor1_passport_path) required @endunless
                                             onchange="validateFile(this, 'guarantor passport')">
+                                        @if($kept_guarantor1_passport_path)
+                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
+                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
+                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
+                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
+                                            </div>
+                                        @endif
                                         <div class="form-text">JPG/PNG, max 2MB</div>
                                         @error('guarantor1_passport_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -522,8 +545,15 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <label class="form-label fw-semibold">Signature <span class="text-danger">*</span></label>
                                         <input type="file" name="guarantor1_signature_path"
                                             class="form-control @error('guarantor1_signature_path') is-invalid @enderror"
-                                            accept="image/jpeg,image/png,image/jpg" required
+                                            accept="image/jpeg,image/png,image/jpg" @unless($kept_guarantor1_signature_path) required @endunless
                                             onchange="validateFile(this, 'guarantor signature')">
+                                        @if($kept_guarantor1_signature_path)
+                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
+                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
+                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
+                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
+                                            </div>
+                                        @endif
                                         <div class="form-text">JPG/PNG, max 2MB</div>
                                         @error('guarantor1_signature_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -622,8 +652,15 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <label class="form-label fw-semibold">Passport Photo <span class="text-danger">*</span></label>
                                         <input type="file" name="guarantor2_passport_path"
                                             class="form-control @error('guarantor2_passport_path') is-invalid @enderror"
-                                            accept="image/jpeg,image/png,image/jpg" required
+                                            accept="image/jpeg,image/png,image/jpg" @unless($kept_guarantor2_passport_path) required @endunless
                                             onchange="validateFile(this, 'guarantor 2 passport')">
+                                        @if($kept_guarantor2_passport_path)
+                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
+                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
+                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
+                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
+                                            </div>
+                                        @endif
                                         <div class="form-text">JPG/PNG, max 2MB</div>
                                         @error('guarantor2_passport_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
@@ -632,8 +669,15 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <label class="form-label fw-semibold">Signature <span class="text-danger">*</span></label>
                                         <input type="file" name="guarantor2_signature_path"
                                             class="form-control @error('guarantor2_signature_path') is-invalid @enderror"
-                                            accept="image/jpeg,image/png,image/jpg" required
+                                            accept="image/jpeg,image/png,image/jpg" @unless($kept_guarantor2_signature_path) required @endunless
                                             onchange="validateFile(this, 'guarantor 2 signature')">
+                                        @if($kept_guarantor2_signature_path)
+                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
+                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
+                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
+                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
+                                            </div>
+                                        @endif
                                         <div class="form-text">JPG/PNG, max 2MB</div>
                                         @error('guarantor2_signature_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>

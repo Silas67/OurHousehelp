@@ -55,6 +55,15 @@ class UserController extends Controller
     /** Session key holding a profile photo parked across a failed validation. */
     private const PENDING_PHOTO_KEY = 'pending_profile_photo';
 
+    /** Document fields parked the same way, field name => session key. */
+    private const PENDING_DOC_FIELDS = [
+        'id_card'                    => 'pending_id_card',
+        'guarantor1_passport_path'   => 'pending_g1_passport',
+        'guarantor1_signature_path'  => 'pending_g1_signature',
+        'guarantor2_passport_path'   => 'pending_g2_passport',
+        'guarantor2_signature_path'  => 'pending_g2_signature',
+    ];
+
 
 
     public function update(Request $request)
@@ -1224,6 +1233,13 @@ class UserController extends Controller
             self::PENDING_PHOTO_KEY
         );
 
+        // Same for the identity and guarantor documents - re-uploading five
+        // images because of one typo is the worst part of this form.
+        $pendingDocs = [];
+        foreach (self::PENDING_DOC_FIELDS as $field => $sessionKey) {
+            $pendingDocs[$field] = \App\Support\PendingUpload::keep($request, $field, $sessionKey);
+        }
+
         // Validation
 
         $validated = $request->validate([
@@ -1299,9 +1315,9 @@ class UserController extends Controller
 
             'guarantor1_address' => 'required|string|max:500',
 
-            'guarantor1_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
 
-            'guarantor1_signature_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_signature_path' => ($pendingDocs['guarantor1_signature_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
 
 
 
@@ -1356,11 +1372,11 @@ class UserController extends Controller
 
             $idCardPath = null;
 
-            if ($request->hasFile('id_card')) {
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['id_card'])) {
 
-                $idCardPath = time() . '_idcard.' . $request->file('id_card')->getClientOriginalExtension();
+                $idCardPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['id_card']), PATHINFO_EXTENSION);
 
-                $request->file('id_card')->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath, 'local');
+                $idCardPath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['id_card'], \App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath);
             }
 
 
@@ -1439,22 +1455,22 @@ class UserController extends Controller
 
             $guarantor1PassportPath = null;
 
-            if ($request->hasFile('guarantor1_passport_path')) {
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_passport_path'])) {
 
-                $guarantor1PassportPath = time() . '_guarantor1Passport.' . $request->file('guarantor1_passport_path')->getClientOriginalExtension();
+                $guarantor1PassportPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_passport_path']), PATHINFO_EXTENSION);
 
-                $request->file('guarantor1_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor1PassportPath, 'local');
+                $guarantor1PassportPath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor1_passport_path'], \App\Support\SecureDocument::storageDirectory('passports'), $guarantor1PassportPath);
             }
 
 
 
             $guarantor1SignaturePath = null;
 
-            if ($request->hasFile('guarantor1_signature_path')) {
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_signature_path'])) {
 
-                $guarantor1SignaturePath = time() . '_guarantor1Signature.' . $request->file('guarantor1_signature_path')->getClientOriginalExtension();
+                $guarantor1SignaturePath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_signature_path']), PATHINFO_EXTENSION);
 
-                $request->file('guarantor1_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor1SignaturePath, 'local');
+                $guarantor1SignaturePath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor1_signature_path'], \App\Support\SecureDocument::storageDirectory('signatures'), $guarantor1SignaturePath);
             }
 
 
@@ -1498,20 +1514,20 @@ class UserController extends Controller
 
                 $guarantor2PassportPath = null;
 
-                if ($request->hasFile('guarantor2_passport_path')) {
+                if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_passport_path'])) {
 
-                    $guarantor2PassportPath = time() . '_guarantor2Passport.' . $request->file('guarantor2_passport_path')->getClientOriginalExtension();
+                    $guarantor2PassportPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_passport_path']), PATHINFO_EXTENSION);
 
-                    $request->file('guarantor2_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor2PassportPath, 'local');
+                    $guarantor2PassportPath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor2_passport_path'], \App\Support\SecureDocument::storageDirectory('passports'), $guarantor2PassportPath);
                 }
 
                 $guarantor2SignaturePath = null;
 
-                if ($request->hasFile('guarantor2_signature_path')) {
+                if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_signature_path'])) {
 
-                    $guarantor2SignaturePath = time() . '_guarantor2Signature.' . $request->file('guarantor2_signature_path')->getClientOriginalExtension();
+                    $guarantor2SignaturePath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_signature_path']), PATHINFO_EXTENSION);
 
-                    $request->file('guarantor2_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor2SignaturePath, 'local');
+                    $guarantor2SignaturePath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor2_signature_path'], \App\Support\SecureDocument::storageDirectory('signatures'), $guarantor2SignaturePath);
                 }
 
                 Guarantor2::create([
@@ -1826,25 +1842,67 @@ class UserController extends Controller
 
 
 
+    /**
+     * Is a unique field already taken?
+     *
+     * Backs the live duplicate check on the registration forms. This returned
+     * a hardcoded `false` behind a "TEMP: disabled for testing" comment, so the
+     * client-side checks always reported every value as available and the
+     * applicant only discovered a clash after submitting the whole form.
+     *
+     * Rate limited at the route (throttle:10,1). It answers only "taken or
+     * not" for a value the caller already holds, so it does not expose data
+     * beyond confirming a duplicate - the same thing the form tells them on
+     * submit.
+     */
     public function checkAvailability(Request $request)
     {
-        $type = $request->get('type');
-        $value = $request->get('value');
+        $type = (string) $request->get('type');
+        $value = trim((string) $request->get('value'));
 
-        // TEMP: disabled for testing
-        return response()->json(['exists' => false]);
-
-        $exists = false;
-
-        if ($type === 'email') {
-            $exists = User::where('email', $value)->exists();
-        } elseif ($type === 'phone') {
-            $exists = User::where('phone', $value)->exists();
-        } elseif ($type === 'nin') {
-            $exists = User::where('nin', $value)->exists();
+        if ($value === '' || !in_array($type, ['email', 'phone', 'nin'], true)) {
+            return response()->json(['exists' => false]);
         }
 
-        return response()->json(['exists' => $exists]);
+        if ($type === 'email') {
+            $query = User::where('email', strtolower($value));
+        } else {
+            $digits = preg_replace('/\D/', '', $value);
+
+            if ($type === 'nin') {
+                if (strlen($digits) !== 11) {
+                    return response()->json(['exists' => false]);
+                }
+
+                $query = User::where('nin', $digits);
+            } else {
+                // Phone numbers are stored inconsistently: 26 rows hold 10
+                // digits (no leading zero) alongside the usual 11, and some
+                // carry a 234 country code. Compare every equivalent form of
+                // the same number, or a duplicate slips through.
+                if (strlen($digits) < 10) {
+                    return response()->json(['exists' => false]);
+                }
+
+                $local = substr($digits, -10);
+
+                $query = User::whereIn('phone', array_unique([
+                    $digits,
+                    $local,
+                    '0' . $local,
+                    '234' . $local,
+                    '+234' . $local,
+                ]));
+            }
+        }
+
+        // When signed in, the user's own value is not a clash - this endpoint
+        // is also used by profile edit forms.
+        if (Auth::check()) {
+            $query->where('id', '!=', Auth::id());
+        }
+
+        return response()->json(['exists' => $query->exists()]);
     }
 
 
