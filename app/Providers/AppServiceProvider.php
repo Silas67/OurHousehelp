@@ -24,6 +24,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        /*
+         * Emit https:// URLs whenever APP_URL says the site is served over TLS.
+         *
+         * trustProxies() in bootstrap/app.php covers hosts that send
+         * X-Forwarded-Proto; this covers the ones that do not. Without either,
+         * asset() and signed document URLs come out as http:// on an https page
+         * and the browser blocks them as mixed content, so images simply do not
+         * appear.
+         */
+        if (str_starts_with((string) config('app.url'), 'https://')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Share unread message count across all views
         View::composer('*', function ($view) {
             $user = Auth::user();

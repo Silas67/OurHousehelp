@@ -13,6 +13,18 @@ $app = Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        /*
+         * Trust the hosting proxy's forwarded headers.
+         *
+         * SSL is terminated in front of PHP on this host, so without this
+         * Laravel sees plain HTTP even though the browser is on HTTPS. Every
+         * asset() and every signed document URL was then emitted as
+         * http://ourhousehelp.com/..., which browsers block as mixed content
+         * on an HTTPS page - profile photos, ID cards and guarantor documents
+         * all silently failed to render.
+         */
+        $middleware->trustProxies(at: '*');
+
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'applicant' => \App\Http\Middleware\ApplicantMiddleware::class,
