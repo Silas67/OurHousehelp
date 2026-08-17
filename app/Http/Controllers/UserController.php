@@ -1669,7 +1669,7 @@ class UserController extends Controller
             'guarantor1_occupation'    => 'required|string|max:255',
             'guarantor1_address'       => 'required|string|max:500',
             'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
-            'guarantor1_signature_path'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_signature_path' => ($pendingDocs['guarantor1_signature_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
 
             'guarantor2_first_name'    => 'required|string|max:255',
             'guarantor2_last_name'     => 'required|string|max:255',
@@ -1680,7 +1680,7 @@ class UserController extends Controller
             'guarantor2_occupation'    => 'required|string|max:255',
             'guarantor2_address'       => 'required|string|max:500',
             'guarantor2_passport_path' => ($pendingDocs['guarantor2_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
-            'guarantor2_signature_path'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor2_signature_path' => ($pendingDocs['guarantor2_signature_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
 
 
         ]);
