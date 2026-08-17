@@ -1594,6 +1594,16 @@ class UserController extends Controller
 
     {
 
+        // Park uploads before validation so a mistake late in the form does
+        // not force the applicant to re-select every file. See
+        // App\Support\PendingUpload.
+        $pendingPhoto = \App\Support\PendingUpload::keep($request, 'profile_photo_path', self::PENDING_PHOTO_KEY);
+
+        $pendingDocs = [];
+        foreach (self::PENDING_DOC_FIELDS as $field => $sessionKey) {
+            $pendingDocs[$field] = \App\Support\PendingUpload::keep($request, $field, $sessionKey);
+        }
+
         // Validation
 
         $validated = $request->validate([
@@ -1628,7 +1638,7 @@ class UserController extends Controller
 
             'years_of_experience' => 'required|string',
 
-            'profile_photo_path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            'profile_photo_path' => ($pendingPhoto ? 'nullable' : 'required') . '|image|mimes:jpg,png,jpeg|max:2048',
 
             'address' => 'required|string|max:2048',
 
@@ -1658,7 +1668,7 @@ class UserController extends Controller
             'guarantor1_relationship'  => 'required|string|max:100',
             'guarantor1_occupation'    => 'required|string|max:255',
             'guarantor1_address'       => 'required|string|max:500',
-            'guarantor1_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
             'guarantor1_signature_path'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
 
             'guarantor2_first_name'    => 'required|string|max:255',
@@ -1669,7 +1679,7 @@ class UserController extends Controller
             'guarantor2_relationship'  => 'required|string|max:100',
             'guarantor2_occupation'    => 'required|string|max:255',
             'guarantor2_address'       => 'required|string|max:500',
-            'guarantor2_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor2_passport_path' => ($pendingDocs['guarantor2_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
             'guarantor2_signature_path'=> 'required|image|mimes:jpeg,png,jpg|max:2048',
 
 
@@ -1682,20 +1692,20 @@ class UserController extends Controller
             // File uploads for user
             $profilePhotoPath = null;
 
-            if ($request->hasFile('profile_photo_path')) {
+            if (\App\Support\PendingUpload::stored(self::PENDING_PHOTO_KEY)) {
 
-                $profilePhotoPath = time() . '_profile.' . $request->file('profile_photo_path')->getClientOriginalExtension();
+                $profilePhotoPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_PHOTO_KEY), PATHINFO_EXTENSION);
 
-                $request->file('profile_photo_path')->move(public_path('build/assets/image/profile_photo'), $profilePhotoPath);
+                $profilePhotoPath = \App\Support\PendingUpload::commit(self::PENDING_PHOTO_KEY, public_path('build/assets/image/profile_photo'), $profilePhotoPath);
             }
 
             $idCardPath = null;
 
-            if ($request->hasFile('id_card')) {
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['id_card'])) {
 
-                $idCardPath = time() . '_idcard.' . $request->file('id_card')->getClientOriginalExtension();
+                $idCardPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['id_card']), PATHINFO_EXTENSION);
 
-                $request->file('id_card')->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath, 'local');
+                $idCardPath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['id_card'], \App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath);
             }
 
             // Create User
@@ -1766,15 +1776,15 @@ class UserController extends Controller
 
             // File uploads for Guarantor 1
             $guarantor1PassportPath = null;
-            if ($request->hasFile('guarantor1_passport_path')) {
-                $guarantor1PassportPath = time() . '_guarantor1Passport.' . $request->file('guarantor1_passport_path')->getClientOriginalExtension();
-                $request->file('guarantor1_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor1PassportPath, 'local');
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_passport_path'])) {
+                $guarantor1PassportPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_passport_path']), PATHINFO_EXTENSION);
+                $guarantor1PassportPath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor1_passport_path'], \App\Support\SecureDocument::storageDirectory('passports'), $guarantor1PassportPath);
             }
 
             $guarantor1SignaturePath = null;
-            if ($request->hasFile('guarantor1_signature_path')) {
-                $guarantor1SignaturePath = time() . '_guarantor1Signature.' . $request->file('guarantor1_signature_path')->getClientOriginalExtension();
-                $request->file('guarantor1_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor1SignaturePath, 'local');
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_signature_path'])) {
+                $guarantor1SignaturePath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor1_signature_path']), PATHINFO_EXTENSION);
+                $guarantor1SignaturePath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor1_signature_path'], \App\Support\SecureDocument::storageDirectory('signatures'), $guarantor1SignaturePath);
             }
 
             // Create Guarantor 1
@@ -1794,15 +1804,15 @@ class UserController extends Controller
 
             // File uploads for Guarantor 2
             $guarantor2PassportPath = null;
-            if ($request->hasFile('guarantor2_passport_path')) {
-                $guarantor2PassportPath = time() . '_guarantor2Passport.' . $request->file('guarantor2_passport_path')->getClientOriginalExtension();
-                $request->file('guarantor2_passport_path')->storeAs(\App\Support\SecureDocument::storageDirectory('passports'), $guarantor2PassportPath, 'local');
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_passport_path'])) {
+                $guarantor2PassportPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_passport_path']), PATHINFO_EXTENSION);
+                $guarantor2PassportPath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor2_passport_path'], \App\Support\SecureDocument::storageDirectory('passports'), $guarantor2PassportPath);
             }
 
             $guarantor2SignaturePath = null;
-            if ($request->hasFile('guarantor2_signature_path')) {
-                $guarantor2SignaturePath = time() . '_guarantor2Signature.' . $request->file('guarantor2_signature_path')->getClientOriginalExtension();
-                $request->file('guarantor2_signature_path')->storeAs(\App\Support\SecureDocument::storageDirectory('signatures'), $guarantor2SignaturePath, 'local');
+            if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_signature_path'])) {
+                $guarantor2SignaturePath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['guarantor2_signature_path']), PATHINFO_EXTENSION);
+                $guarantor2SignaturePath = \App\Support\PendingUpload::commitToDisk(self::PENDING_DOC_FIELDS['guarantor2_signature_path'], \App\Support\SecureDocument::storageDirectory('signatures'), $guarantor2SignaturePath);
             }
 
             // Create Guarantor 2
