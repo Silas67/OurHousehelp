@@ -313,7 +313,14 @@ class BookingController extends Controller
     {
         $this->authorizeClient($serviceRequest);
 
-        // Redirect to shortlist as soon as ANY staff has accepted
+        // Client-managed clients contact and engage staff themselves, so waiting
+        // for a staff member to accept first adds a 24-96h delay for no benefit.
+        // Show them every matched candidate as soon as matching has produced any.
+        if ($serviceRequest->isClientManaged() && $serviceRequest->shortlistedStaff()->exists()) {
+            return redirect()->route('booking.shortlist', $serviceRequest->id);
+        }
+
+        // Company-managed: redirect to shortlist as soon as ANY staff has accepted
         $acceptedCount = $serviceRequest->shortlistedStaff()
             ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
             ->count();
@@ -371,9 +378,15 @@ class BookingController extends Controller
             }
         }
 
-        // Show ALL accepted staff — no minimum required
+        // Company-managed shows only staff who accepted the job. Client-managed
+        // shows every match, including those not yet responded to, because the
+        // client approaches the staff member directly.
+        $visibleStatuses = $serviceRequest->isClientManaged()
+            ? ['notified', 'accepted', 'shortlisted', 'selected']
+            : ['accepted', 'shortlisted', 'selected'];
+
         $shortlist = $serviceRequest->shortlistedStaff()
-            ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
+            ->whereIn('status', $visibleStatuses)
             ->with('staff')
             ->orderByDesc('match_score')
             ->get();

@@ -10,15 +10,22 @@
                 <span class="step completed"><i class="fas fa-check"></i> Service</span>
                 <span class="step completed"><i class="fas fa-check"></i> Staff Matched</span>
                 <span class="step active">3. Select Staff</span>
-                <span class="step">4. Payment</span>
+                @unless($serviceRequest->isClientManaged())
+                    <span class="step">4. Payment</span>
+                @endunless
             </div>
         </div>
 
+        @php $isClientManaged = $serviceRequest->isClientManaged(); @endphp
+
         <div class="text-center mb-4">
-            <h3 class="fw-bold">Available Staff</h3>
+            <h3 class="fw-bold">{{ $isClientManaged ? 'Staff Matching Your Request' : 'Available Staff' }}</h3>
             <p class="text-muted">
-                <span id="staffCount">{{ $shortlist->count() }}</span> staff available for your request.
-                More may accept as time goes on. Choose wisely — viewing a profile costs 1 credit.
+                <span id="staffCount">{{ $shortlist->count() }}</span>
+                {{ $isClientManaged
+                    ? 'staff match your requirements. You will contact and manage them directly.'
+                    : 'staff available for your request. More may accept as time goes on.' }}
+                Choose carefully — viewing full details costs 1 credit.
             </p>
             <div class="d-inline-flex align-items-center gap-2 bg-light border rounded px-3 py-1 mb-2">
                 <i class="fas fa-coins text-warning"></i>
@@ -41,13 +48,16 @@
             </div>
         @endif
 
-        {{-- Live updating indicator --}}
-        <div class="text-center mb-3">
-            <small class="text-muted">
-                <span class="spinner-grow spinner-grow-sm text-success me-1" role="status"></span>
-                Live — refreshes every 10 seconds as more staff accept
-            </small>
-        </div>
+        {{-- Live updating indicator. Client-managed sees every match immediately,
+             so there is nothing to wait for and no reason to keep polling. --}}
+        @unless($isClientManaged)
+            <div class="text-center mb-3">
+                <small class="text-muted">
+                    <span class="spinner-grow spinner-grow-sm text-success me-1" role="status"></span>
+                    Live — refreshes every 10 seconds as more staff accept
+                </small>
+            </div>
+        @endunless
 
         <div class="row g-4" id="staffGrid">
             @foreach($shortlist as $shortlistItem)
@@ -173,7 +183,10 @@ function noBack() {
     window.history.forward();
 }
 
-// Auto refresh every 30 seconds to show new accepted staff
+// Poll for newly accepted staff.
+// Client-managed sees every match up front, so there is nothing to poll
+// for - it would refetch the whole page every 10 seconds for no change.
+@unless($isClientManaged)
 let refreshTimer = setInterval(function() {
     fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
     .then(r => r.text())
@@ -194,5 +207,6 @@ let refreshTimer = setInterval(function() {
         }
     }).catch(() => {});
 }, 10000);
+@endunless
 </script>
 @endsection

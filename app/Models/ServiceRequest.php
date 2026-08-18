@@ -410,6 +410,18 @@ class ServiceRequest extends Model
             ->where('created_at', '>=', now()->subDays($withinDays));
     }
 
+    /**
+     * Is the client engaging and managing the staff member themselves?
+     *
+     * Client-managed bookings skip the company payment step entirely, and
+     * the client contacts the staff member directly - so they see every
+     * match rather than waiting for staff to accept first.
+     */
+    public function isClientManaged(): bool
+    {
+        return $this->management_plan === 'client-managed';
+    }
+
     public function isResumable(): bool
     {
         return in_array($this->matching_status, self::RESUMABLE_STATUSES, true)
