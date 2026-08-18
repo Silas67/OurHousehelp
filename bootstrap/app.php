@@ -43,19 +43,33 @@ $app = Application::configure(basePath: dirname(__DIR__))
 /*
  * Point public_path() at the directory the web server actually serves.
  *
- * This project is deployed on cPanel-style hosting where the document root is
- * <base>/public_html, while Laravel's default public path is <base>/public.
- * The two were different directories, so every public_path() call - uploads in
- * particular - wrote files somewhere no URL could ever reach them. New profile
- * photos, ID cards and receipts all landed in <base>/public and 404'd.
+ * Two deployment layouts are in play:
  *
- * Detecting the directory rather than hardcoding a path keeps local
- * development (which has no public_html) on the framework default.
+ *   1. Laravel's default - the document root is <base>/public.
+ *   2. This project's production host - the whole application sits INSIDE the
+ *      document root, so index.php and build/ are at <base> itself and
+ *      <base>/public is a leftover directory nothing serves.
+ *
+ * Under layout 2, public_path() resolved to <base>/public, so every upload was
+ * written where no URL could reach it: new profile photos, ID cards and
+ * receipts all 404'd while older files kept working.
+ *
+ * Detecting the layout rather than hardcoding a path keeps local development
+ * on the framework default. A sibling public_html/ is checked first for hosts
+ * that keep the application outside the document root.
  */
-$publicHtml = $app->basePath('public_html');
+$documentRoot = null;
 
-if (is_dir($publicHtml)) {
-    $app->usePublicPath($publicHtml);
+if (is_dir($app->basePath('public_html'))) {
+    // Application lives beside the document root.
+    $documentRoot = $app->basePath('public_html');
+} elseif (is_file($app->basePath('index.php')) && is_dir($app->basePath('build'))) {
+    // Application lives inside the document root.
+    $documentRoot = $app->basePath();
+}
+
+if ($documentRoot !== null) {
+    $app->usePublicPath($documentRoot);
 }
 
 // Bind our console kernel over the framework default. It supplies the

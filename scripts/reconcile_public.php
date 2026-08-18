@@ -25,8 +25,31 @@ if (!is_file($base . '/artisan')) {
     exit(1);
 }
 
+/*
+ * Work out where the web server actually serves from. Two layouts:
+ *   - application beside the document root  -> <base>/public_html
+ *   - application inside the document root  -> <base> itself
+ * The dead tree is <base>/public either way.
+ */
 $source = $base . '/public';
-$target = $base . '/public_html';
+
+if (is_dir($base . '/public_html')) {
+    $target = $base . '/public_html';
+} elseif (is_file($base . '/index.php') && is_dir($base . '/build')) {
+    $target = $base;
+} else {
+    fwrite(STDERR, "Could not identify the document root.
+");
+    fwrite(STDERR, "Expected either <base>/public_html or index.php + build/ at <base>.
+");
+    exit(1);
+}
+
+if (realpath($source) === realpath($target)) {
+    echo "Nothing to do - source and target are the same directory.
+";
+    exit(0);
+}
 
 echo "base:   $base\n";
 echo "source: $source\n";
