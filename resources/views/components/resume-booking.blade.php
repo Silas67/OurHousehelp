@@ -128,7 +128,7 @@
                  be reachable from here too - not only from inside the flow. This
                  navigates to the confirmation rather than cancelling outright, so a
                  stray click cannot destroy a booking. --}}
-            @if ($booking->payment_status !== 'Paid')
+            @if ($booking->canBeCancelled())
                 <a href="{{ route('booking.staff-matching', $booking->id) }}"
                    class="resume-dismiss"
                    title="Cancel this booking"

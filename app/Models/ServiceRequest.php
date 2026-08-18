@@ -422,6 +422,35 @@ class ServiceRequest extends Model
         return $this->management_plan === 'client-managed';
     }
 
+    /**
+     * Can the client still cancel this booking?
+     *
+     * Mirrors the guard in BookingController::cancelOrder(). Client-managed
+     * bookings carry payment_status = 'Paid' from creation even though no
+     * money changes hands, so testing that column alone wrongly treated them
+     * as paid and hid the cancel control - leaving the booking with no way
+     * out, and blocking the client from starting another.
+     */
+    public function canBeCancelled(): bool
+    {
+        if ($this->matching_status === 'cancelled' || $this->status === 'order_cancelled') {
+            return false;
+        }
+
+        return !($this->payment_status === 'Paid' && !$this->isClientManaged());
+    }
+
+    /**
+     * A client-managed booking is finished once the client says so - the
+     * company has no deployment step to complete on their behalf.
+     */
+    public function canBeCompletedByClient(): bool
+    {
+        return $this->isClientManaged()
+            && $this->selected_staff_id
+            && in_array($this->matching_status, ['staff_selected', 'approved'], true);
+    }
+
     public function isResumable(): bool
     {
         return in_array($this->matching_status, self::RESUMABLE_STATUSES, true)

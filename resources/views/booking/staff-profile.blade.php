@@ -325,6 +325,23 @@
                                         Go to Dashboard <i class="fas fa-home ms-2"></i>
                                     </a>
                                     <p class="text-muted small mt-2">Your booking is confirmed. Contact your staff directly.</p>
+
+                                    {{-- Closing the booking. Without this a client-managed
+                                         booking stays "in progress" forever, which blocks the
+                                         client from starting another one. --}}
+                                    @if($serviceRequest->canBeCompletedByClient())
+                                        <hr class="my-4">
+                                        <p class="text-muted small mb-2">
+                                            Finished with this booking? Close it to free yourself up to book again.
+                                        </p>
+                                        <form action="{{ route('booking.complete', $serviceRequest->id) }}" method="POST"
+                                              onsubmit="return confirm('Close this booking? You can start a new one afterwards. Your staff member keeps their contact details.');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-success btn-sm px-4">
+                                                <i class="fas fa-check-circle me-1"></i>Finish this booking
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                            @else
                                 {{-- Company Managed --}}

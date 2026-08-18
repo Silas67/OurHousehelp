@@ -1175,6 +1175,33 @@ class BookingController extends Controller
     }
 
     /**
+     * Client-managed: mark the booking finished.
+     *
+     * Company-managed bookings end when an admin marks them deployed. A
+     * client-managed booking has no such step, so it sat at 'staff_selected'
+     * forever - counting as in-flight and blocking the client from booking
+     * again, with no cancel available either because the flow sets
+     * payment_status = 'Paid' at creation.
+     */
+    public function completeBooking(Request $request, ServiceRequest $serviceRequest)
+    {
+        $this->authorizeClient($serviceRequest);
+
+        if (!$serviceRequest->canBeCompletedByClient()) {
+            return redirect()->route('dashboard')
+                ->with('error', 'This booking cannot be marked as finished.');
+        }
+
+        $serviceRequest->update([
+            'matching_status' => 'deployed',
+            'status' => 'completed',
+        ]);
+
+        return redirect()->route('dashboard')
+            ->with('success', 'Booking closed. You can start a new booking whenever you need one.');
+    }
+
+    /**
      * Ensure the authenticated user owns this service request.
      */
     private function authorizeClient(ServiceRequest $serviceRequest): void

@@ -1298,6 +1298,11 @@ Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('
     Route::post('/confirm-staff/{serviceRequest}/{shortlistId}', [BookingController::class, 'confirmStaffSelection'])
         ->name('confirm-staff');
 
+    // Client-managed bookings have no company deployment step, so the client
+    // closes them out themselves.
+    Route::post('/complete/{serviceRequest}', [BookingController::class, 'completeBooking'])
+        ->name('complete');
+
     Route::post('/cancel-order/{serviceRequest}', [BookingController::class, 'cancelOrder'])
         ->name('cancel-order');
 
