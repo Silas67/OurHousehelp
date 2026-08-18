@@ -88,6 +88,21 @@ foreach ($it as $item) {
     $rel = str_replace($source, '', $item->getPathname());
     $rel = ltrim(strtr($rel, [$sep => '/']), '/');
 
+    /*
+     * Never move development-only artefacts into the document root.
+     *
+     * `hot` is written by `npm run dev`; its presence makes Laravel's @vite
+     * emit http://localhost:5173/... URLs, so a live site suddenly tries to
+     * load its CSS and JS from a dev server that is not running. Moving a
+     * stale copy of it out of the dead public/ tree took the live styling
+     * down until it was deleted.
+     */
+    if (in_array($rel, ['hot', 'storage'], true) || str_starts_with($rel, 'hot/')) {
+        echo "  [skipped, dev-only] $rel
+";
+        continue;
+    }
+
     // Flatten build/assets/assets/... -> build/assets/...
     $relTarget = preg_replace('#^build/assets/assets/#', 'build/assets/', $rel);
 
