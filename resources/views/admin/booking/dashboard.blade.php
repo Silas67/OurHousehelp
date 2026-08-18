@@ -149,6 +149,7 @@
                                             'payment_pending'=> 'warning',
                                             'approved'       => 'success',
                                             'deployed'       => 'dark',
+                                            'cancelled'      => 'danger',
                                         ];
                                     @endphp
                                     <span class="badge bg-{{ $statusColors[$booking->matching_status] ?? 'secondary' }}">

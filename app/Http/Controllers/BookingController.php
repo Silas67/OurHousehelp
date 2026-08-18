@@ -1265,12 +1265,25 @@ class BookingController extends Controller
             }
         }
 
+        
         $user = Auth::user();
-        $user->addCredits(1, 'Credit refunded — booking #' . $serviceRequest->id . ' cancelled');
+
+        // Only refund if a credit was actually deducted for this booking
+        $wasDeducted = \App\Models\CreditTransaction::where('user_id', $user->id)
+            ->where('service_request_id', $serviceRequest->id)
+            ->where('type', 'deduction')
+            ->exists();
+
+        $message = 'Your booking has been cancelled.';
+
+        if ($wasDeducted) {
+            $user->addCredits(1, 'Credit refunded — booking #' . $serviceRequest->id . ' cancelled');
+            $message = 'Your booking has been cancelled and 1 credit has been refunded.';
+        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Your booking has been cancelled and 1 credit has been refunded.',
+            'message' => $message,
             'redirect' => route('dashboard'),
         ]);
     }

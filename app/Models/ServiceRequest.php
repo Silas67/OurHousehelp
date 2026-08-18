@@ -566,6 +566,7 @@ class ServiceRequest extends Model
             'payment_pending' => 'Awaiting Payment',
             'approved' => 'Approved',
             'deployed' => 'Staff Deployed',
+            'cancelled' => 'Cancelled',
         ];
 
         return $labels[$this->matching_status] ?? 'Unknown';
