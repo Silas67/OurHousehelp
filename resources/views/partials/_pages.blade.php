@@ -53,6 +53,8 @@
 @yield('personal-info')
 @yield('service_request')
 @yield('service_registration')
+@yield('corporate')
+
 
 {{-- coupon section --}}
 @yield('skilledworkerservice')

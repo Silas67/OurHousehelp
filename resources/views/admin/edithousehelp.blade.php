@@ -1019,28 +1019,21 @@
                                 </h6>
                                 @if($guarantor1)
                                     <div class="table-responsive">
-<table class="table table-sm">
-                                        <tr><th>Name</th><td>{{ $guarantor1->guarantor1_first_name }} {{ $guarantor1->guarantor1_last_name }}</td></tr>
-                                        <tr><th>Phone</th><td>{{ $guarantor1->guarantor1_phone }}</td></tr>
-                                        <tr><th>NIN</th><td>{{ $guarantor1->guarantor1_nin ?? 'Not provided' }}</td></tr>
-                                        <tr><th>Email</th><td>{{ $guarantor1->guarantor1_email ?? 'N/A' }}</td></tr>
-                                        <tr><th>Relationship</th><td>{{ $guarantor1->guarantor1_relationship }}</td></tr>
-                                        <tr><th>Occupation</th><td>{{ $guarantor1->guarantor1_occupation }}</td></tr>
-                                        <tr><th>Address</th><td>{{ $guarantor1->guarantor1_address }}</td></tr>
-                                    </table>
-</div>
+                                        <table class="table table-sm">
+                                            <tr><th>Name</th><td>{{ $guarantor1->guarantor1_first_name }} {{ $guarantor1->guarantor1_last_name }}</td></tr>
+                                            <tr><th>Phone</th><td>{{ $guarantor1->guarantor1_phone }}</td></tr>
+                                            <tr><th>NIN</th><td>{{ $guarantor1->guarantor1_nin ?? 'Not provided' }}</td></tr>
+                                            <tr><th>Email</th><td>{{ $guarantor1->guarantor1_email ?? 'N/A' }}</td></tr>
+                                            <tr><th>Relationship</th><td>{{ $guarantor1->guarantor1_relationship }}</td></tr>
+                                            <tr><th>Occupation</th><td>{{ $guarantor1->guarantor1_occupation }}</td></tr>
+                                            <tr><th>Address</th><td>{{ $guarantor1->guarantor1_address }}</td></tr>
+                                        </table>
+                                    </div>
                                     <div class="row mt-2">
                                         @if($guarantor1->guarantor1_passport_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Passport Photo</p>
                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor1->guarantor1_passport_path) }}"
-                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
-                                            </div>
-                                        @endif
-                                        @if($guarantor1->guarantor1_signature_path)
-                                            <div class="col-6 text-center">
-                                                <p class="small text-muted mb-1">Signature</p>
-                                                <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor1->guarantor1_signature_path) }}"
                                                     class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
                                             </div>
                                         @endif
@@ -1061,28 +1054,22 @@
                                 </h6>
                                 @if($guarantor2)
                                     <div class="table-responsive">
-<table class="table table-sm">
-                                        <tr><th>Name</th><td>{{ $guarantor2->guarantor2_first_name }} {{ $guarantor2->guarantor2_last_name }}</td></tr>
-                                        <tr><th>Phone</th><td>{{ $guarantor2->guarantor2_phone }}</td></tr>
-                                        <tr><th>NIN</th><td>{{ $guarantor2->guarantor2_nin ?? 'Not provided' }}</td></tr>
-                                        <tr><th>Email</th><td>{{ $guarantor2->guarantor2_email ?? 'N/A' }}</td></tr>
-                                        <tr><th>Relationship</th><td>{{ $guarantor2->guarantor2_relationship }}</td></tr>
-                                        <tr><th>Occupation</th><td>{{ $guarantor2->guarantor2_occupation }}</td></tr>
-                                        <tr><th>Address</th><td>{{ $guarantor2->guarantor2_address }}</td></tr>
-                                    </table>
-</div>
+                                        <table class="table table-sm">
+                                            <tr><th>Name</th><td>{{ $guarantor2->guarantor2_first_name }} {{ $guarantor2->guarantor2_last_name }}</td></tr>
+                                            <tr><th>Phone</th><td>{{ $guarantor2->guarantor2_phone }}</td></tr>
+                                            <tr><th>NIN</th><td>{{ $guarantor2->guarantor2_nin ?? 'Not provided' }}</td></tr>
+                                            <tr><th>Email</th><td>{{ $guarantor2->guarantor2_email ?? 'N/A' }}</td></tr>
+                                            <tr><th>Relationship</th><td>{{ $guarantor2->guarantor2_relationship }}</td></tr>
+                                            <tr><th>Occupation</th><td>{{ $guarantor2->guarantor2_occupation }}</td></tr>
+                                            <tr><th>Address</th><td>{{ $guarantor2->guarantor2_address }}</td></tr>
+                                        </table>
+                                    </div>
+                                    
                                     <div class="row mt-2">
                                         @if($guarantor2->guarantor2_passport_path)
                                             <div class="col-6 text-center">
                                                 <p class="small text-muted mb-1">Passport Photo</p>
                                                 <img src="{{ \App\Support\SecureDocument::url('passports', $guarantor2->guarantor2_passport_path) }}"
-                                                    class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
-                                            </div>
-                                        @endif
-                                        @if($guarantor2->guarantor2_signature_path)
-                                            <div class="col-6 text-center">
-                                                <p class="small text-muted mb-1">Signature</p>
-                                                <img src="{{ \App\Support\SecureDocument::url('signatures', $guarantor2->guarantor2_signature_path) }}"
                                                     class="img-thumbnail" style="width:120px;height:120px;object-fit:cover;" loading="lazy" decoding="async">
                                             </div>
                                         @endif
@@ -1162,4 +1149,3 @@
     </script>
 
 @endsection
-

@@ -47,6 +47,8 @@ class ServiceRequest extends Model
         'package_cost',             // Selected package cost
         'grand_cost',               // Final total (sum of all)
         'discounted_cost',          // If any discount applied
+        'management_subscription_fee',
+        'staff_verification_fee',
         'percentage',               // Optional percentage modifier
 
         // 🧾 Status and payment
@@ -161,7 +163,6 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(ServiceCharge::class, 'service_charge_id');
     }
-
 
     // In ServiceRequest model
     public function payment()
@@ -458,11 +459,28 @@ class ServiceRequest extends Model
     }
 
     /**
+     * Whether the ₦30,000 upfront payment has already been made and approved,
+     * leaving only the remaining balance outstanding.
+     *
+     * matching_status deliberately stays 'payment_pending' after this happens
+     * (see AdminController::approveBookingPayment()) since the booking isn't
+     * fully paid yet - so resumeUrl()/resumeLabel() need this extra check to
+     * tell "nothing paid yet" apart from "upfront paid, balance still due".
+     */
+    protected function hasCompletedDeferredPayment(): bool
+    {
+        return $this->bookingPayments()
+            ->where('status', 'completed')
+            ->where('is_installment', true)
+            ->where('installment_type', 'deferred')
+            ->exists();
+    }
+
+    /**
      * Where this booking should send the client to carry on.
      */
     public function resumeUrl(): string
     {
-        // A staff member already picked: go straight to their profile.
         if ($this->matching_status === 'staff_selected' && $this->selected_staff_id) {
             $shortlist = $this->shortlistedStaff()
                 ->where('staff_id', $this->selected_staff_id)
@@ -476,10 +494,19 @@ class ServiceRequest extends Model
         }
 
         if ($this->matching_status === 'payment_pending') {
-            return route('booking.payment', $this->id);
+            return $this->hasCompletedDeferredPayment()
+                ? route('booking.pay-remaining', $this->id)
+                : route('booking.payment', $this->id);
         }
 
-        // Anyone accepted yet? Then the shortlist is worth looking at.
+        // Company-managed: any matched staff is enough to show the shortlist.
+        if ($this->management_plan === 'company-managed') {
+            return $this->shortlistedStaff()->exists()
+                ? route('booking.shortlist', $this->id)
+                : route('booking.staff-matching', $this->id);
+        }
+
+        // Client-managed
         $accepted = $this->shortlistedStaff()
             ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
             ->count();
@@ -495,7 +522,9 @@ class ServiceRequest extends Model
     public function resumeLabel(): string
     {
         if ($this->matching_status === 'payment_pending') {
-            return 'Payment needed to confirm your booking';
+            return $this->hasCompletedDeferredPayment()
+                ? 'Remaining balance due — complete your payment'
+                : 'Payment needed to confirm your booking';
         }
 
         if ($this->matching_status === 'staff_selected') {
@@ -541,14 +570,16 @@ class ServiceRequest extends Model
             : (float) $this->grand_cost;
     }
 
-    public function getTotalBookingCostAttribute(): float
+   public function getTotalBookingCostAttribute(): float
     {
         return (float) $this->grand_cost
             + (float) $this->management_plan_cost
             + (float) $this->express_matching_cost
-            + ($this->monthly_protection ? (float) $this->monthly_protection_cost : 0);
+            + ($this->monthly_protection ? (float) $this->monthly_protection_cost : 0)
+            + (float) $this->management_subscription_fee
+            + (float) $this->staff_verification_fee;
     }
-
+    
     public function isStaffDetailsVisible(): bool
     {
         return $this->staff_details_released
@@ -581,4 +612,6 @@ class ServiceRequest extends Model
     {
         return $this->total_booking_cost - $this->installment_first_half;
     }
+
+
 }

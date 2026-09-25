@@ -1,3 +1,4 @@
+@include('partials.modals._ModalforLogout')
 <div class="sidebar" id="sidebar">
     <div class="p-0">
 
@@ -62,11 +63,18 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ Route::is('admin.corporate-inquiries') || Route::is('admin.corporate-inquiries.*') ? 'active' : '' }} d-flex align-items-center"
+                    href="{{ route('admin.corporate-inquiries') }}">
+                    <i class="fas fa-clipboard-list" style="margin-right:10px;width:16px;"></i>Corporate Bookings
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ Route::is('admin.locations') ? 'active' : '' }} d-flex align-items-center"
                     href="{{ route('admin.locations') }}">
                     <i class="fas fa-map-marker-alt" style="margin-right:10px;width:16px;"></i>Locations
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ Route::is('admin.replacements') ? 'active' : '' }} d-flex align-items-center"
                     href="{{ route('admin.replacements') }}">
@@ -132,6 +140,7 @@
                     <i class="fas fa-concierge-bell" style="margin-right:10px;width:16px;"></i>Services
                     <i class="fas fa-chevron-down ms-auto" style="font-size:11px;"></i>
                 </a>
+
                 <ul class="nav flex-column collapse ps-3" id="servicesSubmenu"
                     @if(Route::is('admin.services.create') || Route::is('admin.allservices') || Route::is('admin.skill.create') || Route::is('admin.allskill') || Route::is('newdiscount') || Route::is('discount')) class="show" @endif>
                     <li class="nav-item">
@@ -139,36 +148,43 @@
                             <i class="fas fa-plus" style="margin-right:10px;width:16px;"></i>Create Help Service
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('admin.allservices') ? 'active' : '' }} d-flex align-items-center" href="{{ route('admin.allservices') }}">
                             <i class="fas fa-th-list" style="margin-right:10px;width:16px;"></i>Manage Help Services
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('admin.service_charge.index') ? 'active' : '' }} d-flex align-items-center" href="{{ route('admin.service_charge.index') }}">
                             <i class="fas fa-list" style="margin-right:10px;width:16px;"></i>Service Charge
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('admin.extra-service-cost.index') ? 'active' : '' }} d-flex align-items-center" href="{{ route('admin.extra-service-cost.index') }}">
                             <i class="fas fa-list" style="margin-right:10px;width:16px;"></i>Extra Service
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('admin.skill.create') ? 'active' : '' }} d-flex align-items-center" href="{{ route('admin.skill.create') }}">
                             <i class="fas fa-plus" style="margin-right:10px;width:16px;"></i>Create Skill
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('admin.allskill') ? 'active' : '' }} d-flex align-items-center" href="{{ route('admin.allskill') }}">
                             <i class="fas fa-th-list" style="margin-right:10px;width:16px;"></i>Manage Skills
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('newdiscount') ? 'active' : '' }} d-flex align-items-center" href="{{ route('newdiscount') }}">
                             <i class="fas fa-plus" style="margin-right:10px;width:16px;"></i>Add Discount
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('discount') ? 'active' : '' }} d-flex align-items-center" href="{{ route('discount') }}">
                             <i class="fas fa-list" style="margin-right:10px;width:16px;"></i>Manage Discounts
@@ -183,6 +199,7 @@
                     <i class="fas fa-house" style="margin-right:10px;width:16px;"></i>Apartments
                     <i class="fas fa-chevron-down ms-auto" style="font-size:11px;"></i>
                 </a>
+
                 <ul class="nav flex-column collapse ps-3" id="apartmentsSubmenu"
                     @if(Route::is('newapartments') || Route::is('apartments')) class="show" @endif>
                     <li class="nav-item">
@@ -190,6 +207,7 @@
                             <i class="fas fa-plus" style="margin-right:10px;width:16px;"></i>Add Apartment
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('apartments') ? 'active' : '' }} d-flex align-items-center" href="{{ route('apartments') }}">
                             <i class="fas fa-list" style="margin-right:10px;width:16px;"></i>Manage Apartments
@@ -204,29 +222,34 @@
                     <i class="fas fa-user-group" style="margin-right:10px;width:16px;"></i>Users
                     <i class="fas fa-chevron-down ms-auto" style="font-size:11px;"></i>
                 </a>
+
                 <ul class="nav flex-column collapse ps-3" id="usersSubmenu"
                     @if(Route::is('adminapplicants') || Route::is('adminskilledworkers') || Route::is('adminclients') || Route::is('adminstaffs')) class="show" @endif>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('adminapplicants') ? 'active' : '' }} d-flex align-items-center" href="{{ route('adminapplicants') }}">
                             <i class="fas fa-broom" style="margin-right:10px;width:16px;"></i>House Helps
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('adminskilledworkers') ? 'active' : '' }} d-flex align-items-center" href="{{ route('adminskilledworkers') }}">
                             <i class="fas fa-toolbox" style="margin-right:10px;width:16px;"></i>Skilled Workers
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ Route::is('adminclients') ? 'active' : '' }} d-flex align-items-center" href="{{ route('adminclients') }}">
                             <i class="fas fa-user-tie" style="margin-right:10px;width:16px;"></i>Clients
                         </a>
                     </li>
+
                     @if(Auth::user()->user_role == 2)
-                    <li class="nav-item">
-                        <a class="nav-link {{ Route::is('adminstaffs') ? 'active' : '' }} d-flex align-items-center" href="{{ route('adminstaffs') }}">
-                            <i class="fas fa-user-cog" style="margin-right:10px;width:16px;"></i>Staffs
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ Route::is('adminstaffs') ? 'active' : '' }} d-flex align-items-center" href="{{ route('adminstaffs') }}">
+                                <i class="fas fa-user-cog" style="margin-right:10px;width:16px;"></i>Staffs
+                            </a>
+                        </li>
                     @endif
                 </ul>
             </li>
@@ -277,6 +300,7 @@
                     <i class="fas fa-question-circle" style="margin-right:10px;width:16px;"></i>FAQ Management
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ Route::is('notifications.index') ? 'active' : '' }} d-flex align-items-center" href="{{ route('notifications.index') }}">
                     <i class="fas fa-bell" style="margin-right:10px;width:16px;"></i>
@@ -286,6 +310,7 @@
                     @endif
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ Route::is('admin.settings') ? 'active' : '' }} d-flex align-items-center" href="{{ route('admin.settings') }}">
                     <i class="fas fa-cog" style="margin-right:10px;width:16px;"></i>Settings
@@ -294,11 +319,10 @@
 
             {{-- Logout --}}
             <li class="nav-item mt-2" style="border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">
-                <a class="nav-link text-danger d-flex align-items-center" href="{{ route('logout') }}"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    <i class="fas fa-sign-out-alt" style="margin-right:10px;width:16px;"></i>Logout
+                 <a class="nav-link text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+                    <i class="fas fa-sign-out-alt me-2"></i>Log Out
                 </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
+                <form id="logout-form-nav" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
             </li>
 
         </ul>
@@ -306,51 +330,51 @@
 </div>
 
 <style>
-#sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 260px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    background-color: #343a40;
-    z-index: 1050;
-    transition: transform 0.3s ease;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Hide sidebar off-screen on mobile by default */
-@media (max-width: 768px) {
     #sidebar {
-        transform: translateX(-100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        background-color: #343a40;
+        z-index: 1050;
+        transition: transform 0.3s ease;
+        -webkit-overflow-scrolling: touch;
     }
-    #sidebar.open {
-        transform: translateX(0);
+
+    /* Hide sidebar off-screen on mobile by default */
+    @media (max-width: 768px) {
+        #sidebar {
+            transform: translateX(-100%);
+        }
+        #sidebar.open {
+            transform: translateX(0);
+        }
     }
-}
 
-/* Scrollbar styling */
-#sidebar::-webkit-scrollbar { width: 5px; }
-#sidebar::-webkit-scrollbar-track { background: #343a40; }
-#sidebar::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
-#sidebar::-webkit-scrollbar-thumb:hover { background: #888; }
+    /* Scrollbar styling */
+    #sidebar::-webkit-scrollbar { width: 5px; }
+    #sidebar::-webkit-scrollbar-track { background: #343a40; }
+    #sidebar::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
+    #sidebar::-webkit-scrollbar-thumb:hover { background: #888; }
 
-/* Nav link colors */
-.nav-link { color: #fff !important; }
-.nav-link:hover { background-color: #495057; border-radius: 6px; }
-.active-parent > .nav-link { background-color: #0F6E56; border-radius: 6px; }
-.nav-link.active { background-color: #0a5240; border-radius: 6px; }
+    /* Nav link colors */
+    .nav-link { color: #fff !important; }
+    .nav-link:hover { background-color: #495057; border-radius: 6px; }
+    .active-parent > .nav-link { background-color: #0F6E56; border-radius: 6px; }
+    .nav-link.active { background-color: #0a5240; border-radius: 6px; }
 
-/* Overlay when sidebar open on mobile */
-#sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1049;
-}
-#sidebar-overlay.show { display: block; }
+    /* Overlay when sidebar open on mobile */
+    #sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1049;
+    }
+    #sidebar-overlay.show { display: block; }
 </style>
 
 {{-- Overlay to catch clicks outside sidebar --}}

@@ -266,6 +266,7 @@ class BookingCostService
         $isOneOff = $durationWeeks === 1;
 
         $staffSalary = round($monthlyRate);
+
         $markup = $this->getPlatformMarkup($managementPlan);
         $monthlyClientRate = round($monthlyRate * (1 + $markup / 100));
 
@@ -401,15 +402,34 @@ class BookingCostService
     }
 
     /**
-     * Calculate installment amounts (50/50 split).
+     * Calculate installment amounts for a deferred (part-now, part-later)
+     * booking payment.
+     *
+     * The first payment is meant to cover the company-managed upfront fees
+     * (Annual Registration + Staff Verification) so the client's first
+     * payment lines up with what those fees actually are - not an amount
+     * unrelated to them. $upfrontFees was already being passed in by every
+     * caller, but this method ignored it and hardcoded 30,000 regardless -
+     * meaning a client who'd already paid their Annual Registration Fee
+     * (upfrontFees = ₦20,000, verification only) was still shown ₦30,000
+     * as their first payment. It now uses $upfrontFees as the cap, falling
+     * back to a flat ₦30,000 only when there are no upfront fees to key off
+     * of (e.g. client-managed bookings, which have neither fee at all).
      */
-    public function calculateInstallmentAmounts(float $total): array
-    {
-        $firstHalf = round($total / 2, 2);
-        $secondHalf = $total - $firstHalf;
+    public function calculateInstallmentAmounts(
+        float $total,
+        float $upfrontFees = 0
+    ): array {
+        $total = round($total, 2);
+
+        $firstPaymentCap = $upfrontFees > 0 ? $upfrontFees : 30000.00;
+        $firstPayment = min($firstPaymentCap, $total);
+        $secondPayment = round($total - $firstPayment, 2);
+
         return [
-            'first_payment' => $firstHalf,
-            'second_payment' => $secondHalf,
+            'first_payment' => $firstPayment,
+            'second_payment' => $secondPayment,
+            'upfront_fees' => round($upfrontFees, 2),
             'total' => $total,
         ];
     }

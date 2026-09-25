@@ -14,12 +14,25 @@
      * to set them. Claiming those checks would be a false trust signal, so they
      * are listed as outstanding in 'full' mode and omitted entirely in 'compact'.
      */
+
+
+    $hasGuarantor1 = \App\Models\Guarantor::where(
+        'applicant_id',
+        $staff->id
+    )->exists();
+
+    $hasGuarantor2 = \App\Models\Guarantor2::where(
+        'applicant_id',
+        $staff->id
+    )->exists();
+
+
     $checks = [
         [
             'label' => 'NIN on file',
             'icon'  => 'fa-id-card',
             'done'  => filled($staff->nin ?? null),
-            'help'  => 'National Identity Number recorded',
+            'help'  => 'Natioh,jnal Identity Number recorded',
         ],
         [
             'label' => 'ID document',
@@ -30,14 +43,15 @@
         [
             'label' => 'Guarantor 1',
             'icon'  => 'fa-user-shield',
-            'done'  => (bool) ($staff->guarantors_forms_uploaded ?? false),
-            'help'  => 'First guarantor form submitted',
+            'done'  => $hasGuarantor1,
+            'help'  => 'First guarantor submitted',
         ],
+
         [
             'label' => 'Guarantor 2',
             'icon'  => 'fa-user-shield',
-            'done'  => (bool) ($staff->guarantors_forms_uploaded_2 ?? false),
-            'help'  => 'Second guarantor form submitted',
+            'done'  => $hasGuarantor2,
+            'help'  => 'Second guarantor submitted',
         ],
         [
             'label' => 'Admin approved',

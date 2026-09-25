@@ -73,8 +73,8 @@ return [
     |
     */
 
-    'home' => '/here',
-    // 'home' => '/dashboard',
+    // 'home' => '/here',
+    'home' => '/',
 
 
     /*

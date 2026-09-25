@@ -19,7 +19,6 @@ class Guarantor extends Model
         'guarantor1_occupation',
         'guarantor1_address',
         'guarantor1_passport_path',
-        'guarantor1_signature_path',
         'guarantor1_number',
         'guarantor1_nin'
     ];

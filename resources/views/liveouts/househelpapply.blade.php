@@ -6,12 +6,11 @@
     // Files parked by an earlier failed submit (see App\Support\PendingUpload).
     $kept_id_card = \App\Support\PendingUpload::stored('pending_id_card');
     $kept_guarantor1_passport_path = \App\Support\PendingUpload::stored('pending_g1_passport');
-    $kept_guarantor1_signature_path = \App\Support\PendingUpload::stored('pending_g1_signature');
     $kept_guarantor2_passport_path = \App\Support\PendingUpload::stored('pending_g2_passport');
-    $kept_guarantor2_signature_path = \App\Support\PendingUpload::stored('pending_g2_signature');
 @endphp
+
 @php
-$nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','FCT Abuja'];
+    $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Benue','Borno','Cross River','Delta','Ebonyi','Edo','Ekiti','Enugu','Gombe','Imo','Jigawa','Kaduna','Kano','Katsina','Kebbi','Kogi','Kwara','Lagos','Nasarawa','Niger','Ogun','Ondo','Osun','Oyo','Plateau','Rivers','Sokoto','Taraba','Yobe','Zamfara','FCT Abuja'];
 @endphp
 
 <section id="onetime" class="py-5 mb-5">
@@ -25,24 +24,6 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                     </div>
 
                     <div class="card-body p-4">
-
-                        {{-- Step Progress --}}
-                        <div class="d-flex align-items-center mb-4 px-2">
-                            @foreach([['1','Personal'], ['2','Location'], ['3','Professional'], ['4','Guarantor 1'], ['5','Guarantor 2'], ['6','Account']] as $i => [$num, $label])
-                            <div class="d-flex flex-column align-items-center" style="flex-shrink:0;">
-                                <div class="step-circle {{ $i === 0 ? 'step-active' : '' }}"
-                                    id="circle-{{ $num }}"
-                                    style="width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;border:2px solid {{ $i === 0 ? '#0F6E56' : '#dee2e6' }};background:{{ $i === 0 ? '#0F6E56' : 'white' }};color:{{ $i === 0 ? 'white' : '#adb5bd' }};transition:all 0.25s;">
-                                    <span class="circle-num">{{ $num }}</span>
-                                    <i class="fas fa-check circle-check" style="display:none;font-size:13px;"></i>
-                                </div>
-                                <div id="label-{{ $num }}" style="font-size:11px;margin-top:4px;color:{{ $i === 0 ? '#0F6E56' : '#adb5bd' }};font-weight:{{ $i === 0 ? '500' : '400' }};transition:all 0.25s;">{{ $label }}</div>
-                            </div>
-                            @if($i < 5)
-                            <div class="step-line" id="line-{{ $num }}" style="flex:1;height:2px;background:#dee2e6;margin:0 8px 20px;transition:background 0.3s;"></div>
-                            @endif
-                            @endforeach
-                        </div>
 
                         @if($errors->any())
                             <div class="alert alert-danger">
@@ -62,18 +43,14 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                             <input type="hidden" name="applicant_type" value="live-in">
 
                             {{-- ══ STEP 1: PERSONAL INFO ══ --}}
-                            <div class="step-panel" id="step-1">
+                            <div class="step-panel registration-section" id="step-1">
                                 <p class="text-muted small mb-4" style="border-left:3px solid #0F6E56; padding-left:10px;">
                                     <i class="fas fa-user me-1" style="color:#0F6E56;"></i>
-                                    <strong>Step 1 of 5 — Personal Information</strong>
+                                    <strong>Basic Information</strong>
                                 </p>
 
                                 <div class="row g-3">
-                                    {{-- Today's date (display only) --}}
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Date</label>
-                                        <input type="text" class="form-control bg-light" id="todayDate" readonly>
-                                    </div>
+                                    
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">First Name <span class="text-danger">*</span></label>
                                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
@@ -81,13 +58,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'')">
                                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Middle Name</label>
-                                        <input type="text" name="middle_name" class="form-control @error('middle_name') is-invalid @enderror"
-                                            value="{{ old('middle_name') }}"
-                                            oninput="this.value=this.value.replace(/[^a-zA-Z ]/g,'')">
-                                        @error('middle_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
+                                    
                                     <div class="col-md-4">
                                         <label class="form-label fw-semibold">Last Name <span class="text-danger">*</span></label>
                                         <input type="text" name="last_name" class="form-control @error('last_name') is-invalid @enderror"
@@ -111,28 +82,8 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         <small class="text-muted">Must be at least 18 years old</small>
                                         @error('dob')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Marital Status <span class="text-danger">*</span></label>
-                                        <select name="marital_status" class="form-select @error('marital_status') is-invalid @enderror" required onchange="validateSelect(this, 'marital_status')">
-                                            <option value="">Select status</option>
-                                            <option value="single" {{ old('marital_status') == 'single' ? 'selected' : '' }}>Single</option>
-                                            <option value="married" {{ old('marital_status') == 'married' ? 'selected' : '' }}>Married</option>
-                                            <option value="divorced" {{ old('marital_status') == 'divorced' ? 'selected' : '' }}>Divorced</option>
-                                            <option value="widowed" {{ old('marital_status') == 'widowed' ? 'selected' : '' }}>Widowed</option>
-                                        </select>
-                                        @error('marital_status')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Religion <span class="text-danger">*</span></label>
-                                        <select name="religion" class="form-select @error('religion') is-invalid @enderror" required onchange="validateSelect(this, 'religion')">
-                                            <option value="">Select religion</option>
-                                            <option value="christianity" {{ old('religion') == 'christianity' ? 'selected' : '' }}>Christianity</option>
-                                            <option value="islam" {{ old('religion') == 'islam' ? 'selected' : '' }}>Islam</option>
-                                            <option value="traditional" {{ old('religion') == 'traditional' ? 'selected' : '' }}>Traditional</option>
-                                            <option value="other" {{ old('religion') == 'other' ? 'selected' : '' }}>Other</option>
-                                        </select>
-                                        @error('religion')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
+                                    
+                                    
                                     <div class="col-md-4">
                                         @php
                                             // A photo parked by an earlier failed submit. The applicant
@@ -167,10 +118,10 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                             </div>
 
                             {{-- ══ STEP 2: CONTACT & LOCATION ══ --}}
-                            <div class="step-panel d-none" id="step-2">
+                            <div class="step-panel registration-section" id="step-2">
                                 <p class="text-muted small mb-4" style="border-left:3px solid #0F6E56; padding-left:10px;">
                                     <i class="fas fa-map-marker-alt me-1" style="color:#0F6E56;"></i>
-                                    <strong>Step 2 of 5 — Contact & Location</strong>
+                                    <strong>Residential Location</strong>
                                 </p>
 
                                 <div class="row g-3">
@@ -181,6 +132,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             oninput="this.value=this.value.replace(/\s/g,'')">
                                         @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Phone Number <span class="text-danger">*</span></label>
                                         <input type="tel" name="phone" id="phone-field"  class="form-control @error('phone') is-invalid @enderror"
@@ -189,63 +141,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             oninput="this.value=this.value.replace(/\D/g,'')">
                                         @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">Residential Address <span class="text-danger">*</span></label>
-                                        <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
-                                            value="{{ old('address') }}" required placeholder="House No, Street, Area" onblur="validateField(this, 'Residential address')">
-                                        @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-                                    {{-- Landmark sits directly under the address it qualifies,
-                                         full width, so the origin fields below start a clean row. --}}
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">Landmark <span class="text-danger">*</span></label>
-                                        <input type="text" name="landmark" class="form-control @error('landmark') is-invalid @enderror"
-                                            value="{{ old('landmark', $user->landmark ?? '') }}" required
-                                            placeholder="e.g. Near Total Filling Station" onblur="validateField(this, 'Landmark')">
-                                        @error('landmark')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
 
-                                    {{-- Origin: country, state and LGA read as one group, so they
-                                         share a row. --}}
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">Country of Origin <span class="text-danger">*</span></label>
-                                        <select name="country" class="form-select @error('country') is-invalid @enderror" required onchange="validateSelect(this, 'country of origin')">
-                                            <option value="">Select country</option>
-                                            @foreach(['Nigeria','United States','United Kingdom','Canada','Australia','Ghana','South Africa','Kenya','India','France','Germany','Italy','Spain'] as $c)
-                                            <option value="{{ $c }}" {{ old('country', Auth::user()->country ?? 'Nigeria') == $c ? 'selected' : '' }}>{{ $c }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('country')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">State of Origin <span class="text-danger">*</span></label>
-                                        <select name="state_of_origin" class="form-select @error('state_of_origin') is-invalid @enderror" required onchange="validateSelect(this, 'state of origin')">
-                                            <option value="">Select state</option>
-                                            @foreach($nigerianStates as $state)
-                                            <option value="{{ $state }}" {{ old('state_of_origin') == $state ? 'selected' : '' }}>{{ $state }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('state_of_origin')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label fw-semibold">LGA of Origin <span class="text-danger">*</span></label>
-                                        <input type="text" name="lga_of_origin" class="form-control @error('lga_of_origin') is-invalid @enderror"
-                                            value="{{ old('lga_of_origin', $user->lga_of_origin ?? '') }}" required
-                                            placeholder="e.g. Ikeja, Surulere" onblur="validateField(this, 'LGA of origin')">
-                                        @error('lga_of_origin')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-
-                                    {{-- Residence --}}
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Country of Residence <span class="text-danger">*</span></label>
-                                        <select name="country_of_residence" class="form-select @error('country_of_residence') is-invalid @enderror" required onchange="validateSelect(this, 'country of residence')">
-                                            <option value="">Select country</option>
-                                            @foreach(['Nigeria','United States','United Kingdom','Canada','Australia','Ghana','South Africa','Kenya','India','France','Germany','Italy','Spain'] as $c)
-                                            <option value="{{ $c }}" {{ old('country_of_residence', $user->country_of_residence ?? 'Nigeria') == $c ? 'selected' : '' }}>{{ $c }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('country_of_residence')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">State of Residence <span class="text-danger">*</span></label>
                                         <select name="state_of_residence" class="form-select @error('state_of_residence') is-invalid @enderror" required onchange="validateSelect(this, 'state of residence')">
@@ -256,14 +152,21 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         </select>
                                         @error('state_of_residence')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Residential Address <span class="text-danger">*</span></label>
+                                        <input type="text" name="address" class="form-control @error('address') is-invalid @enderror"
+                                            value="{{ old('address') }}" required placeholder="House No, Street, Area" onblur="validateField(this, 'Residential address')">
+                                        @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                    </div>
                                 </div>
                             </div>
 
                             {{-- ══ STEP 3: PROFESSIONAL ══ --}}
-                            <div class="step-panel d-none" id="step-3">
+                            <div class="step-panel registration-section" id="step-3">
                                 <p class="text-muted small mb-4" style="border-left:3px solid #0F6E56; padding-left:10px;">
                                     <i class="fas fa-briefcase me-1" style="color:#0F6E56;"></i>
-                                    <strong>Step 3 of 5 — Professional Details & Specialties</strong>
+                                    <strong>Work Information</strong>
                                 </p>
 
                                 <div class="row g-3 mb-4">
@@ -275,16 +178,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             oninput="this.value=this.value.replace(/\D/g,'')">
                                         @error('nin')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Highest Qualification <span class="text-danger">*</span></label>
-                                        <select name="qualification" class="form-select @error('qualification') is-invalid @enderror" required>
-                                            <option value="">Select qualification</option>
-                                            @foreach(['No formal education','Primary School','Junior Secondary (JSS3)','Senior Secondary (WAEC/NECO)','OND/NCE','HND/BSc','Postgraduate'] as $q)
-                                            <option value="{{ $q }}" {{ old('qualification') == $q ? 'selected' : '' }}>{{ $q }}</option>
-                                            @endforeach
-                                        </select>
-                                        @error('qualification')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
+                                    
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">Years of Experience <span class="text-danger">*</span></label>
                                         <select id="years_of_experience" name="years_of_experience"
@@ -307,12 +201,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                             value="{{ old('languages') }}" placeholder="e.g. English, Yoruba, Igbo">
                                         @error('languages')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label fw-semibold">About You / Work Summary <span class="text-danger">*</span></label>
-                                        <textarea name="bio" class="form-control @error('bio') is-invalid @enderror" rows="3"
-                                            placeholder="Tell clients a bit about yourself, your experience, and what makes you a great househelp..." onblur="validateField(this, 'Work summary')" required>{{ old('bio') }} </textarea>
-                                        @error('bio')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
+                                    
                                     <div class="col-md-6">
                                         <label class="form-label fw-semibold">ID Card Upload</label>
                                         <input type="file" name="id_card" class="form-control @error('id_card') is-invalid @enderror"
@@ -348,7 +237,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                     @endphp
                                     <div class="col-md-4 col-6">
                                         <label class="d-flex align-items-center gap-2 p-3 rounded border h-100 specialty-card {{ $isChecked ? 'border-success' : '' }} {{ $isLocked ? 'bg-light' : '' }}"
-                                            style="cursor:{{ $isLocked ? 'not-allowed' : 'pointer' }};transition:all 0.15s;">
+                                            style="cursor:{{ $isLocked ? 'not-allowed' : 'pointer' }};transition:all 0.50s;">
                                             <input type="checkbox"
                                                 name="specialties[]"
                                                 value="{{ $serviceName }}"
@@ -372,10 +261,10 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                             </div>
 
                             {{-- ══ STEP 6: ACCOUNT ══ --}}
-                            <div class="step-panel d-none" id="step-6">
+                            <div class="step-panel registration-section" id="step-6">
                                 <p class="text-muted small mb-4" style="border-left:3px solid #0F6E56; padding-left:10px;">
                                     <i class="fas fa-lock me-1" style="color:#0F6E56;"></i>
-                                    <strong>Step 6 of 6 — Create Your Account</strong>
+                                    <strong>Account</strong>
                                 </p>
 
                                 <div class="row g-3">
@@ -404,15 +293,38 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                     {{-- Summary --}}
                                     <div class="col-12">
                                         <div class="p-3 rounded" style="background:#f0fff4;border:1px solid #9FE1CB;">
+
                                             <div class="fw-semibold mb-2" style="color:#0F6E56;font-size:14px;">
                                                 <i class="fas fa-check-circle me-2"></i>Review before submitting
                                             </div>
+
                                             <div class="small text-muted">
-                                                <strong>Name:</strong> <span id="s-name">—</span> &bull;
-                                                <strong>Email:</strong> <span id="s-email">—</span> &bull;
-                                                <strong>State:</strong> <span id="s-state">—</span> &bull;
-                                                <strong>NIN:</strong> <span id="s-nin">—</span>
+                                                <div class="mb-1">
+                                                    <strong>Name:</strong>
+                                                    <span id="s-name">—</span>
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <strong>Email:</strong>
+                                                    <span id="s-email">—</span>
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <strong>Phone:</strong>
+                                                    <span id="s-phone">—</span>
+                                                </div>
+
+                                                <div class="mb-1">
+                                                    <strong>State:</strong>
+                                                    <span id="s-state">—</span>
+                                                </div>
+
+                                                <div>
+                                                    <strong>NIN:</strong>
+                                                    <span id="s-nin">—</span>
+                                                </div>
                                             </div>
+                                            
                                         </div>
                                     </div>
 
@@ -437,11 +349,12 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                             </div>
 
                             {{-- ══ STEP 5: GUARANTOR ══ --}}
-                            <div class="step-panel d-none" id="step-4">
+                            <div class="step-panel registration-section" id="step-4">
                                 <p class="text-muted small mb-4" style="border-left:3px solid #0F6E56; padding-left:10px;">
                                     <i class="fas fa-user-shield me-1" style="color:#0F6E56;"></i>
-                                    <strong>Step 4 of 6 — Guarantor 1 Details</strong>
+                                    <strong>Verification — Guarantor 1</strong>
                                 </p>
+
                                 <div class="alert alert-info" style="font-size:13px;">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Your guarantor must be someone who can vouch for your character and conduct — a relative, employer, religious leader, or community member.
@@ -515,7 +428,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         @error('guarantor1_occupation')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold">Address <span class="text-danger">*</span></label>
                                         <input type="text" name="guarantor1_address"
                                             class="form-control @error('guarantor1_address') is-invalid @enderror"
@@ -524,7 +437,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         @error('guarantor1_address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 offset-md-3">
                                         <label class="form-label fw-semibold">Passport Photo <span class="text-danger">*</span></label>
                                         <input type="file" name="guarantor1_passport_path"
                                             class="form-control @error('guarantor1_passport_path') is-invalid @enderror"
@@ -537,35 +450,19 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                                 <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
                                             </div>
                                         @endif
-                                        <div class="form-text">JPG/PNG, max 2MB</div>
+                                        <div class="form-text">JPG/PNG.</div>
                                         @error('guarantor1_passport_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Signature <span class="text-danger">*</span></label>
-                                        <input type="file" name="guarantor1_signature_path"
-                                            class="form-control @error('guarantor1_signature_path') is-invalid @enderror"
-                                            accept="image/jpeg,image/png,image/jpg" @unless($kept_guarantor1_signature_path) required @endunless
-                                            onchange="validateFile(this, 'guarantor signature')">
-                                        @if($kept_guarantor1_signature_path)
-                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
-                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
-                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
-                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
-                                            </div>
-                                        @endif
-                                        <div class="form-text">JPG/PNG, max 2MB</div>
-                                        @error('guarantor1_signature_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
 
                             {{-- ══ STEP 5: GUARANTOR 2 ══ --}}
-                            <div class="step-panel d-none" id="step-5">
+                            <div class="step-panel registration-section" id="step-5">
                                 <p class="text-muted small mb-4" style="border-left:3px solid #0F6E56; padding-left:10px;">
                                     <i class="fas fa-user-shield me-1" style="color:#0F6E56;"></i>
-                                    <strong>Step 5 of 6 — Guarantor 2 Details</strong>
+                                    <strong>Verification — Guarantor 2</strong>
                                 </p>
+
                                 <div class="alert alert-info" style="font-size:13px;">
                                     <i class="fas fa-info-circle me-2"></i>
                                     Your second guarantor must be a different person from Guarantor 1 — another relative, employer, religious leader, or community member.
@@ -639,7 +536,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         @error('guarantor2_occupation')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
-                                    <div class="col-12">
+                                    <div class="col-md-6">
                                         <label class="form-label fw-semibold">Address <span class="text-danger">*</span></label>
                                         <input type="text" name="guarantor2_address"
                                             class="form-control @error('guarantor2_address') is-invalid @enderror"
@@ -648,7 +545,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                         @error('guarantor2_address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
 
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 offset-md-3">
                                         <label class="form-label fw-semibold">Passport Photo <span class="text-danger">*</span></label>
                                         <input type="file" name="guarantor2_passport_path"
                                             class="form-control @error('guarantor2_passport_path') is-invalid @enderror"
@@ -661,46 +558,17 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
                                                 <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
                                             </div>
                                         @endif
-                                        <div class="form-text">JPG/PNG, max 2MB</div>
+                                        <div class="form-text">JPG/PNG.</div>
                                         @error('guarantor2_passport_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label class="form-label fw-semibold">Signature <span class="text-danger">*</span></label>
-                                        <input type="file" name="guarantor2_signature_path"
-                                            class="form-control @error('guarantor2_signature_path') is-invalid @enderror"
-                                            accept="image/jpeg,image/png,image/jpg" @unless($kept_guarantor2_signature_path) required @endunless
-                                            onchange="validateFile(this, 'guarantor 2 signature')">
-                                        @if($kept_guarantor2_signature_path)
-                                            <div class="d-flex align-items-center gap-2 mt-2 p-2 rounded"
-                                                 style="background:#E1F5EE;border:1px solid #9FE1CB;">
-                                                <i class="fas fa-check-circle" style="color:#0F6E56;"></i>
-                                                <small style="color:#0F6E56;">Saved - choose a file only if you want to replace it.</small>
-                                            </div>
-                                        @endif
-                                        <div class="form-text">JPG/PNG, max 2MB</div>
-                                        @error('guarantor2_signature_path')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
                             </div>
 
-                            {{-- Navigation Buttons --}}
-                            <div class="d-flex justify-content-between mt-4 pt-3 border-top">
-                                <button type="button" class="btn btn-outline-secondary px-4" id="prevBtn"
-                                    onclick="changeStep(-1)" style="display:none;">
-                                    <i class="fas fa-arrow-left me-2"></i>Previous
+                            <div class="registration-submit text-center mt-4 pt-4 border-top">
+                                <button type="submit" class="btn px-5 py-2" id="submitBtn"
+                                    style="background:#0F6E56;color:white;font-weight:500;">
+                                    <i class="fas fa-user-plus me-2"></i>Create Account
                                 </button>
-                                <div class="ms-auto">
-                                    <button type="button" class="btn px-5 py-2" id="nextBtn" onclick="changeStep(1)"
-                                        style="background:#0F6E56;color:white;font-weight:500;">
-                                        Next <i class="fas fa-arrow-right ms-2"></i>
-                                    </button>
-                                    <button type="submit" class="btn px-5 py-2 d-none" id="submitBtn"
-                                        onclick="this.disabled=true;this.innerHTML='<i class=\'fas fa-spinner fa-spin me-2\'></i>Registering...';this.form.submit();"
-                                        style="background:#0F6E56;color:white;font-weight:500;">
-                                        <i class="fas fa-user-plus me-2"></i>Create Account
-                                    </button>
-                                </div>
                             </div>
 
                         </form>
@@ -724,7 +592,7 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
         <div class="modal-content">
             <div class="modal-header" style="background:#0F6E56;color:white;">
                 <h5 class="modal-title fw-bold">Staff Service Agreement</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body text-start">
                 <p><strong>Between</strong><br><strong>Our House Help Services</strong><br>AND<br><strong>The Staff</strong></p>
@@ -765,218 +633,92 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
 </div>
 
 <style>
-    .step-panel { animation: fadeIn 0.2s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .form-control:focus, .form-select:focus { border-color: #0F6E56; box-shadow: 0 0 0 3px rgba(15,110,86,0.1); }
-    .specialty-card:hover:not(.bg-light) { border-color: #0F6E56 !important; background: #f0fff4; }
-    .specialty-card input:checked ~ div .fw-semibold { color: #0F6E56; }
+    .registration-section {
+        display: block !important;
+        margin-bottom: 2rem;
+    }
+
+    #registerForm {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Visual order: Basic → Location → Work → Guarantors → Account */
+    #registerForm #step-1 { order: 1; }
+    #registerForm #step-2 { order: 2; }
+    #registerForm #step-3 { order: 3; }
+    #registerForm #step-4 { order: 4; }
+    #registerForm #step-5 { order: 5; }
+    #registerForm #step-6 { order: 6; }
+    #registerForm .registration-submit { order: 7; }
+
+    .registration-section + .registration-section {
+        padding-top: 1rem;
+        border-top: 1px solid #eef1f4;
+    }
+
+    .registration-section-header h5 { color:#14243d; }
+
+    /* The current registration collects only the fields shown on this page. */
+    /* Navigation is no longer used on the one-page form. */
+    #prevBtn, #nextBtn { display:none !important; }
+
+    .form-control:focus, .form-select:focus {
+        border-color:#0F6E56;
+        box-shadow:0 0 0 3px rgba(15,110,86,0.1);
+    }
+    .specialty-card:hover:not(.bg-light) {
+        border-color:#0F6E56 !important;
+        background:#f0fff4;
+    }
+    .specialty-card input:checked ~ div .fw-semibold { color:#0F6E56; }
+
+    @media (max-width: 767px) {
+        .registration-section { margin-bottom: 1.5rem; }
+    }
 </style>
 
 <script>
-
-    let currentStep = 1;
-    const totalSteps = 6;
-
-    document.getElementById('todayDate').value = new Date().toLocaleDateString('en-US', {weekday:'short',year:'numeric',month:'short',day:'numeric'});
-
-    function changeStep(dir) {
-        if (dir === 1 && !validateStep(currentStep)) return;
-
-        markDone(currentStep);
-        currentStep += dir;
-        if (currentStep < 1) currentStep = 1;
-
-        document.querySelectorAll('.step-panel').forEach(p => p.classList.add('d-none'));
-        document.getElementById('step-' + currentStep).classList.remove('d-none');
-
-        setActive(currentStep);
-
-        document.getElementById('prevBtn').style.display = currentStep > 1 ? 'inline-block' : 'none';
-
-        if (currentStep === totalSteps) {
-            document.getElementById('nextBtn').classList.add('d-none');
-            document.getElementById('submitBtn').classList.remove('d-none');
-            updateSummary();
-        } else {
-            document.getElementById('nextBtn').classList.remove('d-none');
-            document.getElementById('submitBtn').classList.add('d-none');
-        }
-
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function setActive(step) {
-        const c = document.getElementById('circle-' + step);
-        const l = document.getElementById('label-' + step);
-        c.style.background = '#0F6E56';
-        c.style.borderColor = '#0F6E56';
-        c.style.color = 'white';
-        c.querySelector('.circle-num').style.display = 'block';
-        c.querySelector('.circle-check').style.display = 'none';
-        l.style.color = '#0F6E56';
-        l.style.fontWeight = '500';
-    }
-
-    function markDone(step) {
-        const c = document.getElementById('circle-' + step);
-        const l = document.getElementById('label-' + step);
-        const line = document.getElementById('line-' + step);
-        c.style.background = '#1D9E75';
-        c.style.borderColor = '#1D9E75';
-        c.querySelector('.circle-num').style.display = 'none';
-        c.querySelector('.circle-check').style.display = 'block';
-        l.style.color = '#1D9E75';
-        if (line) line.style.background = '#1D9E75';
-    }
-
-    function validateStep(step) {
-        const panel = document.getElementById('step-' + step);
-        let valid = true;
-        let firstInvalid = null;
-
-        // Remove all previous error messages
-        panel.querySelectorAll('.step-error-msg').forEach(e => e.remove());
-        panel.querySelectorAll('.is-invalid').forEach(f => f.classList.remove('is-invalid'));
-
-        // Check every field in the panel, not just required ones: a wrongly
-        // formatted optional value should be caught here too, rather than
-        // surviving to the server and bouncing the whole form back.
-        panel.querySelectorAll('input, select, textarea').forEach(f => {
-            if (f.disabled || f.type === 'hidden' || f.type === 'button') return;
-
-            const isRequired = f.hasAttribute('required');
-            const isEmpty = f.type === 'file' ? f.files.length === 0 : !f.value.trim();
-
-            // Nothing to check on an untouched optional field.
-            if (!isRequired && isEmpty) return;
-
-            let problem = null;
-
-            if (isEmpty) {
-                problem = getFieldLabel(f) + ' is required.';
-            } else if (typeof f.checkValidity === 'function' && !f.checkValidity()) {
-                // Native constraint validation covers type=email, minlength,
-                // maxlength, pattern, min/max and step.
-                problem = f.validationMessage || ('Please check ' + getFieldLabel(f) + '.');
-            } else if (f.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(f.value.trim())) {
-                problem = 'Enter a valid email address, e.g. name@example.com.';
-            } else if (f.name === 'phone' && !/^0\d{10}$/.test(f.value.trim())) {
-                problem = 'Enter an 11-digit phone number starting with 0.';
-            } else if (f.name === 'nin' && !/^\d{11}$/.test(f.value.trim())) {
-                problem = 'NIN must be exactly 11 digits.';
-            }
-
-            if (problem) {
-                f.classList.add('is-invalid');
-                valid = false;
-
-                const existing = f.parentElement.querySelector('.step-error-msg');
-                if (!existing) {
-                    const msg = document.createElement('div');
-                    msg.className = 'step-error-msg text-danger small mt-1';
-                    msg.style.fontWeight = '500';
-                    msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>' + problem;
-                    f.parentElement.appendChild(msg);
-                }
-
-                if (!firstInvalid) firstInvalid = f;
-            }
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        // Specialty cards remain interactive on the single page.
+        document.querySelectorAll('.specialty-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                if (e.target.tagName === 'INPUT') return;
+                const cb = this.querySelector('input[type="checkbox"]');
+                if (!cb || cb.disabled) return;
+                cb.checked = !cb.checked;
+                this.style.borderColor = cb.checked ? '#0F6E56' : '';
+                this.style.background = cb.checked ? '#f0fff4' : '';
+            });
         });
 
-        // Step 3: check specialties
-        if (step === 3) {
-            const checked = panel.querySelectorAll('input[name="specialties[]"]:checked');
-            if (checked.length === 0) {
-                valid = false;
-                const specialtySection = panel.querySelector('.row.g-3');
-                if (specialtySection) {
-                    const existing = specialtySection.querySelector('.step-error-msg');
-                    if (!existing) {
-                        const msg = document.createElement('div');
-                        msg.className = 'step-error-msg text-danger small mt-2 mb-2';
-                        msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>Please select at least one specialty.';
-                        specialtySection.parentElement.insertBefore(msg, specialtySection);
-                    }
+        const form = document.getElementById('registerForm');
+        if (form) {
+            form.addEventListener('submit', function () {
+                const btn = document.getElementById('submitBtn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Registering...';
                 }
+            });
+        }
+
+        // Live duplicate checks for the fields we still collect.
+        checkDuplicate('email-field', 'email', 'Email address');
+        checkDuplicate('phone-field', 'phone', 'Phone number');
+        checkDuplicate('nin-field', 'nin', 'NIN');
+
+        // Wire up the live summary
+        ['name', 'last_name', 'email', 'phone', 'state_of_residence', 'nin'].forEach(fieldName => {
+            const el = document.querySelector(`[name="${fieldName}"]`);
+            if (el) {
+                el.addEventListener('input', updateSummary);
+                el.addEventListener('change', updateSummary);
             }
-        }
-
-        if (!valid && firstInvalid) {
-            firstInvalid.scrollIntoView({behavior: 'smooth', block: 'center'});
-            firstInvalid.focus();
-
-            // Shake the Next button
-            const btn = document.getElementById('nextBtn');
-            btn.style.transition = 'transform 0.1s';
-            let count = 0;
-            const shake = setInterval(() => {
-                btn.style.transform = count % 2 === 0 ? 'translateX(-4px)' : 'translateX(4px)';
-                count++;
-                if (count > 5) { clearInterval(shake); btn.style.transform = ''; }
-            }, 60);
-        }
-
-        return valid;
-    }
-
-    function getFieldLabel(field) {
-        // Try to find a label for this field
-        const id = field.id || field.name;
-        let label = document.querySelector('label[for="' + id + '"]');
-        if (label) return label.textContent.replace('*', '').trim();
-
-        // Try closest label text
-        const wrapper = field.closest('.col-md-4, .col-md-6, .col-12');
-        if (wrapper) {
-            const lbl = wrapper.querySelector('label');
-            if (lbl) return lbl.textContent.replace('*', '').trim();
-        }
-
-        // Fallback to field name formatted
-        return field.name
-            .replace(/_/g, ' ')
-            .replace(/\w/g, c => c.toUpperCase());
-    }
-
-    function updateSummary() {
-        const n = (document.querySelector('[name="name"]')?.value || '') + ' ' + (document.querySelector('[name="last_name"]')?.value || '');
-        document.getElementById('s-name').textContent = n.trim() || '—';
-        document.getElementById('s-email').textContent = document.querySelector('[name="email"]')?.value || '—';
-        document.getElementById('s-state').textContent = document.querySelector('[name="state_of_residence"]')?.value || '—';
-        document.getElementById('s-nin').textContent = (document.querySelector('[name="nin"]')?.value || '—').replace(/./g, (c, i) => i < 3 || i > 8 ? c : '*');
-    }
-
-    function previewIdCard(input) {
-        if (input.files?.[0] && input.files[0].type.startsWith('image/')) {
-            const r = new FileReader();
-            r.onload = e => {
-                const p = document.getElementById('idcard-preview');
-                p.src = e.target.result;
-                p.style.display = 'block';
-            };
-            r.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function previewPhoto(input) {
-        if (input.files?.[0]) {
-            const r = new FileReader();
-            r.onload = e => {
-                const p = document.getElementById('photoPreview');
-                p.src = e.target.result;
-                p.style.display = 'block';
-            };
-            r.readAsDataURL(input.files[0]);
-        }
-    }
-
-    function togglePwd(id) {
-        const f = document.getElementById(id);
-        const i = f.nextElementSibling;
-        f.type = f.type === 'password' ? 'text' : 'password';
-        i.classList.toggle('fa-eye');
-        i.classList.toggle('fa-eye-slash');
-    }
+        });
+        updateSummary();
+    });
 
     function checkDuplicate(fieldId, type, labelText) {
         const field = document.getElementById(fieldId);
@@ -1025,43 +767,67 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
         field.parentElement.querySelector('.duplicate-ok')?.remove();
     }
 
-    checkDuplicate('email-field', 'email', 'Email address');
-    checkDuplicate('phone-field', 'phone', 'Phone number');
-    checkDuplicate('nin-field', 'nin', 'NIN');
+    function previewIdCard(input) {
+        if (input.files?.[0] && input.files[0].type.startsWith('image/')) {
+            const r = new FileReader();
+            r.onload = e => {
+                const p = document.getElementById('idcard-preview');
+                if (p) { p.src = e.target.result; p.style.display = 'block'; }
+            };
+            r.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewPhoto(input) {
+        if (input.files?.[0]) {
+            const r = new FileReader();
+            r.onload = e => {
+                const p = document.getElementById('photoPreview');
+                if (p) { p.src = e.target.result; p.style.display = 'block'; }
+            };
+            r.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function togglePwd(id) {
+        const f = document.getElementById(id);
+        const i = f?.nextElementSibling;
+        if (!f) return;
+        f.type = f.type === 'password' ? 'text' : 'password';
+        if (i) {
+            i.classList.toggle('fa-eye');
+            i.classList.toggle('fa-eye-slash');
+        }
+    }
 
     function validateAge(field) {
         const dob = new Date(field.value);
         const today = new Date();
         const age = today.getFullYear() - dob.getFullYear();
         const monthDiff = today.getMonth() - dob.getMonth();
-        const isUnder18 = age < 18 || (age === 18 && monthDiff < 0) || 
-                        (age === 18 && monthDiff === 0 && today.getDate() < dob.getDate());
+        const isUnder18 = age < 18 || (age === 18 && monthDiff < 0) ||
+            (age === 18 && monthDiff === 0 && today.getDate() < dob.getDate());
 
-        // Remove any previous error
-        const existing = field.parentElement.querySelector('.dob-error');
-        if (existing) existing.remove();
+        field.parentElement.querySelector('.dob-error')?.remove();
         field.classList.remove('is-invalid', 'is-valid');
 
+        const msg = document.createElement('div');
+        msg.className = 'dob-error small mt-1';
         if (isUnder18) {
             field.classList.add('is-invalid');
-            const msg = document.createElement('div');
-            msg.className = 'dob-error text-danger small mt-1';
+            msg.classList.add('text-danger');
             msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>You must be at least 18 years old to register.';
-            field.parentElement.appendChild(msg);
         } else {
             field.classList.add('is-valid');
-            const ok = document.createElement('div');
-            ok.className = 'dob-error text-success small mt-1';
-            ok.innerHTML = '<i class="fas fa-check-circle me-1"></i>Age verified.';
-            field.parentElement.appendChild(ok);
+            msg.classList.add('text-success');
+            msg.innerHTML = '<i class="fas fa-check-circle me-1"></i>Age verified.';
         }
+        field.parentElement.appendChild(msg);
     }
 
     function validateGender(field) {
-        const existing = field.parentElement.querySelector('.gender-error');
-        if (existing) existing.remove();
+        field.parentElement.querySelector('.gender-error')?.remove();
         field.classList.remove('is-invalid', 'is-valid');
-
         if (!field.value) {
             field.classList.add('is-invalid');
             const msg = document.createElement('div');
@@ -1074,10 +840,8 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
     }
 
     function validateSelect(field, labelText) {
-        const existing = field.parentElement.querySelector('.select-error');
-        if (existing) existing.remove();
+        field.parentElement.querySelector('.select-error')?.remove();
         field.classList.remove('is-invalid', 'is-valid');
-
         if (!field.value) {
             field.classList.add('is-invalid');
             const msg = document.createElement('div');
@@ -1090,10 +854,8 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
     }
 
     function validateField(field, labelText) {
-        const existing = field.parentElement.querySelector('.field-error');
-        if (existing) existing.remove();
+        field.parentElement.querySelector('.field-error')?.remove();
         field.classList.remove('is-invalid', 'is-valid');
-
         if (!field.value.trim()) {
             field.classList.add('is-invalid');
             const msg = document.createElement('div');
@@ -1109,72 +871,52 @@ $nigerianStates = ['Abia','Adamawa','Akwa Ibom','Anambra','Bauchi','Bayelsa','Be
         const existing = field.parentElement.querySelector('.file-error');
         if (existing) existing.remove();
         field.classList.remove('is-invalid', 'is-valid');
-
-            if (field.files.length === 0) {
-        field.classList.add('is-invalid');
-        const msg = document.createElement('div');
-        msg.className = 'file-error text-danger small mt-1';
-        msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>Please upload your ' + labelText + '.';
-        field.parentElement.appendChild(msg);
-        return;
-    }
-
-    const file = field.files[0];
-    const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-
-    if (file.size > maxSize) {
-        field.classList.add('is-invalid');
-        field.value = ''; // Clear the file
-        const sizeMB = (file.size / 1024 / 1024).toFixed(1);
-        const msg = document.createElement('div');
-        msg.className = 'file-error text-danger small mt-1';
-        msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>File is too large (' + sizeMB + 'MB). Maximum allowed size is 2MB. Please compress your image and try again.';
-        field.parentElement.appendChild(msg);
-        return;
-    }
-
-    field.classList.add('is-valid');
-    }
-
-    // Specialty card toggle
-    document.querySelectorAll('.specialty-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            if (e.target.tagName === 'INPUT') return;
-            const cb = this.querySelector('input[type="checkbox"]');
-            if (cb.disabled) return;
-            cb.checked = !cb.checked;
-            this.style.borderColor = cb.checked ? '#0F6E56' : '';
-            this.style.background = cb.checked ? '#f0fff4' : '';
-        });
-    });
-
-    // Handle server validation errors — jump to the right step
-    @if($errors->any())
-        let targetStep = 1;
-        @if($errors->has('password') || $errors->has('password_confirmation') || $errors->has('terms_accepted'))
-            targetStep = 6;
-        @elseif($errors->has('guarantor2_first_name') || $errors->has('guarantor2_last_name') || $errors->has('guarantor2_phone') || $errors->has('guarantor2_nin') || $errors->has('guarantor2_email') || $errors->has('guarantor2_passport_path') || $errors->has('guarantor2_signature_path'))
-            targetStep = 5;
-        @elseif($errors->has('guarantor1_first_name') || $errors->has('guarantor1_last_name') || $errors->has('guarantor1_phone') || $errors->has('guarantor1_nin') || $errors->has('guarantor1_passport_path') || $errors->has('guarantor1_signature_path'))
-            targetStep = 4;
-        @elseif($errors->has('nin') || $errors->has('qualification') || $errors->has('years_of_experience') || $errors->has('bio') || $errors->has('id_card'))
-            targetStep = 3;
-        @elseif($errors->has('email') || $errors->has('phone') || $errors->has('address') || $errors->has('state_of_residence') || $errors->has('state_of_origin'))
-            targetStep = 2;
-        @endif
-
-        for (let i = 1; i < targetStep; i++) markDone(i);
-        currentStep = targetStep;
-        document.querySelectorAll('.step-panel').forEach(p => p.classList.add('d-none'));
-        document.getElementById('step-' + currentStep).classList.remove('d-none');
-        setActive(currentStep);
-        if (currentStep > 1) document.getElementById('prevBtn').style.display = 'inline-block';
-        if (currentStep === 6) {
-            document.getElementById('nextBtn').classList.add('d-none');
-            document.getElementById('submitBtn').classList.remove('d-none');
+        if (field.files.length === 0) {
+            field.classList.add('is-invalid');
+            const msg = document.createElement('div');
+            msg.className = 'file-error text-danger small mt-1';
+            msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>Please upload your ' + labelText + '.';
+            field.parentElement.appendChild(msg);
+            return;
         }
-    @endif
+        const file = field.files[0];
+        const maxSize = 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+            field.classList.add('is-invalid');
+            field.value = '';
+            const sizeMB = (file.size / 1024 / 1024).toFixed(1);
+            const msg = document.createElement('div');
+            msg.className = 'file-error text-danger small mt-1';
+            msg.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i>File is too large (' + sizeMB + 'MB). Maximum allowed size is 10MB. Please compress your image and try again.';
+            field.parentElement.appendChild(msg);
+            return;
+        }
+        field.classList.add('is-valid');
+    }
 
+    function updateSummary() {
+        const firstName =
+            document.querySelector('[name="name"]')?.value || '';
+
+        const lastName =
+            document.querySelector('[name="last_name"]')?.value || '';
+
+        document.getElementById('s-name').textContent =
+            `${firstName} ${lastName}`.trim() || '—';
+
+        document.getElementById('s-email').textContent =
+            document.querySelector('[name="email"]')?.value || '—';
+
+        document.getElementById('s-phone').textContent =
+            document.querySelector('[name="phone"]')?.value || '—';
+
+        document.getElementById('s-state').textContent =
+            document.querySelector('[name="state_of_residence"]')?.value || '—';
+
+        document.getElementById('s-nin').textContent =
+            (document.querySelector('[name="nin"]')?.value || '—')
+                .replace(/./g, (c, i) => i < 3 || i > 8 ? c : '*');
+    }
 </script>
 
 @endsection

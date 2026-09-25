@@ -46,6 +46,16 @@ use App\Models\RequestClick;
 
 use App\Models\Skill;
 
+use Illuminate\Support\Facades\Storage;
+
+use Intervention\Image\Laravel\Facades\Image;
+
+use Intervention\Image\ImageManager;
+
+use Intervention\Image\Drivers\Gd\Driver;
+
+
+
 
 
 class UserController extends Controller
@@ -179,16 +189,11 @@ class UserController extends Controller
             }
         }
 
-
-
         // Get the latest active subscription
 
         $subscription = Payment::where('user_id', $clientId)
-
             ->where('status', 'approved')
-
             ->latest()
-
             ->first();
 
 
@@ -196,7 +201,6 @@ class UserController extends Controller
         // Set subscription limit (default to 5 if no active subscription)
 
         $subscriptionLimit = $subscription ? $subscription->num_searches : 5;
-
 
 
         // Calculate remaining searches
@@ -272,194 +276,6 @@ class UserController extends Controller
 
         return redirect()->route('applicant.guarantors', ['user_id' => Auth::user()->id, 'name' => Auth::user()->name])->with('success', 'Specialties updated successfully.');
     }
-
-    // public function bookings(Request $request)
-
-    // {
-
-    //     // Fetch paginated service requests with assigned house helps, assistants, and client details
-
-    //     $orders = ServiceRequest::with(['client', 'houseHelp', 'houseHelpAssistant'])
-
-    //         ->orderByDesc('created_at')
-
-    //         ->paginate(10);
-
-
-
-    //     // Fetch confirmation assignments for assigned house helps and assistants
-
-    //     $assignments = Confirmation::with(['serviceRequest.client', 'admin', 'houseHelp', 'houseHelpAssist'])
-
-    //         ->orderByDesc('created_at')
-
-    //         ->paginate(10); // Add pagination to assignments
-
-
-
-    //     // Fetch all packages and apartments
-
-    //     $packages = Package::all();
-
-    //     $apartments = Apartments::all();
-
-
-
-    //     // Count total service requests
-
-    //     $totalServiceRequests = ServiceRequest::count();
-
-
-
-    //     return view('bookings', compact(
-
-    //         'orders',
-
-    //         'packages',
-
-    //         'apartments',
-
-    //         'totalServiceRequests',
-
-    //         'assignments'
-
-    //     ));
-
-    // }
-
-
-
-
-
-    // public function bookings(Request $request)
-
-    // {
-
-    //     // Fetch only the current user's service requests
-
-    //     $orders = ServiceRequest::with(['client', 'houseHelp', 'houseHelpAssistant'])
-
-    //         ->where('user_id', Auth::id())
-
-    //         ->orderByDesc('created_at')
-
-    //         ->paginate(10);
-
-
-
-    //     // Fetch confirmations only for the current user's service requests
-
-    //     $assignments = Confirmation::with(['serviceRequest.client', 'admin', 'houseHelp', 'houseHelpAssist'])
-
-    //         ->whereHas('serviceRequest', function ($query) {
-
-    //             $query->where('user_id', Auth::id());
-
-    //         })
-
-    //         ->orderByDesc('created_at')
-
-    //         ->paginate(10);
-
-
-
-    //     // Fetch confirmation assignments for assigned house helps and assistants
-
-    //     // $assignments = Confirmation::with(['serviceRequest.client', 'admin', 'houseHelp', 'houseHelpAssist'])
-
-    //     //     ->where('service_request_id', Auth::id())
-
-    //     //     ->orderByDesc('created_at')
-
-    //     //     ->paginate(10); // Add pagination to assignments
-
-
-
-
-
-    //     $packages = Package::all();
-
-    //     $apartments = Apartments::all();
-
-    //     $totalServiceRequests = ServiceRequest::where('user_id', Auth::id())->count();
-
-
-
-    //     return view('bookings', compact(
-
-    //         'orders',
-
-    //         'packages',
-
-    //         'apartments',
-
-    //         'totalServiceRequests',
-
-    //         'assignments'
-
-    //     ));
-
-    // }
-
-
-
-    // public function bookings(Request $request)
-
-    // {
-
-    //     // Fetch only the current user's service requests (orders)
-
-    //     $orders = ServiceRequest::with(['client', 'houseHelp', 'houseHelpAssistant'])
-
-    //         ->where('user_id', Auth::id())
-
-    //         ->orderByDesc('created_at')
-
-    //         ->paginate(10, ['*'], 'orders_page'); // Added custom page name
-
-
-
-    //     // Fetch confirmations only for the current user's service requests (assignments)
-
-    //     $assignments = Confirmation::with(['serviceRequest.client', 'admin', 'houseHelp', 'houseHelpAssist'])
-
-    //         ->whereHas('serviceRequest', function ($query) {
-
-    //             $query->where('user_id', Auth::id());
-
-    //         })
-
-    //         ->orderByDesc('created_at')
-
-    //         ->paginate(10, ['*'], 'assignments_page'); // Added custom page name
-
-
-
-    //     $packages = Package::all();
-
-    //     $apartments = Apartments::all();
-
-    //     $totalServiceRequests = ServiceRequest::where('user_id', Auth::id())->count();
-
-
-
-    //     return view('bookings', compact(
-
-    //         'orders',
-
-    //         'packages',
-
-    //         'apartments',
-
-    //         'totalServiceRequests',
-
-    //         'assignments'
-
-    //     ));
-
-    // }
-
-
 
     public function bookings(Request $request)
 
@@ -1201,9 +1017,7 @@ class UserController extends Controller
     }
 
     public function househelpapply()
-
     {
-
         // Block logged-in clients
         if (Auth::check() && Auth::user()->account_type === 'client') {
             return redirect()->route('dashboard')
@@ -1274,7 +1088,7 @@ class UserController extends Controller
 
             'years_of_experience' => 'required|string',
 
-            'profile_photo_path' => ($pendingPhoto ? 'nullable' : 'required') . '|image|mimes:jpg,png,jpeg|max:2048',
+            'profile_photo_path' => ($pendingPhoto ? 'nullable' : 'required') . '|image|mimes:jpg,png,jpeg|max:10240',
 
             'address' => 'required|string|max:2048',
 
@@ -1282,7 +1096,7 @@ class UserController extends Controller
 
             'nin' => 'required|string|unique:users|size:11',
 
-            'id_card' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'id_card' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
 
             'bio' => 'required|string',
 
@@ -1315,9 +1129,9 @@ class UserController extends Controller
 
             'guarantor1_address' => 'required|string|max:500',
 
-            'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:5120',
 
-            'guarantor1_signature_path' => ($pendingDocs['guarantor1_signature_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_signature_path' => ($pendingDocs['guarantor1_signature_path'] ?? null ? 'nullable' : 'nullable') . '|image|mimes:jpeg,png,jpg|max:5120', 
 
 
 
@@ -1339,9 +1153,9 @@ class UserController extends Controller
 
             'guarantor2_address' => 'nullable|string|max:500',
 
-            'guarantor2_passport_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor2_passport_path' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
 
-            'guarantor2_signature_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor2_signature_path' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
 
         ]);
 
@@ -1605,60 +1419,35 @@ class UserController extends Controller
         }
 
         // Validation
-
         $validated = $request->validate([
 
             // Validation for the applicant's personal details
 
             'name' => 'required|string|max:255',
-
-            'middle_name' => 'nullable|string|max:255',
-
+            // 'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
-
             'email' => 'required|email|unique:users',
-
             'applicant_type' => 'required|string|in:live-in,live-out,semi-live-in',
-
             'phone' => 'required|string|size:11|unique:users',
-
             'gender' => 'required|string|in:male,female',
-
             'dob' => ['required', 'date', 'before_or_equal:' . now()->subYears(18)->format('Y-m-d')],
-
-            'state_of_origin' => 'required|string|max:255',
-
+            // 'state_of_origin' => 'required|string|max:255',
             'state_of_residence' => 'required|string|max:255',
-
-            'lga_of_origin' => 'required|string|max:255',
-
-            'country' => 'required|string|max:255',
-
-            'country_of_residence' => 'required|string|max:255',
-
+            // 'lga_of_origin' => 'required|string|max:255',
+            // 'country' => 'required|string|max:255',
+            // 'country_of_residence' => 'required|string|max:255',
             'years_of_experience' => 'required|string',
-
-            'profile_photo_path' => ($pendingPhoto ? 'nullable' : 'required') . '|image|mimes:jpg,png,jpeg|max:2048',
-
+            'profile_photo_path' => ($pendingPhoto ? 'nullable' : 'required') . '|image|mimes:jpg,png,jpeg|max:10240',
             'address' => 'required|string|max:2048',
-
-            'landmark' => 'required|string|max:255',
-
+            // 'landmark' => 'required|string|max:255',
             'nin' => 'required|string|unique:users|size:11',
-
-            'id_card' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-
-            'bio' => 'required|string',
-
+            'id_card' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
+            // 'bio' => 'required|string',
             'specialties' => 'required|array',
-
             'password' => 'required|string|min:8|confirmed',
-
-            'religion'       => 'required|string|max:100',
-
-            'marital_status' => 'required|in:single,married,divorced,widowed',
-
-            'qualification'  => 'required|string|max:100',
+            // 'religion'       => 'required|string|max:100',
+            // 'marital_status' => 'required|in:single,married,divorced,widowed',
+            // 'qualification'  => 'required|string|max:100',
 
             'guarantor1_first_name'    => 'required|string|max:255',
             'guarantor1_last_name'     => 'required|string|max:255',
@@ -1668,8 +1457,8 @@ class UserController extends Controller
             'guarantor1_relationship'  => 'required|string|max:100',
             'guarantor1_occupation'    => 'required|string|max:255',
             'guarantor1_address'       => 'required|string|max:500',
-            'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
-            'guarantor1_signature_path' => ($pendingDocs['guarantor1_signature_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_passport_path' => ($pendingDocs['guarantor1_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:10240',
+            'guarantor1_signature_path' => ($pendingDocs['guarantor1_signature_path'] ?? null ? 'nullable' : 'nullable') . '|image|mimes:jpeg,png,jpg|max:10240',
 
             'guarantor2_first_name'    => 'required|string|max:255',
             'guarantor2_last_name'     => 'required|string|max:255',
@@ -1679,8 +1468,8 @@ class UserController extends Controller
             'guarantor2_relationship'  => 'required|string|max:100',
             'guarantor2_occupation'    => 'required|string|max:255',
             'guarantor2_address'       => 'required|string|max:500',
-            'guarantor2_passport_path' => ($pendingDocs['guarantor2_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
-            'guarantor2_signature_path' => ($pendingDocs['guarantor2_signature_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor2_passport_path' => ($pendingDocs['guarantor2_passport_path'] ?? null ? 'nullable' : 'required') . '|image|mimes:jpeg,png,jpg|max:10240',
+            'guarantor2_signature_path' => ($pendingDocs['guarantor2_signature_path'] ?? null ? 'nullable' : 'nullable') . '|image|mimes:jpeg,png,jpg|max:10240',
 
 
         ]);
@@ -1689,16 +1478,27 @@ class UserController extends Controller
 
         try {
 
+
             // File uploads for user
             $profilePhotoPath = null;
 
-            if (\App\Support\PendingUpload::stored(self::PENDING_PHOTO_KEY)) {
+            if ($request->hasFile('profile_photo_path')) {
 
-                $profilePhotoPath = \Illuminate\Support\Str::random(40) . '.' . pathinfo(\App\Support\PendingUpload::stored(self::PENDING_PHOTO_KEY), PATHINFO_EXTENSION);
+                $profilePhotoPath = time() . '_profile.jpg';
 
-                $profilePhotoPath = \App\Support\PendingUpload::commit(self::PENDING_PHOTO_KEY, public_path('build/assets/image/profile_photo'), $profilePhotoPath);
+                // Read the uploaded image
+                $image = Image::read($request->file('profile_photo_path'));
+
+                // Resize while maintaining the original aspect ratio
+                $image->scale(width: 800);
+
+                // Convert to JPEG and compress
+                $image->toJpeg(75)->save(
+                    public_path('build/assets/image/profile_photo/' . $profilePhotoPath)
+                );
             }
 
+            
             $idCardPath = null;
 
             if (\App\Support\PendingUpload::stored(self::PENDING_DOC_FIELDS['id_card'])) {
@@ -1713,7 +1513,7 @@ class UserController extends Controller
 
                 'name' => $validated['name'],
 
-                'middle_name' => $validated['middle_name'] ?? null,
+                // 'middle_name' => $validated['middle_name'] ?? null,
 
                 'last_name' => $validated['last_name'] ?? null,
 
@@ -1729,15 +1529,15 @@ class UserController extends Controller
 
                 'dob' => $validated['dob'],
 
-                'state_of_origin' => $validated['state_of_origin'] ?? null,
+                // 'state_of_origin' => $validated['state_of_origin'] ?? null,
 
                 'state_of_residence' => $validated['state_of_residence'] ?? null,
 
-                'lga_of_origin' => $validated['lga_of_origin'] ?? null,
+                // 'lga_of_origin' => $validated['lga_of_origin'] ?? null,
 
-                'country' => $validated['country'] ?? null,
+                // 'country' => $validated['country'] ?? null,
 
-                'country_of_residence' => $validated['country_of_residence'] ?? null,
+                // 'country_of_residence' => $validated['country_of_residence'] ?? null,
 
                 'years_of_experience' => $validated['years_of_experience'] ?? null,
 
@@ -1745,23 +1545,25 @@ class UserController extends Controller
 
                 'address' => $validated['address'] ?? null,
 
-                'landmark' => $validated['landmark'] ?? null,
+                // 'landmark' => $validated['landmark'] ?? null,
 
                 'nin' => $validated['nin'] ?? null,
 
                 'id_card' => $idCardPath,
 
-                'bio' => $validated['bio'] ?? null,
+                // 'bio' => $validated['bio'] ?? null,
 
                 'specialties' => $validated['specialties'] ?? null,
 
                 'password' => bcrypt($validated['password']),
 
-                'religion'       => $validated['religion'] ?? null,
+                // 'religion' => $validated['religion'] ?? null,
 
-                'marital_status' => $validated['marital_status'] ?? null,
+                // 'marital_status' => $validated['marital_status'] ?? null,
 
-                'qualification'  => $validated['qualification'] ?? null,
+                // 'qualification'  => $validated['qualification'] ?? null,
+
+                'languages' => $validated['languages'] ?? null,
 
                 'form_completed' => true,
 
@@ -2073,15 +1875,5 @@ class UserController extends Controller
 
         return redirect()->route('payments.paymentoption')->with('success', 'Your details and service request have been saved successfully. Proceed to make payment.');
     }
-
-
-
-    // public function saveUserData(Request $request)
-
-    // {
-
-    //     dd($request->all()); // Dump all incoming request data
-
-    // }
 
 }

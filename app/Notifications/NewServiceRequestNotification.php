@@ -13,7 +13,7 @@ class NewServiceRequestNotification extends Notification
 
     protected $serviceRequest;
 
-    public function __construct(ServiceRequest $serviceRequest)
+    public function construct(ServiceRequest $serviceRequest)
     {
         $this->serviceRequest = $serviceRequest;
     }

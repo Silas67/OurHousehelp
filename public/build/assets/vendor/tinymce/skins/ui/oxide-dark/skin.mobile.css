@@ -297,7 +297,7 @@
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-serialised-dialog .tinymce-mobile-serialised-dialog-chain {
   display: flex;
   height: 100%;
-  transition: left cubic-bezier(0.4, 0, 1, 1) 0.15s;
+  transition: left cubic-bezier(0.4, 0, 1, 1) 0.50s;
   width: 100%;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-serialised-dialog .tinymce-mobile-serialised-dialog-chain .tinymce-mobile-serialised-dialog-screen {

@@ -1,11 +1,18 @@
 const sidebar = document.getElementById('sidebar');
 const burgerIcon = document.getElementById('burger-icon');
+const icon = burgerIcon.querySelector('i');
 
-// Toggle sidebar when burger icon is clicked
 burgerIcon.addEventListener('click', () => {
     sidebar.classList.toggle('active');
-});
 
+    if (sidebar.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-xmark');
+    } else {
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-bars');
+    }
+});
 // Toggle submenu and handle close button
 document.addEventListener('DOMContentLoaded', () => {
     const closeSidebarBtn = document.getElementById('close-sidebar');
@@ -59,11 +66,17 @@ document.addEventListener('DOMContentLoaded', () => {
 // Function to close the sidebar and reset submenus
 function closeSidebar() {
     sidebar.classList.remove('active');
+
+    icon.classList.remove('fa-xmark');
+    icon.classList.add('fa-bars');
+
     document.querySelectorAll('.nav-item .submenu').forEach(submenu => {
-        submenu.classList.remove('active'); // Close all open submenus
+        submenu.classList.remove('active');
+
         const chevron = submenu.previousElementSibling.querySelector('.submenu-icon');
+
         if (chevron) {
-            chevron.classList.remove('rotate'); // Reset chevron rotation
+            chevron.classList.remove('rotate');
         }
     });
 }

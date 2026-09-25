@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Jetstream\Jetstream;
@@ -47,17 +48,31 @@ class CreateNewUser implements CreatesNewUsers
             'account_type' => $input['account_type']
         ]);
 
-        // Send welcome email
-        Mail::to($user->email)->send(new WelcomeEmail($user));
+        // Send welcome email.
+        //
+        // Wrapped so a mail-server outage (a suspended sending account, an
+        // SMTP timeout, etc.) can't take down registration itself - the user
+        // record above is already created and committed by this point, so
+        // failing to email them is a logged inconvenience, not a reason to
+        // throw a 500 back at someone who just successfully signed up.
+        try {
+            Mail::to($user->email)->send(new WelcomeEmail($user));
+        } catch (\Exception $e) {
+            Log::error('CreateNewUser: Failed to send welcome email to ' . $user->email . ': ' . $e->getMessage());
+        }
 
-        // Notify all admins of new registration
-        $admins = \App\Models\User::where('user_role', '>=', 1)->get();
-        foreach ($admins as $admin) {
-            if ($user->account_type === 'client') {
-                $admin->notify(new \App\Notifications\NewClientRegisteredNotification($user));
-            } else {
-                $admin->notify(new \App\Notifications\NewStaffRegisteredNotification($user));
+        // Notify all admins of new registration - same reasoning as above.
+        try {
+            $admins = \App\Models\User::where('user_role', '>=', 1)->get();
+            foreach ($admins as $admin) {
+                if ($user->account_type === 'client') {
+                    $admin->notify(new \App\Notifications\NewClientRegisteredNotification($user));
+                } else {
+                    $admin->notify(new \App\Notifications\NewStaffRegisteredNotification($user));
+                }
             }
+        } catch (\Exception $e) {
+            Log::error('CreateNewUser: Failed to notify admins of new registration for user ' . $user->id . ': ' . $e->getMessage());
         }
 
         // Return the user

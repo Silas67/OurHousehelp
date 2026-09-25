@@ -84,6 +84,8 @@ use App\Http\Controllers\ServiceRequestController;
 
 use App\Http\Controllers\BookingController;
 
+use App\Http\Controllers\CorporateInquiryController;
+
 // NOTE: an unauthenticated GET /clear-cache route used to live here and ran
 // config:clear, cache:clear, view:clear and route:clear for any caller.
 // Clear caches from the CLI (`php artisan optimize:clear`) or as part of the
@@ -502,7 +504,14 @@ Route::middleware(['admin', 'auth'])->group(function () {
     Route::delete('/admin/skill/{skill}', [SkillController::class, 'destroyskill'])->name('admin.skill.delete');
 
 
+     Route::get('/admin/corporate-inquiries', [AdminController::class, 'corporateInquiries'])
+        ->name('admin.corporate-inquiries');
 
+    Route::get('/admin/corporate-inquiries/{id}', [AdminController::class, 'showCorporateInquiry'])
+        ->name('admin.corporate-inquiries.show');
+        
+    Route::post('/admin/corporate-inquiries/{id}/status', [AdminController::class, 'updateCorporateInquiryStatus'])
+        ->name('admin.corporate-inquiries.update-status');
 
 
     Route::post('/admin/services', [ServiceController::class, 'servicestore'])->name('admin.services.store');
@@ -610,6 +619,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/push/unsubscribe', [App\Http\Controllers\PushSubscriptionController::class, 'unsubscribe'])->name('push.unsubscribe');
 
     Route::get('/verify-bank-account', [UserController::class, 'verifyBankAccount'])->name('bank.verify')->middleware('auth');
+
+    Route::get('messages', [ContactMessageController::class, 'clientmessage'])->name('clientmessage');
 });
 
 // Paystack webhook — no auth needed, called by Paystack servers
@@ -744,7 +755,7 @@ Route::middleware(['client', 'auth', 'check.credits'])->group(function () {
 
     Route::post('/admin/reply/{id}/mark-as-read', [ContactMessageController::class, 'markAsReadReply'])->name('contactmessage.markAsReadReply');
 
-    Route::get('messages', [ContactMessageController::class, 'clientmessage'])->name('clientmessage');
+    
 
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard')->middleware('auth');
 
@@ -837,9 +848,7 @@ Route::middleware(['applicant'])->group(function () {
 
     Route::put('/account/update', [ApplicantController::class, 'accountupdate'])->name('account.update')->middleware('auth');
 
-
-
-    // Live-Out Service Request offers
+   // Live-Out Service Request offers
 
     Route::get('/liveout-service-requests', [LiveOutServiceRequestController::class, 'index'])->name('applicant.liveOutServiceRequests')->middleware('auth', 'check.applicant.completion');
 
@@ -1068,12 +1077,10 @@ Route::patch('/users/{id}/update-status', [UserController::class, 'updateUserSta
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
-
-
-
 Route::get('/apply_as_househelp', [UserController::class, 'applyhousehelp'])->name('applyashousehelp');
 
 Route::get('/apply', [UserController::class, 'househelpapply'])->name('househelpapply');
+
 
 // storeliveouts (old full form with guarantors)
 Route::post('/liveouts/register-full', [UserController::class, 'storeliveouts'])->name('applicants.register');
@@ -1085,14 +1092,17 @@ Route::post('/liveouts/register', [UserController::class, 'storeliveins'])->name
 
 
 // Route to show the service request form
-
 Route::get('/services/{id}/request', [ServiceController::class, 'requestForm'])->name('services.request');
 
-
-
 // Route to handle the form submission
-
 Route::post('/services/{id}/request', [ServiceController::class, 'submitRequest'])->name('services.submitRequest');
+
+
+Route::get('/corporate', [CorporateInquiryController::class, 'showForm'])
+    ->name('corporate');
+ 
+Route::post('/corporate', [CorporateInquiryController::class, 'submit'])
+    ->name('corporate.submit');
 
 // An unthrottled duplicate of this route was registered just above. The router
 // matches in registration order, so the unthrottled one won and the rate limit
@@ -1298,13 +1308,12 @@ Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('
     Route::post('/confirm-staff/{serviceRequest}/{shortlistId}', [BookingController::class, 'confirmStaffSelection'])
         ->name('confirm-staff');
 
-    // Client-managed bookings have no company deployment step, so the client
-    // closes them out themselves.
-    Route::post('/complete/{serviceRequest}', [BookingController::class, 'completeBooking'])
-        ->name('complete');
-
     Route::post('/cancel-order/{serviceRequest}', [BookingController::class, 'cancelOrder'])
         ->name('cancel-order');
+
+    // Complete client-managed booking
+    Route::post('/complete/{serviceRequest}', [BookingController::class, 'completeBooking'])
+    ->name('complete');
 
     // Step 6: Trust Assurance
 
@@ -1339,6 +1348,22 @@ Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('
     Route::post('/payment/{serviceRequest}', [BookingController::class, 'processPayment'])
 
         ->name('process-payment');
+
+    Route::get('/payment/{serviceRequest}/remaining', [BookingController::class, 'payRemainingBalance'])
+
+
+        ->name('pay-remaining');
+
+
+    Route::post('/payment/{serviceRequest}/remaining/paystack-callback',[BookingController::class, 'handleRemainingPaystackCallback'] )
+    
+    ->name('remaining-paystack-callback');
+
+
+    Route::post(
+    '/payment/{serviceRequest}/remaining/bank-transfer',[BookingController::class, 'processRemainingBankTransfer'])
+    
+    ->name('remaining-bank-transfer');
 
     Route::post('/payment/{serviceRequest}/paystack-callback', [BookingController::class, 'handlePaystackCallback'])
 

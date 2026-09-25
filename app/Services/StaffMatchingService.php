@@ -14,7 +14,8 @@ class StaffMatchingService
 
     /**
      * Find matching staff for a service request.
-     * Returns up to 10 verified staff sorted by match score.
+     * Returns up to 10 verified staff, randomly selected from the top-scoring
+     * matches so the same highest-scoring staff aren't shown on every search.
      */
     public function findMatchingStaff(ServiceRequest $serviceRequest): Collection
     {
@@ -72,8 +73,25 @@ class StaffMatchingService
             ];
         });
 
-        // Sort by score descending, take top 10
-        return $scored->sortByDesc('score')->take(10)->values();
+        // Rank by match quality, then randomize within that quality band.
+        //
+        // Previously this returned the same top-10-by-score every time, which
+        // meant the same handful of highest-scoring staff in a given state
+        // got shown on every booking search - lower-ranked (but still
+        // well-matched) staff never got a look-in.
+        //
+        // Instead: keep a wider pool of genuinely good matches, then shuffle
+        // and take 10 from within that pool. This keeps quality control
+        // (a brand-new unverified staff member still won't outrank someone
+        // fully verified with years of experience) while giving every staff
+        // member inside the "good match" band a fair rotating chance to be
+        // notified and selected, rather than the same faces every time.
+        $sorted = $scored->sortByDesc('score')->values();
+
+        $qualityPoolSize = min(30, $sorted->count());
+        $qualityPool = $sorted->take($qualityPoolSize);
+
+        return $qualityPool->shuffle()->take(10)->values();
     }
 
     /**

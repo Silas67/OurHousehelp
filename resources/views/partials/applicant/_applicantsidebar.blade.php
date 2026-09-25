@@ -1,3 +1,5 @@
+@include('partials.modals._ModalforLogout')
+
 <div class="sidebar" id="sidebar">
     <div class="p-0 d-flex flex-column" style="height:100vh; overflow-y:auto;">
 
@@ -148,11 +150,11 @@
 
             {{-- Logout --}}
             <li class="nav-item mt-2" style="border-top:1px solid rgba(255,255,255,0.1);padding-top:8px;">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
+                <form id="logout-form-nav" action="{{ route('logout') }}" method="POST" class="d-inline">
                     @csrf
-                    <button type="submit" class="nav-link w-100 d-flex align-items-center border-0 bg-transparent text-danger">
-                        <i class="fas fa-sign-out-alt" style="margin-right:10px;width:16px;"></i>Logout
-                    </button>
+                     <a class="nav-link text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+                        <i class="fas fa-sign-out-alt me-2"></i>Log Out
+                    </a>
                 </form>
             </li>
 

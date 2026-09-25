@@ -4,7 +4,7 @@
         <div class="row justify-content-center py-2">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header recentapp">{{ __('We are glad to have you here') }}</div>
+                    <div class="card-header recentapp" style="background: linear-gradient(135deg, #0F6E56, #1D9E75); font-size:24px; padding-top:8px">Our Househelp</div>
 
                     @if (Auth::user()->account_type === 'client')
                         <div class="card-body text-center">
@@ -40,7 +40,7 @@
                                 </div>
                             @endif
 
-                            <h3>Welcome {{ Auth::user()->name }}!</h3>
+                            <h5>Welcome {{ Auth::user()->name }}!</h5>
                             We provide professional and reliable house help services tailored to meet your unique needs. Our
                             highly-trained staff ensure that your home remains clean, organized, and well-maintained.
                             Whether
@@ -85,7 +85,6 @@
                             <h3>Welcome, {{ $user->name }}!</h3>
 
                             <p>{{ $randomQuote }}</p>
-
                             <hr>
 
                             @if (Auth::check())

@@ -35,3 +35,5 @@
 @yield('booking-payment-success')
 @yield('booking-staff-details')
 @yield('booking-deployment')
+
+@yield('corporate')

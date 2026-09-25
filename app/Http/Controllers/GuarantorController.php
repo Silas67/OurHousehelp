@@ -130,9 +130,9 @@ class GuarantorController extends Controller
 
             'guarantor1_nin' => 'required|string|digits:11', // Exactly 11 digits
 
-            'guarantor1_passport_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_passport_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Updated max size to 10MB
 
-            'guarantor1_signature_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_signature_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240', // Updated max size to 10MB
 
         ]);
 

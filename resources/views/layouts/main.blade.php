@@ -2,6 +2,7 @@
 <html lang="en">
 
 @include('partials._head')
+@include('partials.modals._ModalforLogout')
 
 <body>
 
@@ -9,13 +10,13 @@
     <div id="preloader">
         <div>
             <div class="loader"></div>
-            <div class="loading-text">Loading... Please wait</div>
+            <div class="loading-text">Loading...</div>
         </div>
     </div>
 
 
     <!-- Professional Navbar with Desktop Dropdown and Mobile Sliding Menu -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg ohh-navbar">
         <div class="container-fluid ">
             <!-- Logo -->
             <a class="navbar-brand" href="/">
@@ -49,9 +50,7 @@
                 <!-- Dashboard Links (Desktop) -->
                 @if (Auth::check())
                     <div class="d-flex align-items-center ms-3">
-                       
-
-                      <!-- Profile Dropdown (Desktop) -->
+                    <!-- Profile Dropdown (Desktop) -->
                         <div class="dropdown">
                             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
                                 id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
@@ -156,9 +155,8 @@
                                 <li><hr class="dropdown-divider"></li>
 
                                 <li>
-                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form-nav').submit();">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Log Out
+                                    <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal"      data-bs-target="#logoutConfirmModal">
+                                         <i class="fas fa-sign-out-alt me-2"></i>Log Out
                                     </a>
                                 </li>
                             </ul>
@@ -205,7 +203,7 @@
     </nav>
 
     <!-- Mobile Menu (Offcanvas - only shows on mobile) -->
-    <div class="offcanvas offcanvas-start bg-dark text-white d-lg-none" tabindex="-1" id="mobileMenu"
+    <div class="offcanvas offcanvas-start ohh-mobile-sidebar d-lg-none" tabindex="-1" id="mobileMenu"
         aria-labelledby="mobileMenuLabel">
         {{-- ── MOBILE SIDEBAR HEADER ── --}}
         <div class="offcanvas-header" style="background: linear-gradient(135deg, #0F6E56, #1D9E75); padding: 16px;">
@@ -352,9 +350,8 @@
                 {{-- Bottom actions --}}
                 <li class="nav-item px-2 mt-2" style="border-top:1px solid #f0f0f0;padding-top:12px!important;">
                     @if (Auth::check())
-                        <a class="nav-link d-flex align-items-center gap-2 text-danger" href="{{ route('logout') }}"
-                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fas fa-sign-out-alt" style="width:16px;"></i>Log Out
+                        <a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+                            <i class="fas fa-sign-out-alt me-2"></i>Log Out
                         </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf</form>
                     @else
@@ -370,55 +367,304 @@
 
     <!-- CSS Styles -->
     <style>
-        .navbar {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 0.8rem 1rem;
+       /* =========================================================
+   OHH PREMIUM NAVBAR
+   ========================================================= */
+
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        /* Desktop dropdown styles */
-        .dropdown-menu {
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        #preloader {
+            margin: 0 !important;
         }
 
-        .dropdown-item {
-            padding: 0.5rem 1rem;
-            transition: all 0.2s;
+        .ohh-navbar {
+            min-height: 76px;
+            padding: 0.7rem 1.5rem;
+            background: rgba(255, 255, 255, 0.96);
+            border-bottom: 1px solid #ebe5d9;
+            box-shadow: 0 4px 18px rgba(22, 36, 31, 0.05);
+            position: relative;
+            z-index: 1030;
         }
 
-        .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .ohh-navbar .container-fluid {
+            max-width: 1380px;
         }
 
-        /* Mobile offcanvas styles */
-        .offcanvas {
-            width: 280px;
+        .ohh-navbar .navbar-brand {
+            display: flex;
+            align-items: center;
+            margin-right: 38px;
         }
 
-        .nav-link {
-            padding: 0.75rem 1rem;
-            border-radius: 4px;
-            margin-bottom: 2px;
-            transition: all 0.3s;
+        .ohh-navbar .navbar-brand img {
+            object-fit: contain;
         }
 
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .ohh-navbar .navbar-nav {
+            gap: 4px;
+        }
+
+        .ohh-navbar .navbar-nav .nav-link {
+            position: relative;
+            padding: 10px 13px;
+            border-radius: 9px;
+            color: #43514b;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .ohh-navbar .navbar-nav .nav-link:hover {
+            color: #0F6E56;
+            background: #F4F1E9;
+        }
+
+        .ohh-navbar .navbar-nav .nav-link::after {
+            display: none;
+        }
+
+
+        /* Profile */
+        .ohh-navbar .dropdown > a {
+            color: #18352D;
+            padding: 5px 9px;
+            border-radius: 12px;
+            transition: 0.2s ease;
+        }
+
+        .ohh-navbar .dropdown > a:hover {
+            background: #F5F1E8;
         }
 
         .user-profile-circle {
-            transition: transform 0.3s;
+            background: #0F6E56 !important;
+            box-shadow: 0 2px 7px rgba(15, 110, 86, 0.2);
         }
 
-        .user-profile-circle:hover {
-            transform: scale(1.1);
+
+        /* Desktop dropdown */
+        .ohh-navbar .dropdown-menu {
+            margin-top: 12px;
+            padding: 8px;
+            border: 1px solid #E5DED0;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0 18px 45px rgba(22, 36, 31, 0.12) !important;
         }
+
+        .ohh-navbar .dropdown-item {
+            border-radius: 9px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #43514b;
+            transition: 0.2s ease;
+        }
+
+        .ohh-navbar .dropdown-item:hover {
+            background: #F5F1E8;
+            color: #0F6E56;
+            transform: none;
+        }
+
+
+        /* =========================================================
+        MOBILE SIDEBAR
+        ========================================================= */
+
+        .ohh-mobile-sidebar {
+            width: min(350px, 88vw);
+            background: #fff;
+            color: #18352D;
+            border: 0;
+            box-shadow: 10px 0 35px rgba(22, 36, 31, 0.12);
+        }
+
+
+        /* Sidebar header */
+        .ohh-mobile-sidebar .offcanvas-header {
+            position: relative;
+            padding: 22px 20px;
+            background: linear-gradient(135deg, #0B4A3B, #0F6E56) !important;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .ohh-mobile-sidebar .offcanvas-header .btn-close {
+            opacity: 0.9;
+        }
+
+        .ohh-mobile-sidebar .offcanvas-title {
+            color: #fff !important;
+        }
+
+
+        /* Sidebar body */
+        .ohh-mobile-sidebar .offcanvas-body {
+            background: #fff;
+            padding: 12px 12px 20px !important;
+        }
+
+
+        /* Section labels */
+        .ohh-mobile-sidebar .nav-item > div {
+            padding: 17px 12px 7px !important;
+            color: #A9782E !important;
+            font-size: 9px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.17em !important;
+        }
+
+
+        /* Links */
+        .ohh-mobile-sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            min-height: 46px;
+            margin: 2px 0;
+            padding: 11px 13px;
+            border-radius: 11px;
+            color: #43514b !important;
+            font-size: 14px;
+            font-weight: 500;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .ohh-mobile-sidebar .nav-link:hover {
+            background: #F5F1E8;
+            color: #0F6E56 !important;
+            transform: translateX(2px);
+        }
+
+
+        /* Icons */
+        .ohh-mobile-sidebar .nav-link i {
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+
+        /* Account highlight */
+        .ohh-mobile-sidebar
+        .nav-link[href*="dashboard"] {
+            background: #EEF6F1;
+            color: #0F6E56 !important;
+            font-weight: 650;
+        }
+
+        .ohh-mobile-sidebar
+        .nav-link[href*="dashboard"]:hover {
+            background: #E5F0EA;
+        }
+
+
+        /* Credits */
+        .ohh-mobile-sidebar
+        .nav-link[href*="credits"] {
+            background: #FBF6E9;
+        }
+
+        .ohh-mobile-sidebar
+        .nav-link[href*="credits"]:hover {
+            background: #F7EFDD;
+        }
+
+
+        /* Logout */
+        .ohh-mobile-sidebar
+        .text-danger {
+            color: #A94442 !important;
+        }
+
+        .ohh-mobile-sidebar
+        .text-danger:hover {
+            background: #FAEEEE;
+            color: #963B39 !important;
+        }
+
+
+        /* Nested booking menu */
+        .ohh-mobile-sidebar
+        #bookingSubmenu {
+            margin: 3px 0 8px;
+            padding-left: 10px !important;
+            border-left: 1px solid #E5DED0;
+        }
+
+        .ohh-mobile-sidebar
+        #bookingSubmenu .nav-link {
+            min-height: 42px;
+            font-size: 13px;
+        }
+
+
+        /* Active nested route */
+        .ohh-mobile-sidebar
+        #bookingSubmenu .nav-link.active {
+            background: #EEF6F1;
+            color: #0F6E56 !important;
+            font-weight: 650;
+        }
+
+
+        /* Sidebar divider */
+        .ohh-mobile-sidebar
+        .nav-item[style*="border-top"] {
+            margin-top: 15px !important;
+            padding-top: 13px !important;
+            border-color: #ECE7DE !important;
+        }
+
+
+        /* =========================================================
+        MOBILE NAVBAR TOGGLER
+        ========================================================= */
+
+        .ohh-navbar .navbar-toggler {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border: 1px solid #E2DCCF;
+            border-radius: 11px;
+            background: #fff;
+            box-shadow: 0 3px 10px rgba(22,36,31,0.04);
+        }
+
+        .ohh-navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(15, 110, 86, 0.10);
+        }
+
+        .ohh-navbar .navbar-toggler-icon {
+            width: 19px;
+            height: 19px;
+        }
+
+
+        /* =========================================================
+        MOBILE
+        ========================================================= */
 
         @media (max-width: 991.98px) {
-            .navbar-brand img {
+
+            .ohh-navbar {
+                min-height: 68px;
+                padding: 0.55rem 1rem;
+            }
+
+            .ohh-navbar .navbar-brand {
+                margin-right: auto;
+            }
+
+            .ohh-navbar .navbar-brand img {
                 max-height: 40px;
             }
         }
-    </style>
+            </style>
 
     @if (session('error'))
         <div class="alert alert-danger">

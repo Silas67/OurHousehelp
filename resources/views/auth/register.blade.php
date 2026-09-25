@@ -7,36 +7,54 @@
 
                 {{-- ── REGISTRATION FORM ── --}}
                 <div class="col-md-7">
-                    <div class="card shadow-lg border-0">
+                    <div class="card shadow-lg border-0 rounded-4">
 
-                        <div class="card-header text-center text-white py-3" style="background: linear-gradient(135deg, #0F6E56, #1D9E75);">
+                        <div class="card-header text-center text-white py-3 rounded-top-4" style="background: linear-gradient(135deg, #0F6E56, #1D9E75);">
                             <h5 class="mb-0">Create a New Account</h5>
                         </div>
 
-                        <div class="card-body px-4 py-4">
+                        <div class="card-body px-4 py-4 ">
 
                             {{-- Account Type Toggle --}}
-                            <div class="mb-4">
-                                <label class="form-label fw-semibold d-block text-center mb-3">I want to:</label>
-                                <div class="d-flex gap-3 justify-content-center">
-                                    <div class="account-type-card text-center p-3 rounded border flex-fill"
-                                        id="card-client"
-                                        onclick="selectType('client')"
-                                        style="cursor:pointer; border-color: #0F6E56 !important; background:#f0fff4; transition:all 0.2s;">
-                                        <i class="fas fa-user-tie fa-2x mb-2" style="color:#0F6E56;"></i>
-                                        <div class="fw-semibold" style="font-size:14px;">Register as a Client</div>
-                                        <div class="text-muted" style="font-size:12px;">Hire House Help</div>
-                                    </div>
-                                    <div class="account-type-card text-center p-3 rounded border flex-fill"
-                                        id="card-applicant"
-                                        onclick="selectType('applicant')"
-                                        style="cursor:pointer; transition:all 0.2s;">
-                                        <i class="fas fa-broom fa-2x mb-2 text-muted"></i>
-                                        <div class="fw-semibold" style="font-size:14px;">Register as Staff</div>
-                                        <div class="text-muted" style="font-size:12px;">Work as House Help</div>
+                            <div class="mb-4" x-data="{ accountType: 'client' }">
+                                <label class="form-label fw-semibold d-block text-center mb-3">Register:</label>
+                                
+                                <div class="justify-content-center d-flex">
+                                    <!-- Main Toggle Track container -->
+                                    <div class="position-relative d-flex bg-light rounded-pill p-1 border flex-fill" style="width: 280px; height: 50px;">
+                                        
+                                        <!-- Sliding Background Element -->
+                                        <div class="position-absolute top-0 bottom-0 start-0 m-1 rounded-pill bg-success shadow-sm"
+                                            style="transition: transform 0.3s ease-in-out, width 0.3s ease-in-out; border-color: #0F6E56 !important; background-color: #0F6E56 !important;"
+                                            :style="accountType === 'client' ? 'width: 134px; transform: translateX(0);' : 'width: 134px; transform: translateX(136px);'">
+                                        </div>
+
+                                        <!-- Client Option Button -->
+                                        <button type="button" 
+                                                id="card-client"
+                                                onclick="selectType('client')"
+                                                class="btn position-relative z-1 flex-fill rounded-pill d-flex align-items-center justify-content-center gap-2 border-0 fw-semibold"
+                                                :class="accountType === 'client' ? 'text-white' : 'text-muted'"
+                                                style="font-size: 14px; transition: color 0.3s;">
+                                            <i class="fas fa-user-tie" :class="accountType === 'client' ? 'text-white' : 'text-muted'"></i>
+                                            As a Client
+                                        </button>
+
+                                        <!-- Staff Option Button -->
+                                        <button type="button" 
+                                                id="card-applicant"
+                                                onclick="selectType('applicant')"
+                                                class="btn position-relative z-1 flex-fill rounded-pill d-flex align-items-center justify-content-center gap-2 border-0 fw-semibold"
+                                                :class="accountType === 'applicant' ? 'text-white' : 'text-muted'"
+                                                style="font-size: 14px; transition: color 0.3s;">
+                                            <i class="fas fa-broom" :class="accountType === 'applicant' ? 'text-white' : 'text-muted'"></i>
+                                            As a Staff
+                                        </button>
                                     </div>
                                 </div>
-                                <input type="hidden" name="account_type_selected" id="account_type_selected" value="client">
+
+                                <!-- Hidden native input bound natively to form submissions -->
+                                <input type="hidden" name="account_type_selected" id="account_type_selected" :value="accountType">
                             </div>
 
                             {{-- Client Form --}}
@@ -122,8 +140,8 @@
                             </div>
 
                             <div class="text-center mt-3">
-                                <small class="text-muted">
-                                    Already registered? <a href="{{ route('login') }}" style="color:#0F6E56;">Login here</a>
+                                <small class="text-muted fw-bold">
+                                    Already registered? <a href="{{ route('login') }}" style="color:#0F6E56; font-size: 14px;">Login here</a>
                                 </small>
                             </div>
 

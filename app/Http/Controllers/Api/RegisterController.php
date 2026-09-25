@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Laravel\Facades\Image;
 
 class RegisterController extends Controller
 {
@@ -66,11 +68,11 @@ class RegisterController extends Controller
             'country' => 'required|string|max:255',
             'country_of_residence' => 'required|string|max:255',
             'years_of_experience' => 'required|string',
-            'profile_photo_path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+            'profile_photo_path' => 'required|image|mimes:jpg,png,jpeg|max:10240',
             'address' => 'required|string|max:2048',
             'landmark' => 'required|string|max:255',
             'nin' => 'required|string|unique:users|size:11',
-            'id_card' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
+            'id_card' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
             'bio' => 'required|string',
             'specialties' => 'required|array',
             'password' => 'required|string|min:8|confirmed',
@@ -86,8 +88,8 @@ class RegisterController extends Controller
             'guarantor1_relationship' => 'required|string|max:100',
             'guarantor1_occupation' => 'required|string|max:255',
             'guarantor1_address' => 'required|string|max:500',
-            'guarantor1_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'guarantor1_signature_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor1_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:10240',
+            'guarantor1_signature_path' => 'required|image|mimes:jpeg,png,jpg|max:10240',
 
             'guarantor2_first_name' => 'required|string|max:255',
             'guarantor2_last_name' => 'required|string|max:255',
@@ -97,8 +99,8 @@ class RegisterController extends Controller
             'guarantor2_relationship' => 'required|string|max:100',
             'guarantor2_occupation' => 'required|string|max:255',
             'guarantor2_address' => 'required|string|max:500',
-            'guarantor2_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'guarantor2_signature_path' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'guarantor2_passport_path' => 'required|image|mimes:jpeg,png,jpg|max:10240',
+            'guarantor2_signature_path' => 'required|image|mimes:jpeg,png,jpg|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -110,16 +112,44 @@ class RegisterController extends Controller
         DB::beginTransaction();
 
         try {
+
             $profilePhotoPath = null;
+            
+            dd([
+                'has_file' => $request->hasFile('profile_photo_path'),
+                'file' => $request->file('profile_photo_path'),
+            ]);
+
             if ($request->hasFile('profile_photo_path')) {
-                $profilePhotoPath = time() . '_profile.' . $request->file('profile_photo_path')->getClientOriginalExtension();
-                $request->file('profile_photo_path')->move(public_path('build/assets/image/profile_photo'), $profilePhotoPath);
+                $profilePhotoPath = time() . '_profile.jpg';
+                $image = Image::read($request->file('profile_photo_path'));
+                // Resize while maintaining the original aspect ratio
+                $image->scale(width: 800);
+                // Convert to JPEG and compress
+                $image->toJpeg(75)->save(
+                    public_path('build/assets/image/profile_photo/' . $profilePhotoPath)
+                );
             }
 
             $idCardPath = null;
             if ($request->hasFile('id_card')) {
-                $idCardPath = time() . '_idcard.' . $request->file('id_card')->getClientOriginalExtension();
-                $request->file('id_card')->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $idCardPath, 'local');
+                $idCardPath = time() . '_idcard.jpg';
+                $image = Image::read($request->file('id_card'));
+                // Resize while maintaining aspect ratio
+                $image->scale(width: 1600);
+                // Convert to JPEG and compress
+                $image->toJpeg(80);
+                // Save the processed image to a temporary file
+                $tempPath = storage_path('app/' . $idCardPath);
+                $image->save($tempPath);
+                // Store the compressed image securely
+                Storage::disk('local')->put(
+                    \App\Support\SecureDocument::storageDirectory('idcards') . '/' . $idCardPath,
+                    file_get_contents($tempPath)
+                );
+
+                // Remove temporary file
+                unlink($tempPath);
             }
 
             $user = User::create([

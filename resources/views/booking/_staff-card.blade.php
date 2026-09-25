@@ -17,6 +17,8 @@
     if ($staff->dob) {
         $age = \Carbon\Carbon::parse($staff->dob)->age;
     }
+
+    $isCompanyManaged = $serviceRequest->management_plan === 'company-managed';
 @endphp
 
 <div  class="card h-100 shadow-sm staff-card {{ $isSelected ? 'border-success border-2' : '' }}" id="{{ $cardId }}">
@@ -24,9 +26,9 @@
 
         {{-- Selected banner --}}
         @if($isSelected)
-        <div class="alert alert-success py-1 px-2 mb-2" style="font-size:12px;">
-            <i class="fas fa-check-circle me-1"></i> You selected this staff
-        </div>
+            <div class="alert alert-success py-1 px-2 mb-2" style="font-size:12px;">
+                <i class="fas fa-check-circle me-1"></i> You selected this staff
+            </div>
         @endif
 
         {{-- Photo --}}
@@ -181,118 +183,149 @@
 
         {{-- Contact hidden notice --}}
         <div class="text-muted mb-3" style="font-size:11px;">
-            <i class="fas fa-lock me-1"></i> Phone & WhatsApp hidden — unlock by viewing profile
+            <i class="fas fa-lock me-1"></i>
+
+            @if($isCompanyManaged)
+                Phone & WhatsApp hidden — OurHouseHelp manages communication
+            @else
+                Phone & WhatsApp hidden — unlock by viewing profile
+            @endif
         </div>
 
         {{-- Button --}}
-        @if($isSelected)
+       @if($isSelected)
+
             <a href="{{ route('booking.staff-profile', [$serviceRequest->id, $shortlistItem->id]) }}"
                 class="btn btn-success w-100 btn-sm">
                 <i class="fas fa-eye me-1"></i> View Selected Profile
             </a>
+
+        @elseif($isCompanyManaged)
+
+            {{-- Company Managed: no credit is required --}}
+            <form action="{{ route('booking.confirm-staff', [$serviceRequest->id, $shortlistItem->id]) }}"
+                method="POST">
+                @csrf
+
+                <button type="submit" class="btn btn-primary w-100 btn-sm">
+                    <i class="fas fa-user me-1"></i> Select Staff
+                    <small class="d-block" style="font-size:10px;opacity:0.8;">
+                        No credit required
+                    </small>
+                </button>
+            </form>
+
         @else
-            <button type="button" class="btn btn-primary w-100 btn-sm" 
-            {{-- onclick="selectStaff('{{ route('booking.service-selection', $staff->id) }}')" --}}
-                data-bs-toggle="modal" data-bs-target="#{{ $modalId }}">
+
+            {{-- Client Managed: credit confirmation modal --}}
+            <button type="button"
+                    class="btn btn-primary w-100 btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#{{ $modalId }}">
                 <i class="fas fa-user me-1"></i> View Full Profile
-                <small class="d-block" style="font-size:10px;opacity:0.8;">Uses 1 credit</small>
+                <small class="d-block" style="font-size:10px;opacity:0.8;">
+                    Uses 1 credit
+                </small>
             </button>
+
         @endif
     </div>
 </div>
 
-{{-- ── CONFIRMATION MODAL ── --}}
-<div onload="noBack();" class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow">
+    {{-- ── CONFIRMATION MODAL ── --}}
+    @if(!$isCompanyManaged)
+        <div onload="noBack();" class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow">
 
-            <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold">Before you proceed</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body pt-2">
-
-                {{-- Staff summary --}}
-                <div class="d-flex align-items-center gap-3 p-3 bg-light rounded mb-3">
-                    @if($staff->profile_photo_path)
-                        <img src="{{ $staff->profile_photo_url }}"
-                            class="rounded-circle" width="55" height="55" style="object-fit:cover;" loading="lazy" decoding="async">
-                    @else
-                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
-                            style="width:55px;height:55px;">
-                            <span class="text-white fw-bold">{{ strtoupper(substr($staff->name, 0, 1)) }}</span>
-                        </div>
-                    @endif
-                    <div>
-                        <div class="fw-bold">{{ $staff->name }} @if(!empty($staff->last_name)){{ substr($staff->last_name, 0, 1) }}.@endif</div>
-                        @if(!empty($specialties))
-                            <small class="text-primary">{{ implode(' · ', array_slice($specialties, 0, 2)) }}</small>
-                        @endif
-                        <div class="mt-1">
-                            @if($staff->isFullyVerified())
-                                <span class="badge bg-success" style="font-size:10px;"><i class="fas fa-shield-alt me-1"></i>Fully Verified</span>
-                            @else
-                                <span class="badge bg-info" style="font-size:10px;">Verified</span>
-                            @endif
-                        </div>
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold">Before you proceed</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                </div>
 
-                {{-- What happens when they proceed --}}
-                <div class="mb-3">
-                    <p class="fw-semibold mb-2">What happens when you proceed:</p>
-                    <ul class="list-unstyled mb-0" style="font-size:14px;">
-                        <li class="mb-2">
-                            <i class="fas fa-unlock text-success me-2"></i>
-                            <strong>{{ $staff->name }}'s</strong> full profile, phone number and WhatsApp will be revealed to you
-                        </li>
-                        <li class="mb-2">
-                            <i class="fas fa-coins text-warning me-2"></i>
-                            <strong>1 credit</strong> will be deducted from your balance
-                        </li>
-                        <li class="mb-2">
-                            <i class="fas fa-times-circle text-danger me-2"></i>
-                            All <strong>other staff</strong> who accepted this job will be notified that the position has been filled
-                        </li>
-                        <li class="mb-2">
-                            <i class="fas fa-lock text-secondary me-2"></i>
-                            This action <strong>cannot be undone</strong> — you cannot go back to pick a different staff after this
-                        </li>
-                    </ul>
-                </div>
+                    <div class="modal-body pt-2">
 
-                {{-- Credit cost --}}
-                <div class="alert alert-warning py-2 mb-0" style="font-size:13px;">
-                    <i class="fas fa-coins me-1"></i>
-                    <strong>Cost: 1 credit</strong>
-                    <span class="text-muted ms-2">— Make sure you are satisfied with this choice before proceeding</span>
-                </div>
+                        {{-- Staff summary --}}
+                        <div class="d-flex align-items-center gap-3 p-3 bg-light rounded mb-3">
+                            @if($staff->profile_photo_path)
+                                <img src="{{ $staff->profile_photo_url }}"
+                                    class="rounded-circle" width="55" height="55" style="object-fit:cover;" loading="lazy" decoding="async">
+                            @else
+                                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
+                                    style="width:55px;height:55px;">
+                                    <span class="text-white fw-bold">{{ strtoupper(substr($staff->name, 0, 1)) }}</span>
+                                </div>
+                            @endif
+                            <div>
+                                <div class="fw-bold">{{ $staff->name }} @if(!empty($staff->last_name)){{ substr($staff->last_name, 0, 1) }}.@endif</div>
+                                @if(!empty($specialties))
+                                    <small class="text-primary">{{ implode(' · ', array_slice($specialties, 0, 2)) }}</small>
+                                @endif
+                                <div class="mt-1">
+                                    @if($staff->isFullyVerified())
+                                        <span class="badge bg-success" style="font-size:10px;"><i class="fas fa-shield-alt me-1"></i>Fully Verified</span>
+                                    @else
+                                        <span class="badge bg-info" style="font-size:10px;">Verified</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
 
+                        {{-- What happens when they proceed --}}
+                        <div class="mb-3">
+                            <p class="fw-semibold mb-2">What happens when you proceed:</p>
+                            <ul class="list-unstyled mb-0" style="font-size:14px;">
+                                <li class="mb-2">
+                                    <i class="fas fa-unlock text-success me-2"></i>
+                                    <strong>{{ $staff->name }}'s</strong> full profile, phone number and WhatsApp will be revealed to you
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-coins text-warning me-2"></i>
+                                    <strong>1 credit</strong> will be deducted from your balance
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-times-circle text-danger me-2"></i>
+                                    All <strong>other staff</strong> who accepted this job will be notified that the position has been filled
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-lock text-secondary me-2"></i>
+                                    Once you unlock a profile, this booking is set with that staff member. If you want someone else, you'd need to cancel this booking and start a new one — a new booking, a new credit
+                                </li>
+                            </ul>
+                        </div>
+
+                        {{-- Credit cost --}}
+                        <div class="alert alert-warning py-2 mb-0" style="font-size:13px;">
+                            <i class="fas fa-coins me-1"></i>
+                            <strong>Cost: 1 credit</strong>
+                            <span class="text-muted ms-2">— Make sure you are satisfied with this choice before proceeding</span>
+                        </div>
+
+                    </div>
+
+                <div class="modal-footer border-0 pt-0">
+                        @if(!$serviceRequest->selected_staff_id)
+                            <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">
+                                <i class="fas fa-arrow-left me-1"></i> Go back & choose again
+                            </button>
+                        @else
+                            <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i> Close
+                            </button>
+                        @endif
+                        <form action="{{ route('booking.confirm-staff', [$serviceRequest->id, $shortlistItem->id]) }}"
+                            method="POST" class="flex-grow-1">
+                            @csrf
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="fas fa-unlock me-1"></i> Yes, proceed (1 credit)
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
             </div>
-
-           <div class="modal-footer border-0 pt-0">
-                @if(!$serviceRequest->selected_staff_id)
-                    <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">
-                        <i class="fas fa-arrow-left me-1"></i> Go back & choose again
-                    </button>
-                @else
-                    <button type="button" class="btn btn-outline-secondary flex-grow-1" data-bs-dismiss="modal">
-                        <i class="fas fa-times me-1"></i> Close
-                    </button>
-                @endif
-                <form action="{{ route('booking.confirm-staff', [$serviceRequest->id, $shortlistItem->id]) }}"
-                    method="POST" class="flex-grow-1">
-                    @csrf
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-unlock me-1"></i> Yes, proceed (1 credit)
-                    </button>
-                </form>
-            </div>
-
         </div>
-    </div>
-</div>
+    @endif
 
 <script type="text/javascript">
 function selectStaff(url) {

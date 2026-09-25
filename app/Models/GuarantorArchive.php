@@ -22,6 +22,5 @@ class GuarantorArchive extends Model
         'occupation',
         'address',
         'passport_path',
-        'signature_path',
     ];
 }

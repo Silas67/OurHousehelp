@@ -106,10 +106,6 @@ class ApplicantController extends Controller
 
 
 
-
-
-
-
     public function applicantterms()
 
     {
@@ -187,9 +183,6 @@ class ApplicantController extends Controller
     }
 
 
-
-
-
     public function receivedLiveInServiceRequests()
 
     {
@@ -213,9 +206,6 @@ class ApplicantController extends Controller
         return view('applicantpositions', compact('user', 'requests'));
 
     }
-
-
-
 
 
     public function specialDuties()
@@ -245,14 +235,6 @@ class ApplicantController extends Controller
         return view('applicant.specialDuties', compact('assignments'));
 
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -313,13 +295,7 @@ class ApplicantController extends Controller
     }
 
 
-
-
-
-
-
     // Update the applicant's profile
-
     public function update(Request $request)
 
     {
@@ -333,7 +309,8 @@ class ApplicantController extends Controller
             // NOTE: the form field is named `profile_photo_path` (see
             // resources/views/partials/_profileupdate.blade.php). A rule keyed
             // `profile_photo` never fired, leaving the upload unvalidated.
-            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
+            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
 
             'middle_name' => 'nullable|string|max:255',
 
@@ -345,9 +322,9 @@ class ApplicantController extends Controller
 
             'state_of_residence' => 'required|string',
 
-            'landmark' => 'required|string',
+            'landmark' => 'nullable|string',
 
-            'country' => 'required|string',
+            'country' => 'nullable|string',
 
             'country_of_residence' => 'required|string',
 
@@ -368,18 +345,16 @@ class ApplicantController extends Controller
         if ($user->account_type !== 'client') {
 
             $rules = array_merge($rules, [
-
                 'dob' => ['required', 'date', 'before_or_equal:' . now()->subYears(18)->format('Y-m-d')],
-
                 'state_of_origin' => 'required|string',
-
-                'lga_of_origin' => 'required|string|max:255',
-
+                'lga_of_origin' => 'nullable|string|max:255',
                 'years_of_experience' => 'required|string',
-
-                'id_card' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-
-            ]);
+                'id_card' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+                'marital_status' => 'nullable|string|in:single,married,divorced,widowed',
+                'qualification' => 'nullable|string|max:255',
+                // add this too if you kept religion on the form:
+                'religion' => 'nullable|string|in:christianity,islam,traditional,other',
+            ]); 
 
         }
 
@@ -466,16 +441,14 @@ class ApplicantController extends Controller
 
         if ($user->account_type !== 'client') {
 
-            $user->fill([
-
+             $user->fill([
                 'dob' => $request->dob,
-
                 'state_of_origin' => $request->state_of_origin,
-
                 'lga_of_origin' => $request->lga_of_origin,
-
                 'years_of_experience' => $request->years_of_experience,
-
+                'marital_status' => $request->marital_status,
+                'qualification' => $request->qualification,
+                'religion' => $request->religion, // if applicable
             ]);
 
         }
@@ -501,256 +474,6 @@ class ApplicantController extends Controller
             ->with('success', 'Profile updated successfully.');
 
     }
-
-
-
-    // public function update(Request $request)
-
-    // {
-
-    //     $user = Auth::user();
-
-
-
-    //     /**
-
-    //      * Base rules (ALL users — NIN included)
-
-    //      */
-
-    //     $rules = [
-
-    //         'profile_photo_path'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-
-    //         'middle_name'         => 'nullable|string|max:255',
-
-    //         'last_name'           => 'nullable|string|max:255',
-
-    //         'phone'               => 'required|string|digits:11|unique:users,phone,' . $user->id,
-
-    //         'address'             => 'required|string|max:255',
-
-    //         'state_of_residence'  => 'required|string',
-
-    //         'landmark'            => 'required|string',
-
-    //         'country'             => 'required|string',
-
-    //         'country_of_residence' => 'required|string',
-
-    //         'gender'              => 'required|string',
-
-
-
-    //         // 🔥 REQUIRED FOR EVERYONE
-
-    //         'nin' => 'required|string|size:11|unique:users,nin,' . $user->id,
-
-    //     ];
-
-
-
-    //     /**
-
-    //      * Applicant-only rules
-
-    //      */
-
-    //     if ($user->account_type !== 'client') {
-
-    //         $rules = array_merge($rules, [
-
-    //             'dob' => ['required', 'date', 'before_or_equal:' . now()->subYears(18)->format('Y-m-d')],
-
-    //             'state_of_origin' => 'required|string',
-
-    //             'lga_of_origin'   => 'required|string|max:255',
-
-    //             'years_of_experience' => 'required|string',
-
-    //             'id_card' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-
-    //         ]);
-
-    //     }
-
-
-
-    //     $validated = $request->validate($rules);
-
-
-
-    //     /**
-
-    //      * NIN verification
-
-    //      * - Runs for ALL users
-
-    //      * - Only runs if NIN changed
-
-    //      */
-
-    //     if ($request->nin !== $user->nin) {
-
-
-
-    //         $result = $this->verifyNin($request->nin);
-
-
-
-    //         if (!isset($result['status']) || $result['status'] !== 'verified') {
-
-    //             return back()->withErrors([
-
-    //                 'nin' => 'NIN could not be verified with NIMC records.'
-
-    //             ]);
-
-    //         }
-
-
-
-    //         // Optional strict name match
-
-    //         if (
-
-    //             strtolower(trim($result['first_name'])) !== strtolower(trim($user->name)) ||
-
-    //             strtolower(trim($result['last_name'])) !== strtolower(trim($user->last_name))
-
-    //         ) {
-
-    //             return back()->withErrors([
-
-    //                 'nin' => 'NIN does not match the provided name.'
-
-    //             ]);
-
-    //         }
-
-
-
-    //         $user->nin_verified = true;
-
-    //         $user->nin_verified_at = now();
-
-    //     }
-
-
-
-    //     /**
-
-    //      * File uploads
-
-    //      */
-
-    //     if ($request->hasFile('profile_photo_path')) {
-
-    //         $file = $request->file('profile_photo_path');
-
-    //         $filename = time() . '.' . $file->getClientOriginalExtension();
-
-    //         $file->move(public_path('build/assets/image/profile_photo'), $filename);
-
-    //         $user->profile_photo_path = $filename;
-
-    //     }
-
-
-
-    //     if ($request->hasFile('id_card') && $user->account_type !== 'client') {
-
-    //         $file = $request->file('id_card');
-
-    //         $filename = time() . '.' . $file->getClientOriginalExtension();
-
-    //         $file->storeAs(\App\Support\SecureDocument::storageDirectory('idcards'), $filename, 'local');
-
-    //         $user->id_card = $filename;
-
-    //     }
-
-
-
-    //     /**
-
-    //      * Shared fields
-
-    //      */
-
-    //     $user->fill([
-
-    //         'middle_name'         => $request->middle_name,
-
-    //         'last_name'           => $request->last_name,
-
-    //         'phone'               => $request->phone,
-
-    //         'address'             => $request->address,
-
-    //         'state_of_residence'  => $request->state_of_residence,
-
-    //         'landmark'            => $request->landmark,
-
-    //         'country'             => $request->country,
-
-    //         'country_of_residence' => $request->country_of_residence,
-
-    //         'gender'              => $request->gender,
-
-    //         'nin'                 => $request->nin,
-
-    //     ]);
-
-
-
-    //     /**
-
-    //      * Applicant-only fields
-
-    //      */
-
-    //     if ($user->account_type !== 'client') {
-
-    //         $user->fill([
-
-    //             'dob' => $request->dob,
-
-    //             'state_of_origin' => $request->state_of_origin,
-
-    //             'lga_of_origin' => $request->lga_of_origin,
-
-    //             'years_of_experience' => $request->years_of_experience,
-
-    //         ]);
-
-    //     }
-
-
-
-    //     $user->form_completed = true;
-
-    //     $user->save();
-
-
-
-    //     return redirect()
-
-    //         ->route(
-
-    //             $user->account_type === 'client' ? 'dashboard' : 'applicantspeciality',
-
-    //             ['user_id' => $user->id, 'name' => $user->name]
-
-    //         )
-
-    //         ->with('success', 'Profile updated successfully.');
-
-    // }
-
-
-
-
 
 
 

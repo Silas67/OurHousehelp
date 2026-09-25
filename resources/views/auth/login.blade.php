@@ -3,12 +3,12 @@
     <section id="onetime" class="py-5 mb-5">
         <div class="container py-5">
             <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card shadow-lg border-0">
+                <div class="col-md-8 rounded-4">
+                    <div class="card shadow-lg border rounded-4">
 
-                        <div class="card-header text-center text-white" style="background-color:#0a8332">
-                            {{-- <h5 class="py-2">{{ __('Login to Your Account') }}</h5> --}}
-                            <h5 class="py-2">{!! __('New client?<br>Please register.<br> If you already have an account, please log in.') !!}</h5>
+                        <div class="card-header text-center text-white rounded-top-4" style="background: linear-gradient(135deg, #0F6E56, #1D9E75);">
+                            <h5 class="py-2">{{ __('Login to Your Account') }}</h5>
+                            
                         </div>
 
                         <div class="card-body">
@@ -40,7 +40,7 @@
                                         <input id="password" type="password"
                                             class="form-control @error('password') is-invalid @enderror" name="password"
                                             required autocomplete="current-password">
-                                        <i class="fas fa-eye password-toggle" style="cursor: pointer; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);" onclick="togglePassword('password')"></i>
+                                        <i class="fas fa-eye password-toggle" style="cursor: pointer; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); padding-right:12px;" onclick="togglePassword('password')"></i>
 
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
@@ -67,7 +67,8 @@
                                 <!-- Login Button -->
                                 <div class="form-group row mb-0">
                                     <div class="col-md-6 offset-md-4">
-                                        <button type="submit" class="btn btn-primary" style="width: 250px">
+                                        <button type="submit" class="btn w-100 py-2 fw-semibold"
+                                        style="background: linear-gradient(135deg, #0F6E56, #1D9E75); color:white; border-radius:8px;">
                                             {{ __('Login') }}
                                         </button>
                                     </div>
@@ -78,14 +79,16 @@
                                 <div class="form-group row">
                                     <div class="col-md-6 offset-md-4">
                                         @if (Route::has('password.request'))
-                                            <a class="btn btn-link links" href="{{ route('password.request') }}">
+                                            <a class="btn btn-link links" href="{{ route('password.request') }}" style="font-size: 12px;">
                                                 {{ __('Forgot Your Password?') }}
                                             </a>
                                         @endif
-                                        |
-                                        <a class="btn btn-link links fw-bold text-danger" href="{{ route('register') }}">
-                                            {{ __('Don\'t have an account? Register') }}
-                                        </a>
+
+                                        <br/>
+                                        
+                                        <h6 class="text-muted fw-bold" style="font-size: 12px;">
+                                            Don't have an account? <a href="{{ route('register') }}" style="color:#0F6E56; font-size: 16px;">Register here</a>
+                                        </h6>
 
                                     </div>
                                 </div>

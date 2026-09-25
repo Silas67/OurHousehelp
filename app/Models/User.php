@@ -831,6 +831,18 @@ class User extends Authenticatable
         return 'pending';
     }
 
+    public function hasActiveCompanyManagementSubscription(): bool
+    {
+        return $this->companyManagementSubscriptions()
+            ->where('status', 'active')
+            ->where('expires_at', '>', now())
+            ->exists();
+    }
+
+    public function companyManagementSubscriptions()
+    {
+        return $this->hasMany(CompanyManagementSubscription::class);
+    }
 
 
     /**

@@ -37,7 +37,7 @@
     <div id="preloader">
         <div>
             <div class="loader"></div>
-            <div class="loading-text">Loading... Please wait</div>
+            <div class="loading-text">Loading...</div>
         </div>
     </div>
 

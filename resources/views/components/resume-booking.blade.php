@@ -2,13 +2,14 @@
 
 @php
     /**
-     * Persistent entry point back into an in-progress booking.
-     *
-     * Without this, a client who navigated away from their shortlist had no
-     * route back - the dashboard only offered "book a service" and the
-     * bookings list never linked to a shortlist. The notification email was
-     * the only way in.
-     */
+    * Persistent entry point back into an in-progress booking.
+    *
+    * Without this, a client who navigated away from their shortlist had no
+    * route back - the dashboard only offered "book a service" and the
+    * bookings list never linked to a shortlist. The notification email was
+    * the only way in.
+    */
+    
     $resumable = $bookings ?? (
         auth()->check()
             ? \App\Models\ServiceRequest::resumable()
@@ -96,11 +97,13 @@
 @endonce
 
 @foreach ($resumable as $booking)
-    @php
-        $accepted = $booking->shortlistedStaff()
-            ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
-            ->count();
-        $isReady = $accepted > 0 || $booking->matching_status === 'payment_pending';
+   @php
+        $matchedStaff = $booking->shortlistedStaff()->count();
+
+        $isReady = $matchedStaff > 0
+            || $booking->matching_status === 'payment_pending';
+
+        $isCompanyManaged = $booking->management_plan === 'company-managed';
     @endphp
 
     <div class="resume-card {{ $isReady ? 'is-ready' : '' }}">
@@ -109,7 +112,14 @@
         </div>
 
         <div class="resume-body">
-            <p class="resume-title">{{ $booking->resumeLabel() }}</p>
+           <p class="resume-title">
+                @if($isCompanyManaged && $matchedStaff > 0 && !$booking->selected_staff_id)
+                    Your staff matches are ready
+                @else
+                    {{ $booking->resumeLabel() }}
+                @endif
+            </p>
+
             <p class="resume-meta">
                 {{ $booking->service_name_list ?: 'Service request' }}
                 @if ($booking->preferred_city) &middot; {{ $booking->preferred_city }} @endif
@@ -120,7 +130,11 @@
         <div class="resume-action">
             <a href="{{ $booking->resumeUrl() }}"
                class="btn {{ $isReady ? 'btn-success' : 'btn-outline-primary' }}">
-                {{ $isReady ? 'Continue' : 'Check progress' }}
+               @if($isCompanyManaged && $matchedStaff > 0 && !$booking->selected_staff_id)
+                    View matched staff
+                @else
+                    {{ $isReady ? 'Continue' : 'Check progress' }}
+                @endif
                 <i class="fas fa-arrow-right ms-1" aria-hidden="true"></i>
             </a>
 

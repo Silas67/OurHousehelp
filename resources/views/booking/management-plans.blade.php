@@ -1,6 +1,15 @@
 @extends('layouts.usermain')
 
 @section('booking-management-plans')
+@php
+    // Same reliable signal used throughout BookingController/payment.blade.php:
+    // staff_verification_fee is only ever non-zero for company-managed
+    // bookings, and unlike management_plan (which selectManagementPlan()
+    // is about to overwrite to the chosen tier), it doesn't change here.
+    $isCompanyManagedBooking = (float) $serviceRequest->staff_verification_fee > 0;
+    $upfrontAmount = (float) $serviceRequest->management_subscription_fee
+        + (float) $serviceRequest->staff_verification_fee;
+@endphp
 <div class="row justify-content-center">
     <div class="col-lg-11">
         <!-- Progress Steps -->
@@ -152,13 +161,55 @@
             </div>
 
             <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-lg px-5">
+                <button type="{{ $isCompanyManagedBooking ? 'button' : 'submit' }}"
+                    class="btn btn-primary btn-lg px-5"
+                    id="continueBtn">
                     Continue to Payment <i class="fas fa-arrow-right ms-2"></i>
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+@if($isCompanyManagedBooking)
+{{-- Before You Proceed modal — briefly explains the upfront payment before
+     the client ever reaches the payment page. Only company-managed bookings
+     have an upfront fee to explain; client-managed bookings (which
+     shouldn't normally reach this page at all, but are guarded here just
+     in case) submit the form immediately with no interstitial. --}}
+<div class="modal fade" id="beforeProceedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Before You Proceed</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-0">
+                <p class="text-muted mb-3">
+                    You are about to proceed to payment for your selected staff.
+                </p>
+                <div class="p-3 rounded bg-light border text-center mb-3">
+                    <div class="text-muted small">Initial Payment</div>
+                    <div class="fs-3 fw-bold text-primary">₦{{ number_format($upfrontAmount) }}</div>
+                </div>
+                <p class="text-muted small mb-3">
+                    This payment is the upfront amount required to proceed with
+                    your company-managed booking. Any remaining balance will be
+                    due when your staff member resumes work.
+                </p>
+                <p class="text-muted small mb-0">
+                    Please review the payment details carefully before continuing.
+                </p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary w-100" id="confirmProceedBtn">
+                    I Understand &amp; Continue
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 <style>
 .booking-steps {
@@ -232,6 +283,23 @@ document.addEventListener('DOMContentLoaded', function() {
     planRadios.forEach(radio => {
         radio.addEventListener('change', updatePlanSelection);
     });
+
+    // Before You Proceed modal - only wired up when the modal actually
+    // exists in the DOM (company-managed bookings; see the @if guard
+    // around the modal markup above).
+    const continueBtn = document.getElementById('continueBtn');
+    const modalEl = document.getElementById('beforeProceedModal');
+    if (continueBtn && modalEl) {
+        const proceedModal = new bootstrap.Modal(modalEl);
+
+        continueBtn.addEventListener('click', function () {
+            proceedModal.show();
+        });
+
+        document.getElementById('confirmProceedBtn').addEventListener('click', function () {
+            document.getElementById('planForm').submit();
+        });
+    }
 });
 </script>
 @endsection

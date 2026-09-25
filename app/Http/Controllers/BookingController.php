@@ -13,12 +13,15 @@ use App\Models\Service;
 use App\Models\ServiceRequest;
 use App\Models\StaffShortlist;
 use App\Models\User;
+use App\Models\Guarantor;
+use App\Models\Guarantor2;
 use App\Notifications\BookingPaymentReceivedNotification;
 use App\Notifications\CallRequestNotification;
 use App\Notifications\NewServiceRequestNotification;
 use App\Notifications\ReplacementRequestNotification;
 use App\Notifications\StaffSelectedNotification;
 use App\Notifications\UrgentRequestNotification;
+use App\Notifications\CompanyManagedStaffVerificationNotification;
 use App\Services\BookingCostService;
 use App\Services\StaffMatchingService;
 use App\Notifications\JobFilledNotification;
@@ -148,10 +151,10 @@ class BookingController extends Controller
         $user = Auth::user();
 
         // Gate: client must have at least 1 credit before booking
-        if (!$user->hasCredits()) {
-            return redirect()->route('credits.index')
-                ->with('error', 'You need at least 1 booking credit to proceed. You will only be charged when you view a staff profile.');
-        }
+        // if (!$user->hasCredits()) {
+        //     return redirect()->route('credits.index')
+        //         ->with('error', 'You need at least 1 booking credit to proceed. You will only be charged when you view a staff profile.');
+        // }
 
         // Calculate service costs using unified salary method
         $costs = $this->costService->calculateStaffSalary(
@@ -265,6 +268,7 @@ class BookingController extends Controller
      */
     public function calculateCost(Request $request)
     {
+        
         $validated = $request->validate([
             'services' => 'required|array|min:1',
             'package' => 'required|exists:packages,id',
@@ -277,13 +281,30 @@ class BookingController extends Controller
         $durationWeeks = (int) ($validated['duration_weeks'] ?? 4);
 
         // Calculate staff salary and client cost using unified method
-        $salary = $this->costService->calculateStaffSalary(
-            $validated['services'],
-            $validated['package'],
-            $managementPlan,
-            $durationWeeks,
-            $validated['apartment_type'] ?? null
-        );
+        try {
+            $salary = $this->costService->calculateStaffSalary(
+                $validated['services'],
+                $validated['package'],
+                $managementPlan,
+                $durationWeeks,
+                $validated['apartment_type'] ?? null
+            );
+        } catch (\Throwable $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ], 500);
+        }
+
+        $annualSubscriptionFee = 0;
+
+        if (
+            $managementPlan === 'company-managed'
+            && !Auth::user()->hasActiveCompanyManagementSubscription()
+        ) {
+            $annualSubscriptionFee = 10000;
+        }
 
         return response()->json([
             'base_cost' => $salary['base_cost'],
@@ -300,6 +321,7 @@ class BookingController extends Controller
             'staff_salary' => $salary['staff_salary'],
             'client_cost' => $salary['client_cost'],
             'platform_fee' => $salary['platform_fee'],
+            'annual_management_subscription_fee' => $annualSubscriptionFee,
             'management_plan' => $managementPlan,
             'is_one_off' => $salary['is_one_off'] ?? false,
             'breakdown' => $salary['breakdown'],
@@ -320,12 +342,12 @@ class BookingController extends Controller
             return redirect()->route('booking.shortlist', $serviceRequest->id);
         }
 
-        // Company-managed: redirect to shortlist as soon as ANY staff has accepted
-        $acceptedCount = $serviceRequest->shortlistedStaff()
-            ->whereIn('status', ['accepted', 'shortlisted', 'selected'])
-            ->count();
-
-        if ($acceptedCount >= 1) {
+        // Company-managed: show matched candidates immediately.
+        // Staff acceptance is not required before the client can choose.
+        if (
+            $serviceRequest->management_plan === 'company-managed'
+            && $serviceRequest->shortlistedStaff()->exists()
+        ) {
             return redirect()->route('booking.shortlist', $serviceRequest->id);
         }
 
@@ -381,9 +403,12 @@ class BookingController extends Controller
         // Company-managed shows only staff who accepted the job. Client-managed
         // shows every match, including those not yet responded to, because the
         // client approaches the staff member directly.
-        $visibleStatuses = $serviceRequest->isClientManaged()
-            ? ['notified', 'accepted', 'shortlisted', 'selected']
-            : ['accepted', 'shortlisted', 'selected'];
+        $visibleStatuses = [
+            'notified',
+            'accepted',
+            'shortlisted',
+            'selected',
+        ];
 
         $shortlist = $serviceRequest->shortlistedStaff()
             ->whereIn('status', $visibleStatuses)
@@ -560,7 +585,19 @@ class BookingController extends Controller
         $plan = ManagementPlan::where('slug', $serviceRequest->management_plan)->first();
 
         $totalCost = $serviceRequest->total_booking_cost;
-        $installment = $this->costService->calculateInstallmentAmounts($totalCost);
+
+        $upfrontFees = 0;
+
+        if ($serviceRequest->management_plan === 'company-managed') {
+            $upfrontFees =
+                (float) $serviceRequest->management_subscription_fee
+                + (float) $serviceRequest->staff_verification_fee;
+        }
+
+        $installment = $this->costService->calculateInstallmentAmounts(
+            $totalCost,
+            $upfrontFees
+        );
 
         // Pre-generate payment reference so it's consistent between display and storage
         $paymentReference = 'BK' . $serviceRequest->id . '_' . strtoupper(Str::random(6));
@@ -577,22 +614,34 @@ class BookingController extends Controller
 
         $validated = $request->validate([
             'payment_method' => 'required|in:bank_transfer,card',
-            'payment_type' => 'required|in:full,installment',
+            'payment_type' => 'required|in:full,deferred',
             'payment_reference' => 'required|string',
-            'bank_receipt' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'bank_receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
         $totalCost = $serviceRequest->total_booking_cost;
-        $isInstallment = $validated['payment_type'] === 'installment';
-        $installmentAmounts = $this->costService->calculateInstallmentAmounts($totalCost);
+        $upfrontFees = 0;
 
-        $amount = $isInstallment ? $installmentAmounts['first_payment'] : $totalCost;
-
-        // Handle file upload
-        $receiptPath = null;
-        if ($request->hasFile('bank_receipt')) {
-            $receiptPath = \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts');
+        if ($serviceRequest->management_plan === 'company-managed') {
+            $upfrontFees =
+                (float) $serviceRequest->management_subscription_fee
+                + (float) $serviceRequest->staff_verification_fee;
         }
+
+        $isDeferred = $validated['payment_type'] === 'deferred';
+
+        $paymentAmounts = $this->costService->calculateInstallmentAmounts(
+            $totalCost,
+            $upfrontFees
+        );
+
+        $amount = $isDeferred
+            ? $paymentAmounts['first_payment']
+            : $totalCost;
+
+        // Receipt is now required by validation above, so this always resolves
+        // to an actual uploaded file — no more silent no-receipt submissions.
+        $receiptPath = \App\Support\SecureDocument::store($request->file('bank_receipt'), 'receipts');
 
         $transactionRef = $validated['payment_reference'];
 
@@ -604,29 +653,36 @@ class BookingController extends Controller
             'amount' => $amount,
             'payment_method' => $validated['payment_method'],
             'transaction_reference' => $transactionRef,
-            'status' => $receiptPath ? 'pending_approval' : 'pending',
+            'status' => 'pending_approval',
             'bank_receipt' => $receiptPath,
-            'is_installment' => $isInstallment,
-            'installment_type' => $isInstallment ? 'first_half' : null,
-            'due_date' => $isInstallment ? $serviceRequest->preferred_start_date : null,
+            'is_installment' => $isDeferred,
+            'installment_type' => $isDeferred ? 'deferred' : null,
+            'due_date' => $isDeferred ? $serviceRequest->preferred_start_date : null,
         ]);
 
         // Update service request
         $serviceRequest->update([
-            'payment_type' => $validated['payment_type'],
+           'payment_type' => $validated['payment_type'],
             'amount_paid' => $amount,
-            'amount_remaining' => $isInstallment ? $installmentAmounts['second_payment'] : 0,
-            'balance_due_date' => $isInstallment ? $serviceRequest->preferred_start_date : null,
+            'amount_remaining' => $isDeferred
+                ? $paymentAmounts['second_payment']
+                : 0,
+            'balance_due_date' => $isDeferred
+                ? $serviceRequest->preferred_start_date
+                : null,
         ]);
 
-        // If receipt uploaded, mark as pending approval and notify admin
-        if ($receiptPath) {
-            $payment->markAsPendingApproval();
+        // Every submission now has a receipt attached, so every submission
+        // notifies admins and lands in their approval queue.
+        //
+        // markAsPendingApproval() is still called even though status is
+        // already set above - it's kept in case it sets other bookkeeping
+        // (timestamps, etc.) beyond the status column itself.
+        $payment->markAsPendingApproval();
 
-            $admins = \App\Models\User::where('user_role', '>=', 1)->get();
-            foreach ($admins as $admin) {
-                $admin->notify(new BookingPaymentReceivedNotification($serviceRequest, $payment));
-            }
+        $admins = \App\Models\User::where('user_role', '>=', 1)->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new BookingPaymentReceivedNotification($serviceRequest, $payment));
         }
 
         // Create monthly subscription if selected
@@ -647,6 +703,273 @@ class BookingController extends Controller
     }
 
     /**
+     * Pay the remaining balance on an installment booking.
+     */
+    public function payRemainingBalance(Request $request, ServiceRequest $serviceRequest)
+    {
+        $this->authorizeClient($serviceRequest);
+
+        if ($serviceRequest->amount_remaining <= 0) {
+            return redirect()
+                ->route('booking.payment-success', $serviceRequest->id)
+                ->with('info', 'There is no remaining balance on this booking.');
+        }
+
+        // Make sure the first installment was actually completed.
+        $deferredPayment = $serviceRequest->bookingPayments()
+            ->where('status', 'completed')
+            ->where('is_installment', true)
+            ->where('installment_type', 'deferred')
+            ->latest()
+            ->first();
+
+        if (!$deferredPayment) {
+            return redirect()
+                ->route('booking.payment', $serviceRequest->id)
+                ->with('error', 'Your initial ₦30,000 payment has not yet been confirmed.');
+        }
+
+        $remainingAmount = (float) $serviceRequest->amount_remaining;
+
+        return view('booking.remaining-payment', compact(
+            'serviceRequest',
+            'remainingAmount'
+        ));
+    }
+
+    /**
+     * Submit a bank-transfer receipt for the remaining booking balance.
+    */
+    public function processRemainingBankTransfer( Request $request, ServiceRequest $serviceRequest) 
+    {
+        $this->authorizeClient($serviceRequest);
+
+        $remainingAmount = (float) $serviceRequest->amount_remaining;
+
+        if ($remainingAmount <= 0) {
+            return redirect()
+                ->route('booking.payment-success', $serviceRequest->id)
+                ->with('info', 'There is no remaining balance on this booking.');
+        }
+
+        // First installment must already be completed.
+        $deferredPayment = $serviceRequest->bookingPayments()
+            ->where('status', 'completed')
+            ->where('is_installment', true)
+            ->where('installment_type', 'deferred')
+            ->latest()
+            ->first();
+
+        if (!$deferredPayment) {
+            return redirect()
+                ->route('booking.payment', $serviceRequest->id)
+                ->with('error', 'Your initial ₦30,000 payment has not yet been confirmed.');
+        }
+
+        $validated = $request->validate([
+            'bank_receipt' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        $receiptPath = \App\Support\SecureDocument::store(
+            $request->file('bank_receipt'),
+            'receipts'
+        );
+
+        $payment = BookingPayment::create([
+            'service_request_id' => $serviceRequest->id,
+            'user_id' => Auth::id(),
+            'payment_for' => 'management_plan',
+            'amount' => $remainingAmount,
+            'payment_method' => 'bank_transfer',
+            'transaction_reference' => 'BAL_' . $serviceRequest->id . '_' . strtoupper(Str::random(8)),
+            'status' => 'pending_approval',
+            'bank_receipt' => $receiptPath,
+            'is_installment' => true,
+            'installment_type' => 'remaining',
+            'paid_at' => null,
+        ]);
+
+        foreach (User::where('user_role', '>=', 1)->get() as $admin) {
+            $admin->notify(
+                new BookingPaymentReceivedNotification($serviceRequest, $payment)
+            );
+        }
+
+        return redirect()
+            ->route('booking.payment-success', $serviceRequest->id)
+            ->with(
+                'success',
+                'Your remaining payment receipt has been submitted and is awaiting approval.'
+            );
+    }
+
+    /**
+     * Handle Paystack callback for the remaining booking balance.
+     *
+     * Mirrors handlePaystackCallback()'s verification pattern (reference
+     * ownership, kobo-exact amount match, metadata match, single-consumption
+     * check) but settles against amount_remaining instead of
+     * total_booking_cost, since the ₦30,000 upfront payment was already
+     * recorded separately.
+     */
+    public function handleRemainingPaystackCallback(Request $request, ServiceRequest $serviceRequest)
+    {
+        $this->authorizeClient($serviceRequest);
+
+        $validated = $request->validate([
+            'paystack_reference' => 'required|string',
+        ]);
+
+        $reference = $validated['paystack_reference'];
+        $remainingAmount = (float) $serviceRequest->amount_remaining;
+
+        if ($remainingAmount <= 0) {
+            return redirect()
+                ->route('booking.payment-success', $serviceRequest->id)
+                ->with('info', 'There is no remaining balance on this booking.');
+        }
+
+        // The ₦30,000 upfront payment must already be confirmed before the
+        // balance can be settled - same guard as the bank-transfer path.
+        $deferredPayment = $serviceRequest->bookingPayments()
+            ->where('status', 'completed')
+            ->where('is_installment', true)
+            ->where('installment_type', 'deferred')
+            ->latest()
+            ->first();
+
+        if (!$deferredPayment) {
+            return redirect()
+                ->route('booking.payment', $serviceRequest->id)
+                ->with('error', 'Your initial ₦30,000 payment has not yet been confirmed.');
+        }
+
+        try {
+            $secretKey = config('paystack.secretKey');
+            $response = \Illuminate\Support\Facades\Http::withHeaders([
+                'Authorization' => 'Bearer ' . $secretKey,
+            ])->get('https://api.paystack.co/transaction/verify/' . $reference);
+
+            $data = $response->json();
+            $txn = $data['data'] ?? null;
+
+            if (!$response->successful() || !is_array($txn) || ($txn['status'] ?? null) !== 'success') {
+                Log::warning('Paystack remaining-balance verify rejected', [
+                    'service_request_id' => $serviceRequest->id,
+                    'reference' => $reference,
+                ]);
+                return redirect()->route('booking.payment-success', $serviceRequest->id)
+                    ->with('error', 'Payment verification failed. Please contact support.');
+            }
+
+            // A reference may only ever be consumed once, by any flow.
+            if ($this->referenceAlreadyConsumed($reference)) {
+                return redirect()->route('booking.payment-success', $serviceRequest->id)
+                    ->with('info', 'This payment has already been processed.');
+            }
+
+            // Paystack reports minor units (kobo). Compare in kobo to avoid
+            // float rounding, and require at least the expected amount.
+            $expectedKobo = (int) round($remainingAmount * 100);
+            $paidKobo = (int) ($txn['amount'] ?? 0);
+            $currency = $txn['currency'] ?? null;
+
+            if ($currency !== 'NGN' || $paidKobo < $expectedKobo) {
+                Log::warning('Paystack remaining-balance amount mismatch', [
+                    'service_request_id' => $serviceRequest->id,
+                    'reference' => $reference,
+                    'expected_kobo' => $expectedKobo,
+                    'paid_kobo' => $paidKobo,
+                    'currency' => $currency,
+                ]);
+                return redirect()->route('booking.payment-success', $serviceRequest->id)
+                    ->with('error', 'The amount paid does not match the remaining balance. Please contact support.');
+            }
+
+            // The transaction must have been initiated for this booking.
+            $metaRequestId = $txn['metadata']['service_request_id'] ?? null;
+            if ($metaRequestId !== null && (int) $metaRequestId !== (int) $serviceRequest->id) {
+                Log::warning('Paystack remaining-balance metadata mismatch', [
+                    'service_request_id' => $serviceRequest->id,
+                    'reference' => $reference,
+                    'metadata_service_request_id' => $metaRequestId,
+                ]);
+                return redirect()->route('booking.payment-success', $serviceRequest->id)
+                    ->with('error', 'Payment verification failed. Please contact support.');
+            }
+
+            $payment = BookingPayment::create([
+                'service_request_id' => $serviceRequest->id,
+                'user_id' => Auth::id(),
+                'payment_for' => 'management_plan',
+                'amount' => $remainingAmount,
+                'payment_method' => 'card',
+                'transaction_reference' => $reference,
+                'status' => 'completed',
+                'is_installment' => true,
+                'installment_type' => 'remaining',
+                'due_date' => null,
+                'paid_at' => now(),
+            ]);
+
+            // Activate the annual Company Management subscription here too,
+            // in case it wasn't already activated when the ₦30,000 upfront
+            // payment went through - the booking is only now fully paid.
+            if (
+                $serviceRequest->management_plan === 'company-managed'
+                && (float) $serviceRequest->management_subscription_fee > 0
+                && $serviceRequest->user
+                && !$serviceRequest->user->hasActiveCompanyManagementSubscription()
+            ) {
+                \App\Models\CompanyManagementSubscription::create([
+                    'user_id' => $serviceRequest->user_id,
+                    'amount' => $serviceRequest->management_subscription_fee,
+                    'status' => 'active',
+                    'started_at' => now(),
+                    'expires_at' => now()->addYear(),
+                ]);
+            }
+
+            $serviceRequest->update([
+                'payment_status' => 'Paid',
+                'amount_paid' => (float) $serviceRequest->amount_paid + $remainingAmount,
+                'amount_remaining' => 0,
+                'balance_due_date' => null,
+                'matching_status' => 'approved',
+                'staff_details_released' => true,
+            ]);
+
+            $admins = \App\Models\User::where('user_role', '>=', 1)->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new BookingPaymentReceivedNotification($serviceRequest, $payment));
+            }
+
+            // Mirrors AdminController::approveBookingPayment(), which only
+            // notifies the client that staff details are released once the
+            // booking is fully paid - which this payment now completes.
+            if ($serviceRequest->user) {
+                $serviceRequest->user->notify(
+                    new \App\Notifications\StaffDetailsReleasedNotification($serviceRequest)
+                );
+            }
+
+            Log::info('Remaining balance paid via Paystack', [
+                'service_request_id' => $serviceRequest->id,
+                'reference' => $reference,
+                'amount' => $remainingAmount,
+                'paid_kobo' => $paidKobo,
+            ]);
+
+            return redirect()->route('booking.payment-success', $serviceRequest->id)
+                ->with('success', 'Remaining balance paid successfully! Your booking is now fully confirmed.');
+        } catch (\Exception $e) {
+            Log::error('Paystack remaining-balance callback failed: ' . $e->getMessage());
+            return redirect()->route('booking.payment-success', $serviceRequest->id)
+                ->with('error', 'Payment verification failed. Please contact support.');
+        }
+    }
+
+    /**
      * Handle Paystack callback for booking payment
      */
     public function handlePaystackCallback(Request $request, ServiceRequest $serviceRequest)
@@ -658,7 +981,7 @@ class BookingController extends Controller
         // so it is only authoritative once Paystack confirms it.
         $validated = $request->validate([
             'paystack_reference' => 'required|string',
-            'payment_type' => 'required|in:full,installment',
+            'payment_type' => 'required|in:full,deferred',
         ]);
 
         $reference = $validated['paystack_reference'];
@@ -691,9 +1014,30 @@ class BookingController extends Controller
             }
 
             $totalCost = $serviceRequest->total_booking_cost;
-            $isInstallment = $validated['payment_type'] === 'installment';
-            $installmentAmounts = $this->costService->calculateInstallmentAmounts($totalCost);
-            $amount = $isInstallment ? $installmentAmounts['first_payment'] : $totalCost;
+
+            $upfrontFees = 0;
+
+            if ($serviceRequest->management_plan === 'company-managed') {
+                $upfrontFees =
+                    (float) $serviceRequest->management_subscription_fee
+                    + (float) $serviceRequest->staff_verification_fee;
+            }
+
+            $isDeferred = $validated['payment_type'] === 'deferred';
+
+            $upfrontFees = 0;
+            if ($serviceRequest->management_plan === 'company-managed') {
+                $upfrontFees =
+                    (float) $serviceRequest->management_subscription_fee
+                    + (float) $serviceRequest->staff_verification_fee;
+            }
+            $paymentAmounts = $this->costService->calculateInstallmentAmounts(
+                $totalCost,
+                $upfrontFees
+            );
+            $amount = $isDeferred
+                ? $paymentAmounts['first_payment']
+                : $totalCost;
 
             // Paystack reports minor units (kobo). Compare in kobo to avoid
             // float rounding, and require at least the expected amount.
@@ -733,19 +1077,46 @@ class BookingController extends Controller
                 'payment_method' => 'card',
                 'transaction_reference' => $reference,
                 'status' => 'completed',
-                'is_installment' => $isInstallment,
-                'installment_type' => $isInstallment ? 'first_half' : null,
-                'due_date' => $isInstallment ? $serviceRequest->preferred_start_date : null,
+                'is_installment' => $isDeferred,
+                'installment_type' => $isDeferred ? 'deferred' : null,
+                'due_date' => $isDeferred
+                    ? $serviceRequest->preferred_start_date
+                    : null,
                 'paid_at' => now(),
             ]);
 
+            // Activate the annual Company Management subscription
+            // only when this booking included the ₦10,000 subscription fee.
+           if (
+                !$isDeferred
+                && $serviceRequest->management_plan === 'company-managed'
+                && (float) $serviceRequest->management_subscription_fee > 0
+                && !$serviceRequest->user->hasActiveCompanyManagementSubscription()
+            ) {
+                \App\Models\CompanyManagementSubscription::create([
+                    'user_id' => $serviceRequest->user_id,
+                    'amount' => $serviceRequest->management_subscription_fee,
+                    'status' => 'active',
+                    'started_at' => now(),
+                    'expires_at' => now()->addYear(),
+                ]);
+            }
+
             $serviceRequest->update([
                 'payment_type' => $validated['payment_type'],
-                'payment_status' => 'Paid',
+                'payment_status' => $isDeferred ? 'Pending' : 'Paid',
                 'amount_paid' => $amount,
-                'amount_remaining' => $isInstallment ? $installmentAmounts['second_payment'] : 0,
-                'balance_due_date' => $isInstallment ? $serviceRequest->preferred_start_date : null,
-                'matching_status' => 'approved',
+                'amount_remaining' => $isDeferred ? $paymentAmounts['second_payment'] : 0,
+                'balance_due_date' => $isDeferred ? $serviceRequest->preferred_start_date : null,
+                // Deferred: booking still owes a balance, so matching_status
+                // stays 'payment_pending' - the same value the bank-transfer/
+                // admin-approval path uses (AdminController::approveBookingPayment()),
+                // which is what resumeUrl()/resumeLabel() key off of to route
+                // the client to the remaining-balance page instead of vanishing
+                // this booking from the dashboard or sending them somewhere
+                // unrelated ('staff_selected' would have sent them straight to
+                // the staff profile page with no mention of the balance owed).
+                'matching_status' => $isDeferred ? 'payment_pending' : 'approved',
             ]);
 
             $admins = \App\Models\User::where('user_role', '>=', 1)->get();
@@ -782,6 +1153,8 @@ class BookingController extends Controller
                 ->with('error', 'Payment verification failed. Please contact support.');
         }
     }
+
+
 
     /**
      * Step 12: WhatsApp receipt upload.
@@ -1048,7 +1421,7 @@ class BookingController extends Controller
     /**
      * Staff Profile: Show full staff profile page
      */
-    public function showStaffProfile(ServiceRequest $serviceRequest, $shortlistId)
+   public function showStaffProfile(ServiceRequest $serviceRequest, $shortlistId)
     {
         $this->authorizeClient($serviceRequest);
 
@@ -1058,6 +1431,7 @@ class BookingController extends Controller
             ->firstOrFail();
 
         $staff = $shortlistItem->staff;
+
         $creditBalance = Auth::user()->getCreditBalance();
         $hasCredits = Auth::user()->hasCredits();
 
@@ -1068,6 +1442,11 @@ class BookingController extends Controller
 
         $isClientManaged = $serviceRequest->management_plan === 'client-managed';
 
+        // Load guarantors for this staff member
+       $guarantor1 = Guarantor::where('applicant_id', $staff->id)->first();
+       $guarantor2 = Guarantor2::where('applicant_id', $staff->id)->first();
+       $hasGuarantors = $guarantor1 || $guarantor2;
+
         return view('booking.staff-profile', compact(
             'serviceRequest',
             'shortlistItem',
@@ -1075,7 +1454,10 @@ class BookingController extends Controller
             'creditBalance',
             'hasCredits',
             'rating',
-            'isClientManaged'
+            'isClientManaged',
+            'guarantor1',
+            'guarantor2',
+            'hasGuarantors'
         ));
     }
 
@@ -1104,17 +1486,42 @@ class BookingController extends Controller
         $user = Auth::user();
 
         // Check credits
-        if (!$user->hasCredits()) {
-            return redirect()->route('credits.index')
-                ->with('error', 'You need at least 1 credit to view staff details. Please purchase credits.');
+        if ($serviceRequest->management_plan === 'client-managed') {
+
+            if (!$user->hasCredits()) {
+                return redirect()->route('credits.index')
+                    ->with('error', 'You need at least 1 credit to view staff details. Please purchase credits.');
+            }
+
+            $deducted = $user->deductCredit(1, $serviceRequest->id);
+
+            if (!$deducted) {
+                return redirect()->route('credits.index')
+                    ->with('error', 'Credit deduction failed. Please try again or purchase more credits.');
+            }
         }
 
-        // Deduct 1 credit
-        $deducted = $user->deductCredit(1, $serviceRequest->id);
+        // Company-managed fees.
+        //
+        // Annual Registration Fee (₦10,000) is charged only once per client
+        // per year - hasActiveCompanyManagementSubscription() decides
+        // whether this booking needs it. This directly drives the
+        // ₦30,000-vs-₦20,000 upfront payment split on the payment page
+        // (see BookingCostService::calculateInstallmentAmounts()) - keep
+        // this in sync with that if the fee logic changes again.
+        $subscriptionFee = 0;
+        $staffVerificationFee = 0;
 
-        if (!$deducted) {
-            return redirect()->route('credits.index')
-                ->with('error', 'Credit deduction failed. Please try again or purchase more credits.');
+        if ($serviceRequest->management_plan === 'company-managed') {
+
+            // Annual subscription is charged only when the client
+            // does not already have an active subscription.
+            if (!$user->hasActiveCompanyManagementSubscription()) {
+                $subscriptionFee = 10000;
+            }
+
+            // One staff selected/unlocked = ₦20,000 verification fee.
+            $staffVerificationFee = 20000;
         }
 
         // Mark this staff as selected
@@ -1127,24 +1534,49 @@ class BookingController extends Controller
             ->with('staff')
             ->get();
 
+
         // Expire all other candidates
         StaffShortlist::where('service_request_id', $serviceRequest->id)
             ->where('id', '!=', $shortlistItem->id)
             ->whereIn('status', ['accepted', 'shortlisted', 'notified'])
             ->update(['status' => 'expired']);
 
-        // Update service request
+      // Update service request
         $serviceRequest->update([
             'selected_staff_id' => $shortlistItem->staff_id,
             'matching_status' => 'staff_selected',
+            'management_subscription_fee' => $subscriptionFee,
+            'staff_verification_fee' => $staffVerificationFee,
         ]);
 
-        // Notify selected staff
-        if ($shortlistItem->staff) {
+        // Notify selected staff - Client_Managed
+        if (
+            $shortlistItem->staff
+            && $serviceRequest->management_plan !== 'company-managed'
+        ) {
             try {
-                $shortlistItem->staff->notify(new StaffSelectedNotification($serviceRequest));
+                $shortlistItem->staff->notify(
+                    new StaffSelectedNotification($serviceRequest)
+                );
             } catch (\Exception $e) {
                 Log::error('StaffSelected notify failed: ' . $e->getMessage());
+            }
+        }
+
+        // Notify admins for Company-Managed staff verification
+        if ($serviceRequest->management_plan === 'company-managed') {
+            try {
+                $admins = User::where('user_role', '>=', 1)->get();
+
+                Notification::send(
+                    $admins,
+                    new CompanyManagedStaffVerificationNotification($serviceRequest)
+                );
+            } catch (\Exception $e) {
+                Log::error(
+                    'Company Managed staff verification notification failed: ' .
+                    $e->getMessage()
+                );
             }
         }
 
@@ -1159,19 +1591,13 @@ class BookingController extends Controller
             }
         }
 
-        // If company managed — notify admin to coordinate
-        if ($serviceRequest->management_plan === 'company-managed') {
-            try {
-                $admins = User::where('user_role', '>=', 1)->get();
-                Notification::send($admins, new NewServiceRequestNotification($serviceRequest));
-            } catch (\Exception $e) {
-                Log::error('CompanyManaged admin notify: ' . $e->getMessage());
-            }
-        }
+        $successMessage = $serviceRequest->management_plan === 'company-managed'
+            ? 'Staff selected successfully. Please review the profile and proceed to payment.'
+            : 'Profile unlocked! 1 credit has been deducted.';
 
         return redirect()->route('booking.staff-profile', [$serviceRequest->id, $shortlistItem->id])
             ->with('profile_unlocked', true)
-            ->with('success', 'Profile unlocked! 1 credit has been deducted.');
+            ->with('success', $successMessage);
     }
 
     /**

@@ -326,7 +326,7 @@ class CreditController extends Controller
 
         // Fix #3: Full server-side validation
         $request->validate([
-            'credits'     => 'required|in:1,3,6',
+            'credits'     => 'required|in:5,8,12',
             'amount_paid' => 'required|string|max:20',
             'receipt'     => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'note'        => 'nullable|string|max:255',
@@ -338,7 +338,7 @@ class CreditController extends Controller
         $receiptPath = $request->file('receipt')
             ->store('credit-receipts/' . $client->id, 'local');
 
-        $creditAmounts = [1 => '5,000', 3 => '12,000', 6 => '20,000'];
+        $creditAmounts = [5 => '10,000', 8 => '15,000', 12 => '20,000'];
         $credits = (int) $request->credits;
         $amount  = $creditAmounts[$credits] ?? $request->amount_paid;
 
@@ -381,7 +381,7 @@ class CreditController extends Controller
         ]);
 
         return redirect()->route('credits.index')
-            ->with('success', 'Receipt submitted! Our team will verify your payment and add your credits within 30 minutes. WhatsApp us on 08126237436 for faster processing.');
+            ->with('success', 'Receipt submitted! Our team will verify your payment and add your credits within 5 minutes. WhatsApp us on 08126237436 for faster processing.');
     }
 
     /**
@@ -420,9 +420,9 @@ class CreditController extends Controller
         ]);
 
         $plans = [
-            'starter'  => ['credits' => 1, 'amount' => 500000,  'name' => 'Starter Plan'],
-            'standard' => ['credits' => 3, 'amount' => 1200000, 'name' => 'Standard Plan'],
-            'premium'  => ['credits' => 6, 'amount' => 2000000, 'name' => 'Premium Plan'],
+            'starter'  => ['credits' => 5,  'amount' => 1000000, 'name' => 'Starter Plan'],
+            'standard' => ['credits' => 8,  'amount' => 1500000, 'name' => 'Standard Plan'],
+            'premium'  => ['credits' => 12, 'amount' => 2000000, 'name' => 'Premium Plan'],
         ];
 
         $plan = $plans[$request->plan];

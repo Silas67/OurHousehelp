@@ -62,28 +62,89 @@
                     @endif
 
                 @elseif ($payment && $payment->status === 'completed')
-                    <!-- Payment Approved -->
-                    <div class="mb-4">
-                        <i class="fas fa-check-circle fa-4x text-success"></i>
-                    </div>
-                    <h3 class="fw-bold text-success mb-3">Payment Approved!</h3>
-                    <p class="text-muted mb-4">
-                        Your payment has been confirmed. Staff details are now available.
-                    </p>
-                    @php
-                        $selectedShortlist = $serviceRequest->shortlistedStaff()
-                            ->where('staff_id', $serviceRequest->selected_staff_id)
-                            ->first();
-                    @endphp
-                    @if($selectedShortlist)
-                        <a href="{{ route('booking.staff-profile', [$serviceRequest->id, $selectedShortlist->id]) }}"
-                            class="btn btn-primary btn-lg px-5">
-                            <i class="fas fa-user me-2"></i>View Staff Details
+
+                    @if($serviceRequest->amount_remaining > 0)
+
+                        {{-- First installment completed, balance remains --}}
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle fa-4x text-success"></i>
+                        </div>
+
+                        <h3 class="fw-bold text-success mb-3">
+                            First Installment Confirmed
+                        </h3>
+
+                        <p class="text-muted mb-4">
+                            Your first installment has been confirmed successfully.
+                            Your booking is not fully paid yet.
+                        </p>
+
+                        <div class="alert alert-warning text-start mx-auto" style="max-width: 550px;">
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-wallet me-2"></i>
+                                Remaining Balance
+                            </h5>
+
+                            <p class="mb-2">
+                                <strong>₦{{ number_format($serviceRequest->amount_remaining) }}</strong>
+                                remains to be paid.
+                            </p>
+
+                            @if($serviceRequest->balance_due_date)
+                                <p class="mb-3">
+                                    Due:
+                                    <strong>
+                                        {{ $serviceRequest->balance_due_date->format('M d, Y') }}
+                                    </strong>
+                                </p>
+                            @endif
+
+                            <p class="small mb-0">
+                                Complete the remaining payment to fully confirm your booking.
+                            </p>
+                        </div>
+
+                        <a href="{{ route('booking.pay-remaining', $serviceRequest->id) }}"
+                        class="btn btn-primary btn-lg px-5 mt-3">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Pay Remaining Balance
                         </a>
+
                     @else
-                        <a href="{{ route('dashboard') }}" class="btn btn-primary btn-lg px-5">
-                            <i class="fas fa-home me-2"></i>Go to Dashboard
-                        </a>
+
+                        {{-- Full payment completed --}}
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle fa-4x text-success"></i>
+                        </div>
+
+                        <h3 class="fw-bold text-success mb-3">
+                            Payment Approved!
+                        </h3>
+
+                        <p class="text-muted mb-4">
+                            Your payment has been confirmed. Your booking is now fully paid.
+                        </p>
+
+                        @php
+                            $selectedShortlist = $serviceRequest->shortlistedStaff()
+                                ->where('staff_id', $serviceRequest->selected_staff_id)
+                                ->first();
+                        @endphp
+
+                        @if($selectedShortlist)
+                            <a href="{{ route('booking.staff-profile', [$serviceRequest->id, $selectedShortlist->id]) }}"
+                            class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-user me-2"></i>
+                                View Staff Details
+                            </a>
+                        @else
+                            <a href="{{ route('dashboard') }}"
+                            class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-home me-2"></i>
+                                Go to Dashboard
+                            </a>
+                        @endif
+
                     @endif
                 @elseif($payment && $payment->status === 'pending_approval')
                     <!-- Awaiting Admin Approval -->

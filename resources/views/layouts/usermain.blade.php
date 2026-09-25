@@ -33,13 +33,14 @@
 <body>
 
     {{-- @include('partials.modals._419') --}}
+    @include('partials.modals._ModalforLogout')
 
 
     <!-- Preloader -->
     <div id="preloader">
         <div>
             <div class="loader"></div>
-            <div class="loading-text">Loading... Please wait</div>
+            <div class="loading-text">Loading...</div>
         </div>
     </div>
 
@@ -53,11 +54,16 @@
     <div class="main-content" id="main-content">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <x-img width="130" src="build/assets/image/logo/ohh-log-b.png" loading="eager" alt="Logo"/>
+                </a>
+                
                 <span class="burger-icon" id="burger-icon">
                     <i class="fas fa-bars"></i>
                 </span>
-                <a class="navbar-brand" href="/"><x-img width="130"
-                        src="build/assets/image/logo/ohh-log-b.png" loading="eager" alt="Logo"/></a>
+
+                
+
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
@@ -98,9 +104,9 @@
                                 @endif
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                             <a class="nav-link" style="color: #333" href="{{ route('clientprofile') }}">Profile</a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
             </div>

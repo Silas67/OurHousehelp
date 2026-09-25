@@ -121,7 +121,7 @@
                                     @if(!empty($staff->last_name)) {{ substr($staff->last_name, 0, 1) }}. @endif
                                 </h5>
                                 @if(!empty($staff->specialties))
-                                    <p class="mb-0" style="font-size: 13px; color: #6c757d;">
+                                    <p class="mb-0" style="font-size: 13px; color: #6c757d; font-weight: 500;">
                                         {{ implode(' · ', $staff->specialties) }}
                                     </p>
                                 @endif
@@ -240,10 +240,12 @@
                                     <i class="fas fa-{{ $staff->background_checked ? 'check-circle text-success' : 'times-circle text-muted' }}"></i>
                                     <span>Background Checked</span>
                                 </div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="fas fa-{{ $staff->guarantors_forms_uploaded ? 'check-circle text-success' : 'times-circle text-muted' }}"></i>
-                                    <span>Guarantor Confirmed</span>
-                                </div>
+                                @if($hasGuarantors)
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <span>Guarantor Confirmed</span>
+                                    </div>
+                                @endif
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="fas fa-{{ $staff->address_confirmed ? 'check-circle text-success' : 'times-circle text-muted' }}"></i>
                                     <span>Address Confirmed</span>
@@ -274,6 +276,110 @@
                         </div>
                     </div>
                 </div>
+
+                {{-- Guarantor Details --}}
+                @if($hasGuarantors)
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold mb-2">
+                                    <i class="fas fa-user-shield text-success me-2"></i>
+                                    Guarantor Details
+                                </h6>
+
+                                <p class="text-muted small mb-4">
+                                    These guarantors are registered as part of this staff member's verification.
+                                </p>
+
+                                <div class="row g-4">
+
+                                    @if($guarantor1)
+                                        <div class="col-md-6">
+                                            <div class="border rounded-3 p-3 h-100">
+                                                <h6 class="fw-bold mb-3">Guarantor 1</h6>
+
+                                                <div class="small">
+                                                    <p class="mb-2">
+                                                        <strong>Name:</strong>
+                                                        {{ $guarantor1->guarantor1_first_name }}
+                                                        {{ $guarantor1->guarantor1_last_name }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Relationship:</strong>
+                                                        {{ $guarantor1->guarantor1_relationship }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Occupation:</strong>
+                                                        {{ $guarantor1->guarantor1_occupation }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Phone:</strong>
+                                                        {{ $guarantor1->guarantor1_phone }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Email:</strong>
+                                                        {{ $guarantor1->guarantor1_email }}
+                                                    </p>
+
+                                                    <p class="mb-0">
+                                                        <strong>Address:</strong>
+                                                        {{ $guarantor1->guarantor1_address }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if($guarantor2)
+                                        <div class="col-md-6">
+                                            <div class="border rounded-3 p-3 h-100">
+                                                <h6 class="fw-bold mb-3">Guarantor 2</h6>
+
+                                                <div class="small">
+                                                    <p class="mb-2">
+                                                        <strong>Name:</strong>
+                                                        {{ $guarantor2->guarantor2_first_name }}
+                                                        {{ $guarantor2->guarantor2_last_name }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Relationship:</strong>
+                                                        {{ $guarantor2->guarantor2_relationship }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Occupation:</strong>
+                                                        {{ $guarantor2->guarantor2_occupation }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Phone:</strong>
+                                                        {{ $guarantor2->guarantor2_phone }}
+                                                    </p>
+
+                                                    <p class="mb-2">
+                                                        <strong>Email:</strong>
+                                                        {{ $guarantor2->guarantor2_email }}
+                                                    </p>
+
+                                                    <p class="mb-0">
+                                                        <strong>Address:</strong>
+                                                        {{ $guarantor2->guarantor2_address }}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                 {{-- Match Score --}}
                 <div class="col-12">

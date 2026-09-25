@@ -65,9 +65,9 @@
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Credits to Add</label>
                             <div class="d-flex gap-2 mb-2">
-                                <button type="button" class="btn btn-outline-success btn-sm credit-preset" data-value="1">+1 (₦5,000)</button>
-                                <button type="button" class="btn btn-outline-success btn-sm credit-preset" data-value="3">+3 (₦12,000)</button>
-                                <button type="button" class="btn btn-outline-success btn-sm credit-preset" data-value="6">+6 (₦20,000)</button>
+                                <button type="button" class="btn btn-outline-success btn-sm credit-preset" data-value="5">+5 (₦10,000)</button>
+                                <button type="button" class="btn btn-outline-success btn-sm credit-preset" data-value="8">+8 (₦15,000)</button>
+                                <button type="button" class="btn btn-outline-success btn-sm credit-preset" data-value="12">+12 (₦20,000)</button>
                             </div>
                             <input type="number" name="credits" id="creditsInput" class="form-control"
                                 placeholder="Or enter custom amount" min="1" max="50" required>

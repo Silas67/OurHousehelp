@@ -46,6 +46,8 @@ use App\Models\StaffShortlist;
 
 use App\Notifications\StaffDetailsReleasedNotification;
 
+use App\Models\CompanyManagementSubscription;
+
 use Carbon\Carbon;
 
 
@@ -542,7 +544,7 @@ class AdminController extends Controller
 
     //         'password' => 'required|string|min:8|confirmed',
 
-    //         'profile_photo_path' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+    //         'profile_photo_path' => 'required|image|mimes:jpg,png,jpeg|max:10240',
 
     //         'gender' => 'required|string|in:male,female',
 
@@ -626,7 +628,7 @@ class AdminController extends Controller
 
             'dob' => 'nullable|date|before_or_equal:today',
 
-            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
 
             'bio' => 'nullable|string|max:1000',
 
@@ -847,12 +849,12 @@ class AdminController extends Controller
 
             'dob' => 'nullable|date',
 
-            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'profile_photo_path' => 'nullable|image|mimes:jpeg,png,jpg|max:10240',
 
             'bio' => 'nullable|string|max:1000',
 
 
-
+ 
             // Location Information
 
             'state_of_origin' => 'nullable|string|max:255',
@@ -879,7 +881,7 @@ class AdminController extends Controller
 
             'nin' => 'nullable|string|max:50',
 
-            'id_card' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:5120',
+            'id_card' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:10240',
 
 
 
@@ -2008,55 +2010,80 @@ class AdminController extends Controller
     }
 
 
-
     public function approveBookingPayment(Request $request, $id)
 
     {
+         $booking = ServiceRequest::findOrFail($id);
 
-        $booking = ServiceRequest::findOrFail($id);
-
-        $payment = $booking->bookingPayments()->where('status', 'pending_approval')->latest()->first();
-
-
+        $payment = $booking->bookingPayments()
+            ->where('status', 'pending_approval')
+            ->latest()
+            ->first();
 
         if (!$payment) {
-
             return redirect()->back()->with('error', 'No pending payment found.');
-
         }
 
+        $isDeferred = (bool) $payment->is_installment
+            && $payment->installment_type === 'deferred';
 
-
+        // Mark this particular payment as approved/completed.
         $payment->markAsCompleted();
 
-
-
-        // Release staff details
-
-        $booking->update([
-
-            'staff_details_released' => true,
-
-            'matching_status' => 'approved',
-
-            'payment_status' => 'Paid',
-
-        ]);
-
-
-
-        // Notify client
-
-        if ($booking->user) {
-
-            $booking->user->notify(new StaffDetailsReleasedNotification($booking));
-
+        // Activate the annual Company Management subscription only
+        // when the booking is fully paid.
+        if (
+            !$isDeferred
+            && $booking->management_plan === 'company-managed'
+            && (float) $booking->management_subscription_fee > 0
+            && $booking->user
+            && !$booking->user->hasActiveCompanyManagementSubscription()
+        ) {
+            CompanyManagementSubscription::create([
+                'user_id' => $booking->user_id,
+                'amount' => $booking->management_subscription_fee,
+                'status' => 'active',
+                'started_at' => now(),
+                'expires_at' => now()->addYear(),
+            ]);
         }
 
+        if ($isDeferred) {
+            // ₦30,000 upfront payment approved.
+            // The booking still has a remaining balance, so it is NOT fully paid.
+            $booking->update([
+                'payment_status' => 'Pending',
+                'matching_status' => 'payment_pending',
+                'staff_details_released' => false,
+            ]);
 
+            return redirect()->back()->with(
+                'success',
+                '₦30,000 upfront payment approved. The remaining balance is due when the staff resumes.'
+            );
+        }
 
-        return redirect()->back()->with('success', 'Payment approved and staff details released.');
+        // Full payment approved.
+        $booking->update([
+            'payment_status' => 'Paid',
+            'matching_status' => 'approved',
+            'staff_details_released' => true,
+            'amount_remaining' => 0,
+            'balance_due_date' => null,
+        ]);
 
+        // Only notify the client that staff details are released
+        // after the booking has been fully paid.
+        if ($booking->user) {
+            $booking->user->notify(
+                new StaffDetailsReleasedNotification($booking)
+            );
+        }
+
+        return redirect()->back()->with(
+            'success',
+            'Payment approved and staff details released.'
+        );
     }
 
 
@@ -2067,25 +2094,16 @@ class AdminController extends Controller
 
         $booking = ServiceRequest::findOrFail($id);
 
-
-
         $booking->update([
-
             'staff_details_released' => true,
-
             'matching_status' => 'approved',
-
         ]);
 
-
-
-        if ($booking->user) {
-
-            $booking->user->notify(new StaffDetailsReleasedNotification($booking));
-
+        if (!$isInstallment && $booking->user) {
+            $booking->user->notify(
+                new StaffDetailsReleasedNotification($booking)
+            );
         }
-
-
 
         return redirect()->back()->with('success', 'Staff details released to client.');
 
@@ -2096,11 +2114,8 @@ class AdminController extends Controller
     public function manageManagementPlans()
 
     {
-
         $plans = ManagementPlan::ordered()->get();
-
         return view('admin.booking.management-plans', compact('plans'));
-
     }
 
 
@@ -2108,21 +2123,13 @@ class AdminController extends Controller
     public function storeManagementPlan(Request $request)
 
     {
-
         $validated = $request->validate([
-
             'slug' => 'required|string|unique:management_plans',
-
             'name' => 'required|string',
-
             'base_price' => 'required|numeric|min:0',
-
             'max_price' => 'nullable|numeric|min:0',
-
             'features' => 'required|string',
-
             'sort_order' => 'required|integer',
-
         ]);
 
 
@@ -2383,5 +2390,89 @@ class AdminController extends Controller
 
     }
 
-}
 
+    /**
+     * List corporate staffing inquiries, newest first, optionally filtered
+     * by status. Mirrors the ServiceRequest listing pattern used elsewhere
+     * in this controller (paginate(10), orderBy created_at desc).
+     */
+    public function corporateInquiries(Request $request)
+
+    {
+
+        $query = \App\Models\CorporateInquiry::orderBy('created_at', 'desc');
+
+
+
+        if ($request->filled('status')) {
+
+            $query->where('status', $request->query('status'));
+
+        }
+
+
+
+        $inquiries = $query->paginate(10)->withQueryString();
+
+
+
+        $statusCounts = \App\Models\CorporateInquiry::selectRaw('status, count(*) as total')
+
+            ->groupBy('status')
+
+            ->pluck('total', 'status');
+
+
+
+        return view('admin.corporate-inquiries.index', compact('inquiries', 'statusCounts'));
+
+    }
+
+
+    /**
+     * Show a single corporate inquiry in full.
+     */
+    public function showCorporateInquiry($id)
+
+    {
+
+        $inquiry = \App\Models\CorporateInquiry::findOrFail($id);
+
+
+
+        return view('admin.corporate-inquiries.show', compact('inquiry'));
+
+    }
+
+
+    /**
+     * Update a corporate inquiry's status as it moves through follow-up
+     * (new -> contacted -> quoted -> closed / lost).
+     */
+    public function updateCorporateInquiryStatus(Request $request, $id)
+
+    {
+
+        $inquiry = \App\Models\CorporateInquiry::findOrFail($id);
+
+
+
+        $validated = $request->validate([
+
+            'status' => 'required|in:new,contacted,quoted,closed,lost',
+
+            'admin_notes' => 'nullable|string|max:1000',
+
+        ]);
+
+
+
+        $inquiry->update($validated);
+
+
+
+        return redirect()->back()->with('success', 'Inquiry status updated.');
+
+    }
+
+}

@@ -74,7 +74,7 @@ class PaymentController extends Controller
     {
         $request->validate([
             'payment_plan_id' => 'required|exists:payment_plans,id',
-            'receipt' => 'required|mimes:jpg,jpeg,png,pdf|max:2048',
+            'receipt' => 'required|mimes:jpg,jpeg,png,pdf|max:10240',
         ]);
 
         $userId = Auth::id();
