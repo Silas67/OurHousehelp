@@ -3,6 +3,13 @@
 
 <div class="ohh-booking-page">
 
+     @guest
+        <div class="ohh-guest-banner">
+            <i class="fas fa-user-circle"></i>
+            Browsing as a guest — we'll ask you to sign in or register once you're ready to find staff.
+        </div>
+    @endguest
+
     {{-- =========================================================
         PAGE HEADER
     ========================================================== --}}
@@ -1330,6 +1337,25 @@
 
 
 <style>
+
+    .ohh-guest-banner {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #FFF8E7;
+        border: 1px solid #F0DCA0;
+        color: #6B5416;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+    }
+
+    .ohh-guest-banner i {
+        color: #A9782E;
+        font-size: 14px;
+    }
 
     /* =========================================================
     PAGE

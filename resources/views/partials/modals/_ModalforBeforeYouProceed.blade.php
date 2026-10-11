@@ -10,10 +10,8 @@
      * - ₦30,000 when annual registration is still due
      * - ₦20,000 when annual registration is already active
      */
-    $hasActiveManagementSubscription =
-        method_exists(auth()->user(), 'hasActiveCompanyManagementSubscription')
-            ? auth()->user()->hasActiveCompanyManagementSubscription()
-            : false;
+    $hasActiveManagementSubscription = auth()->check()
+        && auth()->user()->hasActiveCompanyManagementSubscription();
 
     $companyRegistrationFee = 10000;
     $companyVerificationFee = 20000;

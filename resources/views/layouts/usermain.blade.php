@@ -46,8 +46,9 @@
 
 
     <!-- Sidebar -->
-    @include('partials.user._usersidebar')
-
+    @auth
+        @include('partials.user._usersidebar')
+    @endauth
 
 
     <!-- Main Content -->

@@ -103,6 +103,7 @@
             display: block;
         }
     </style>
+    
     <section id="onetime" class="py-5 mb-5">
         <div class="container py-5">
             <div class="row justify-content-center">
@@ -1448,6 +1449,7 @@
             </div>
         </div>
     </section>
+
     <script>
         document.querySelector("form").addEventListener("submit", function(event) {
             let checkboxes = document.querySelectorAll("input[name='specialties[]']");
@@ -1459,6 +1461,7 @@
             }
         });
     </script>
+
     {{-- <script>
         const progress = document.getElementById('progress');
         const steps = document.querySelectorAll('.step');

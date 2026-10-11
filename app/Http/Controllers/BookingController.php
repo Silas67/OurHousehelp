@@ -146,6 +146,17 @@ class BookingController extends Controller
             'working_hour_start' => 'nullable|string',
             'working_hour_end' => 'nullable|string',
         ]);
+
+
+        // Guest submitting the form — save their answers and send them to
+        // log in or register. They pick up exactly where they left off via
+        // the "Continue Booking" prompt once they're back.
+        if (!Auth::check()) {
+            session(['pending_booking' => $validated]);
+
+            return redirect()->route('login')
+                ->with('info', 'Please log in or register to continue your booking — we\'ve saved everything you entered.');
+        }
         
 
         $user = Auth::user();
@@ -259,6 +270,8 @@ class BookingController extends Controller
             $serviceRequest->update(['matching_status' => 'matching']);
         }
 
+         session()->forget('pending_booking');
+
         return redirect()->route('booking.staff-matching', $serviceRequest->id)
             ->with('success', 'Service request created. We are finding the best staff for you.');
     }
@@ -268,7 +281,7 @@ class BookingController extends Controller
      */
     public function calculateCost(Request $request)
     {
-        
+        session()->forget('pending_booking');
         $validated = $request->validate([
             'services' => 'required|array|min:1',
             'package' => 'required|exists:packages,id',

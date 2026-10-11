@@ -15,7 +15,7 @@
     </div>
 
 
-    <!-- Professional Navbar with Desktop Dropdown and Mobile Sliding Menu -->
+    <!-- Navbar with Desktop Dropdown and Mobile Sliding Menu -->
     <nav class="navbar navbar-expand-lg ohh-navbar">
         <div class="container-fluid ">
             <!-- Logo -->
@@ -35,16 +35,67 @@
             <!-- Desktop Menu (shows on lg screens and up) -->
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('welcome-index') }}/#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('welcome-index') }}/#services">Services</a>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link {{ Route::is('home') ? 'active' : '' }}"
+                            href="/">
+                            Home
+                        </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('welcome-index') }}/#gallery">Gallery</a>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="{{ route('welcome-index') }}#about"
+                            data-section="about">
+                            About
+                        </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('welcome-index') }}/#contact">Contact</a>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="{{ route('welcome-index') }}#services"
+                            data-section="services">
+                            Services
+                        </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('packages') }}">Packages</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('faq') }}">FAQs</a></li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="{{ route('welcome-index') }}#gallery"
+                            data-section="gallery">
+                            Gallery
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="{{ route('welcome-index') }}#contact"
+                            data-section="contact">
+                            Contact
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link {{ Route::is('packages') ? 'active' : '' }}"
+                            href="{{ route('packages') }}">
+                            Packages
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a
+                            class="nav-link {{ Route::is('faq') ? 'active' : '' }}"
+                            href="{{ route('faq') }}">
+                            FAQs
+                        </a>
+                    </li>
+
                 </ul>
 
                 <!-- Dashboard Links (Desktop) -->
@@ -205,6 +256,7 @@
     <!-- Mobile Menu (Offcanvas - only shows on mobile) -->
     <div class="offcanvas offcanvas-start ohh-mobile-sidebar d-lg-none" tabindex="-1" id="mobileMenu"
         aria-labelledby="mobileMenuLabel">
+
         {{-- ── MOBILE SIDEBAR HEADER ── --}}
         <div class="offcanvas-header" style="background: linear-gradient(135deg, #0F6E56, #1D9E75); padding: 16px;">
             @if (Auth::check())
@@ -322,13 +374,73 @@
                 @endif
 
                 {{-- Main nav links --}}
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="/"><i class="fas fa-home" style="color:#0F6E56;width:16px;"></i>Home</a></li>
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="{{ route('welcome-index') }}/#about"><i class="fas fa-info-circle" style="color:#0F6E56;width:16px;"></i>About</a></li>
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="{{ route('welcome-index') }}/#services"><i class="fas fa-concierge-bell" style="color:#0F6E56;width:16px;"></i>Services</a></li>
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="{{ route('welcome-index') }}/#gallery"><i class="fas fa-images" style="color:#0F6E56;width:16px;"></i>Gallery</a></li>
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="{{ route('welcome-index') }}/#contact"><i class="fas fa-envelope" style="color:#0F6E56;width:16px;"></i>Contact</a></li>
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="{{ route('packages') }}"><i class="fas fa-box-open" style="color:#0F6E56;width:16px;"></i>Packages</a></li>
-                <li class="nav-item px-2"><a class="nav-link d-flex align-items-center gap-2" href="{{ route('faq') }}"><i class="fas fa-question-circle" style="color:#0F6E56;width:16px;"></i>FAQs</a></li>
+                <li class="nav-item px-2">
+                    <a
+                        class="nav-link d-flex align-items-center gap-2"
+                        href="/"
+                        data-section="home">
+                        <i class="fas fa-home" style="color:#0F6E56;width:16px;"></i>
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item px-2">
+                    <a
+                        class="nav-link d-flex align-items-center gap-2"
+                        href="{{ route('welcome-index') }}#about"
+                        data-section="about">
+                        <i class="fas fa-info-circle" style="color:#0F6E56;width:16px;"></i>
+                        About
+                    </a>
+                </li>
+
+                <li class="nav-item px-2">
+                    <a
+                        class="nav-link d-flex align-items-center gap-2"
+                        href="{{ route('welcome-index') }}#services"
+                        data-section="services">
+                        <i class="fas fa-concierge-bell" style="color:#0F6E56;width:16px;"></i>
+                        Services
+                    </a>
+                </li>
+
+                <li class="nav-item px-2">
+                    <a
+                        class="nav-link d-flex align-items-center gap-2"
+                        href="{{ route('welcome-index') }}#gallery"
+                        data-section="gallery">
+                        <i class="fas fa-images" style="color:#0F6E56;width:16px;"></i>
+                        Gallery
+                    </a>
+                </li>
+
+                <li class="nav-item px-2">
+                    <a
+                        class="nav-link d-flex align-items-center gap-2"
+                        href="{{ route('welcome-index') }}#contact"
+                        data-section="contact">
+                        <i class="fas fa-envelope" style="color:#0F6E56;width:16px;"></i>
+                        Contact
+                    </a>
+                </li>
+
+                <li class="nav-item px-2">
+                    <a 
+                        class="nav-link d-flex align-items-center gap-2" 
+                        href="{{ route('packages') }}">
+                        <i class="fas fa-box-open" style="color:#0F6E56;width:16px;"></i>
+                        Packages
+                    </a>
+                </li>
+
+                <li class="nav-item px-2">
+                    <a 
+                        class="nav-link d-flex align-items-center gap-2" 
+                        href="{{ route('faq') }}">
+                        <i class="fas fa-question-circle" style="color:#0F6E56;width:16px;"></i>
+                        FAQs
+                    </a>
+                </li>
 
                 {{-- Join Us — hidden for logged-in clients --}}
                 @if(!Auth::check() || (Auth::check() && Auth::user()->account_type !== 'client'))
@@ -367,9 +479,6 @@
 
     <!-- CSS Styles -->
     <style>
-       /* =========================================================
-   OHH PREMIUM NAVBAR
-   ========================================================= */
 
         body {
             margin: 0 !important;
@@ -412,7 +521,7 @@
             position: relative;
             padding: 10px 13px;
             border-radius: 9px;
-            color: #43514b;
+            color: #43514B;
             font-size: 14px;
             font-weight: 500;
             transition: all 0.2s ease;
@@ -420,7 +529,13 @@
 
         .ohh-navbar .navbar-nav .nav-link:hover {
             color: #0F6E56;
-            background: #F4F1E9;
+            background: #F5F1E8;
+        }
+
+        .ohh-navbar .navbar-nav .nav-link.active {
+            color: #0F6E56;
+            background: #EEF6F1;
+            font-weight: 700;
         }
 
         .ohh-navbar .navbar-nav .nav-link::after {
@@ -439,6 +554,8 @@
         .ohh-navbar .dropdown > a:hover {
             background: #F5F1E8;
         }
+
+       
 
         .user-profile-circle {
             background: #0F6E56 !important;
@@ -664,7 +781,7 @@
                 max-height: 40px;
             }
         }
-            </style>
+    </style>
 
     @if (session('error'))
         <div class="alert alert-danger">
@@ -680,24 +797,79 @@
 
     @include('partials._pages')
 
-    <footer class="footer ">
-        <div class="bottom-footer text-center">
+    @unless(Route::is('dashboard', 'admin*', 'applicant*', 'booking.*', 'credits.*', 'clientprofile', 'clientmessage', 'notifications.index', 'payments.*', 'bookings', 'househelps', 'liveinjobrequest', 'paymenthistory', 'registerandpayment', 'premium'))
+        <footer class="ohh-footer">
             <div class="container">
-                <div class="bor_top">
-                    <p>
-                        <a href="/">Our House Help &copy; {{ date('Y') }}</a>
-                        <span style="color: white; font-weight:inherit">Designed by Our House Help Services:
-                            {{-- <a href="tel:+2347033700129">+2347033700129</a> --}}
-                            <a href="{{ route('admin.register') }}">(Admin)</a>
-                        </span> <a href="{{ route('our.terms.conditions') }}">
-                            <p>Please read our Terms and Conditions before proceeding </p>
+        
+                <div class="row gy-4">
+        
+                    {{-- Brand --}}
+                    <div class="col-lg-3">
+                        
+                        <div class="ohh-footer-brand">
+                             <a class="navbar-brand" href="/">
+                                <x-img width="150" src="build/assets/image/logo/ohh-log.png" alt="Our House Help" loading="eager"
+                                    class="d-none d-md-block" />
+                                <x-img width="100" src="build/assets/image/logo/ohh-log.png" alt="Our House Help" loading="eager"
+                                    class="d-md-none" />
+                             </a>
+                             <p class="ohh-footer-brand-text"> Our House Help</p>
+                            
+                        </div>
+                        <p class="ohh-footer-tagline">
+                            Nigeria's trusted platform connecting families and companies
+                            with NIN-verified, background-checked staff.
+                        </p>
+                        <a href="https://wa.me/2348126237436" target="_blank" class="ohh-footer-whatsapp">
+                            <i class="fab fa-whatsapp"></i> WhatsApp Us
                         </a>
-                    </p>
-
+                    </div>
+        
+                    {{-- Platform --}}
+                    <div class="col-6 col-lg-2">
+                        <h6 class="ohh-footer-heading">Platform</h6>
+                        <ul class="ohh-footer-links">
+                            <li><a href="{{ route('booking.service-selection') }}">Book a Service</a></li>
+                            <li><a href="{{ route('corporate') }}">For Your Company</a></li>
+                            <li><a href="{{ route('applyashousehelp') }}">Join as Staff</a></li>
+                        </ul>
+                    </div>
+        
+                    {{-- Company --}}
+                    <div class="col-6 col-lg-2">
+                        <h6 class="ohh-footer-heading">Company</h6>
+                        <ul class="ohh-footer-links">
+                            <li><a href="{{ route('home') }}">Home</a></li>
+                            <li><a href="mailto:info@ourhousehelp.com">Contact</a></li>
+                        </ul>
+                    </div>
+        
+                    {{-- Help & Legal --}}
+                    <div class="col-lg-4">
+                        <h6 class="ohh-footer-heading">Help &amp; Legal</h6>
+                        <ul class="ohh-footer-links">
+                            <li><a href="{{ route('our.terms.conditions') }}">Terms &amp; Conditions</a></li>
+                            
+                            <li class="ohh-footer-contact"><i class="fas fa-phone"></i><a href="tel:+2349167696525">+234 916 7696 525</a></li>
+                            <li class="ohh-footer-contact"><i class="fas fa-envelope"></i><a href="mailto:info@ourhousehelp.com">info@ourhousehelp.com</a></li>
+                        </div>
+                        </ul>
+                        
+                    </div>
+        
                 </div>
+        
+                <div class="ohh-footer-bottom">
+                    <p>
+                        <a href="{{ route('home') }}">Our House Help</a> &copy; {{ date('Y') }}. All rights reserved.
+                        &middot; Designed by Our House Help Services
+                        <a href="{{ route('admin.register') }}" class="ohh-footer-bottom-admin">(Admin)</a>
+                    </p>
+                </div>
+        
             </div>
-        </div>
-    </footer>
+        </footer>
+    @endunless
 
     <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="feedbackModalLabel">
         <div class="modal-dialog modal-dialog-centered">
@@ -785,7 +957,6 @@
     </div>
     <!-- End Vertically centered Modal-->
 
-
     <style>
         .content-container {
             min-height: 80vh;
@@ -794,6 +965,162 @@
             scale: 0.95;
              background-color: rgba(255, 255, 255, 0.1);
             
+        }
+
+        .ohh-footer {
+            font-family: 'DM Sans', sans-serif;
+            background: #085041;
+            color: rgba(255,255,255,0.72);
+            padding: 72px 0 0;
+        }
+
+        .ohh-footer-brand{
+            display: flex;
+            align-items: start;
+            justify-content: center;
+            gap: 8px;
+        }        
+    
+        .ohh-footer-brand-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff; 
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: -4px
+        }
+    
+        .ohh-footer-tagline {
+            font-size: 14px;
+            line-height: 1.7;
+            font-weight: 300;
+            color: rgba(255,255,255,0.6);
+            max-width: 320px;
+            margin-bottom: 22px;
+        }
+    
+        .ohh-footer-whatsapp {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: #25D366;
+            color: #06281F;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: opacity 0.15s ease;
+        }
+    
+        .ohh-footer-whatsapp:hover {
+            opacity: 0.88;
+            color: #06281F;
+        }
+    
+        .ohh-footer-whatsapp i {
+            font-size: 17px;
+        }
+    
+        .ohh-footer-heading {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 15px;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+    
+        .ohh-footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        .ohh-footer-links li {
+            margin-bottom: 12px;
+        }
+    
+        .ohh-footer-links a {
+            color: rgba(255,255,255,0.65);
+            font-size: 14px;
+            font-weight: 300;
+            text-decoration: none;
+            transition: color 0.15s ease;
+        }
+    
+        .ohh-footer-links a:hover {
+            color: #9FE1CB;
+        }
+    
+        .ohh-footer-contact {
+            margin-top: 20px;
+        }
+    
+        .ohh-footer-contact li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 6px;
+        }
+    
+        .ohh-footer-contact i {
+            color: #BA7517;
+            font-size: 13px;
+            width: 14px;
+            
+
+        }
+    
+        .ohh-footer-contact a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+        }
+    
+        .ohh-footer-contact a:hover {
+            color: #9FE1CB;
+        }
+    
+        .ohh-footer-bottom {
+            margin-top: 56px;
+            padding: 22px 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+    
+        .ohh-footer-bottom p {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 300;
+            color: rgba(255,255,255,0.45);
+        }
+    
+        .ohh-footer-bottom a {
+            color: rgba(255,255,255,0.65);
+            text-decoration: none;
+        }
+    
+        .ohh-footer-bottom a:hover {
+            color: #9FE1CB;
+        }
+    
+        .ohh-footer-bottom-admin {
+            color: rgba(255,255,255,0.35) !important;
+            font-size: 11px;
+        }
+    
+        @media (max-width: 991px) {
+            .ohh-footer {
+                text-align: left;
+                padding-top: 56px;
+            }
+            .ohh-footer-tagline {
+                max-width: 100%;
+            }
         }
     </style>
     
@@ -822,6 +1149,96 @@
 
             var main = document.getElementById('main-content');
             if (main) main.style.display = 'block';
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const sectionLinks =
+                document.querySelectorAll('.nav-link[data-section]');
+
+            if (!sectionLinks.length) {
+                return;
+            }
+
+
+            function setActiveSection(section) {
+
+                sectionLinks.forEach(function (link) {
+
+                    link.classList.toggle(
+                        'active',
+                        link.dataset.section === section
+                    );
+
+                });
+
+            }
+
+
+            /*
+            * Only run section navigation logic on the
+            * welcome-index page.
+            */
+            const isWelcomePage =
+                window.location.pathname === '/welcome-index' ||
+                window.location.pathname === '/welcome-index/';
+
+
+            if (!isWelcomePage) {
+                return;
+            }
+
+
+            /*
+            * Highlight the section represented by the URL hash
+            * when the page first loads.
+            */
+            function updateFromHash() {
+
+                const hash =
+                    window.location.hash.replace('#', '');
+
+                if (hash) {
+                    setActiveSection(hash);
+                }
+
+            }
+
+
+            updateFromHash();
+
+
+            /*
+            * Also update the active link when the user clicks
+            * one of the navigation links.
+            */
+            sectionLinks.forEach(function (link) {
+
+                link.addEventListener('click', function () {
+
+                    const section =
+                        this.dataset.section;
+
+                    if (section) {
+                        setActiveSection(section);
+                    }
+
+                });
+
+            });
+
+
+            /*
+            * Update when the browser hash changes.
+            */
+            window.addEventListener(
+                'hashchange',
+                updateFromHash
+            );
+
+
         });
     </script>
 

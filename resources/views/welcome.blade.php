@@ -7,6 +7,30 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
+    @auth
+        @if(session()->has('pending_booking'))
+            @php $pending = session('pending_booking'); @endphp
+            <div class="alert alert-info alert-dismissible fade show m-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <strong>Welcome back!</strong> You have a booking waiting to be completed.
+                </div>
+                <form method="POST" action="{{ route('booking.save-service-selection') }}" class="m-0">
+                    @csrf
+                    @foreach($pending as $key => $value)
+                        @if(is_array($value))
+                            @foreach($value as $item)
+                                <input type="hidden" name="{{ $key }}[]" value="{{ $item }}">
+                            @endforeach
+                        @else
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endif
+                    @endforeach
+                    <button type="submit" class="btn btn-sm btn-primary">Continue Booking</button>
+                </form>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+    @endauth
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
@@ -432,7 +456,7 @@
                     </div>
                     <div class="ohh-trust-item">
                         <i class="fas fa-map-marker-alt"></i>
-                        Abuja & Beyond
+                        Nigeria & Beyond
                     </div>
                 </div>
             </div>
@@ -452,7 +476,7 @@
                             Every staff member on our platform is personally vetted, trained, and insured —
                             so you can focus on what matters most to you.
                         </p>
-                        <a href="{{ route('booking.service-selection') }}" class="ohh-btn-primary mt-4 d-inline-block">
+                        <a href="{{ route('get-started') }}" class="ohh-btn-primary mt-4 d-inline-block">
                             Get Started
                         </a>
                     </div>
@@ -538,11 +562,11 @@
                             <p>Professional drivers for school runs, errands, and daily commutes. Safe and reliable.</p>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-6">
+                     <div class="col-md-4 col-sm-6">
                         <div class="ohh-service-card">
-                            <div class="ohh-service-icon"><i class="fas fa-running"></i></div>
-                            <h5>Errand Service</h5>
-                            <p>Need something done? Our errand staff handle deliveries, pickups, and more.</p>
+                            <div class="ohh-service-icon"><i class="fas fa-briefcase"></i></div>
+                            <h5>Corporate Staffing</h5>
+                            <p>Vetted domestic and support staff supplied directly to offices, estates, and corporate executives — at scale.</p>
                         </div>
                     </div>
                 </div>
@@ -649,7 +673,7 @@
                     <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-2 rounded-pill"
                         style="background: rgba(255,255,255,0.12); font-size: 13px; color: rgba(255,255,255,0.8); letter-spacing: 0.06em; text-transform: uppercase;">
                         <i class="fas fa-briefcase" style="font-size: 11px;"></i>
-                        Now Hiring Across Abuja
+                        Now Hiring Across Nigeria
                     </div>
                     <h2 style="font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 500; color: #fff; line-height: 1.2; margin-bottom: 16px;">
                         Turn your skills into a <em style="font-style: italic; color: #9FE1CB;">steady income</em>

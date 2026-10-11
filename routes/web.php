@@ -551,9 +551,6 @@ Route::middleware(['admin', 'auth'])->group(function () {
 
 
 // In web.php
-
-
-
 Route::middleware(['auth'])->group(function () {
 
     // Service request confirmation page
@@ -621,22 +618,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/verify-bank-account', [UserController::class, 'verifyBankAccount'])->name('bank.verify')->middleware('auth');
 
     Route::get('messages', [ContactMessageController::class, 'clientmessage'])->name('clientmessage');
+    Route::post('/contactmessage/markAsReadOnClick/{id}', [ContactMessageController::class, 'markAsReadOnClick'])->name('contactmessage.markAsReadOnClick');
 });
 
-// Paystack webhook — no auth needed, called by Paystack servers
-// Route::post('/credits/webhook', [App\Http\Controllers\CreditController::class, 'handleWebhook'])->name('credits.webhook');
 
-// Removed: unauthenticated GET /test-paystack, which proxied a request to the
-// Paystack API and echoed the raw response (or the exception message) back.
 
-// Sensitive uploads (ID cards, guarantor passports/signatures, receipts).
-// Requires a session AND a valid signature, so links cannot be guessed by
-// iterating filenames or shared onward indefinitely.
+
+
 Route::get('/documents/{category}/{filename}', [App\Http\Controllers\SecureDocumentController::class, 'show'])
     ->middleware(['auth', 'signed'])
     ->name('documents.show');
 
-// Notification routes
+
+    // Notification routes
 Route::middleware(['auth'])->group(function () {
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -647,47 +641,11 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Removed: unauthenticated GET /check-auth debug endpoint, which echoed the
-// current session's user id and email. Nothing referenced it.
 
 
 
 Route::post('/liveouts/registerSkills', [SkillController::class, 'storeSkilledWorkers'])->name('applicants.registerSkilledWorkers');
 
-// Route::get('/skills/autocomplete', function (Request $request) {
-
-//     $term = strtolower($request->get('term'));
-
-
-
-//     $skills = Service::whereRaw('LOWER(service_name) like ?', ['%' . $term . '%'])
-
-//         ->limit(10)
-
-//         ->get();
-
-
-
-//     $results = [];
-
-//     foreach ($skills as $skill) {
-
-//         $results[] = [
-
-//             'id' => $skill->id,
-
-//             'label' => $skill->service_name,
-
-//             'value' => $skill->service_name
-
-//         ];
-
-//     }
-
-
-
-//     return response()->json($results);
-
-// })->name('skills.autocomplete');
 
 Route::get('/skills/autocomplete', [SkillController::class, 'autocomplete'])->name('skills.autocomplete');
 
@@ -695,24 +653,15 @@ Route::get('/skills/autocomplete', [SkillController::class, 'autocomplete'])->na
 
 Route::get('/skilled', [SkillController::class, 'applyasaskillworker'])->name('applyasaskillworker');
 
-// Route::get('/apply-as-skilled-worker', [SkillController::class, 'applyasaskillworker'])->name('applyasaskillworker');
 
 Route::get('/ourSkilledWorkerServices', [SkillController::class, 'ourSkilledWorkerServices'])->name('ourSkilledWorkerServices');
 
 
-
-
-
 // contact message
-
 Route::post('/contact-message', [ContactMessageController::class, 'storemessage'])->name('contact-message.store');
 
 
-
-
-
 // Legacy Service Request redirects -> New Booking Flow
-
 Route::get('/service-requests/personal-info', function () {
 
     return redirect()->route('booking.service-selection');
@@ -736,7 +685,6 @@ Route::post('/service-requests/create', [ServiceRequestController::class, 'saveS
 
 
 // Protected routes (require auth)
-
 Route::middleware(['client', 'auth', 'check.credits'])->group(function () {
 
     // Registration
@@ -751,7 +699,7 @@ Route::middleware(['client', 'auth', 'check.credits'])->group(function () {
 
     // routes/web.php or routes/admin.php
 
-    Route::post('/contactmessage/markAsReadOnClick/{id}', [ContactMessageController::class, 'markAsReadOnClick'])->name('contactmessage.markAsReadOnClick');
+    
 
     Route::post('/admin/reply/{id}/mark-as-read', [ContactMessageController::class, 'markAsReadReply'])->name('contactmessage.markAsReadReply');
 
@@ -1246,33 +1194,35 @@ Route::post('/live-out-payment/callback', [LiveOutPaymentController::class, 'pay
 
 
 
-
-
-// =====================================================
-
-// CLIENT BOOKING FLOW ROUTES
-
-// =====================================================
-
-Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('booking.')->group(function () {
-
-    // Step 2: Service Selection
-
+// Step 2: Service Selection — public, guests can view and fill this in.
+// saveServiceSelection() itself handles sending unauthenticated
+// submissions to login/register and preserving their form data.
+Route::prefix('booking')->name('booking.')->group(function () {
     Route::get('/service-selection', [BookingController::class, 'showServiceSelection'])
-
         ->name('service-selection');
 
     Route::post('/service-selection', [BookingController::class, 'saveServiceSelection'])
-
         ->name('save-service-selection');
-
-
 
     // AJAX: Real-time cost calculation
 
     Route::post('/calculate-cost', [BookingController::class, 'calculateCost'])
 
         ->name('calculate-cost');
+
+        
+});
+
+
+
+// =====================================================
+// CLIENT BOOKING FLOW ROUTES
+// =====================================================
+
+Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('booking.')->group(function () {
+
+
+    
 
 
 
@@ -1327,16 +1277,7 @@ Route::middleware(['client', 'auth', 'prevent-back'])->prefix('booking')->name('
 
 
 
-    // Step 7: Management Plans
-
-    Route::get('/management-plans/{serviceRequest}', [BookingController::class, 'showManagementPlans'])
-
-        ->name('management-plans');
-
-    Route::post('/management-plans/{serviceRequest}', [BookingController::class, 'selectManagementPlan'])
-
-        ->name('select-plan');
-
+    
 
 
     // Step 8: Payment
