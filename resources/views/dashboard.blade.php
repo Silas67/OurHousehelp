@@ -11,32 +11,18 @@
                     YOUR DASHBOARD
                 </div>
 
-                <h1 class = "text-left">
-                    Welcome back,<br>
-                    <span>{{ Auth::user()->name }}</span>
+                <h1 class="text-left">
+                    Your home,<br>
+                    <span>taken care of.</span>
                 </h1>
 
                 <p>
-                    Manage your services, bookings and account
-                    from one place.
+                    Find trusted household professionals, manage your bookings,
+                    and get the help you need—all in one place.
                 </p>
             </div>
 
-            <div class="ohh-hero-action">
-                <a href="{{ route('booking.service-selection') }}" class="ohh-primary-btn">
-                    <i class="fas fa-plus"></i>
-                    Book a Service
-                </a>
-
-                <button
-                    type="button"
-                    class="ohh-support-link"
-                    data-bs-toggle="modal"
-                    data-bs-target="#contactModal">
-                    <i class="fas fa-headset"></i>
-                    Contact Support
-                </button>
-            </div>
+            
         </section>
 
 
@@ -822,7 +808,7 @@
         @media (max-width: 768px) {
 
             .ohh-dashboard {
-                padding: 24px 16px 50px;
+                padding: 24px 4px 50px;
             }
 
             .ohh-dashboard-hero {

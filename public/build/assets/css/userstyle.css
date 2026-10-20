@@ -78,6 +78,12 @@ a {
     padding-top: 56px; /* Space for fixed header */
 }
 
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 6px;
+    }
+}
+
 .main-content.active {
     margin-left: 25% /* Space for sidebar when active */
 }

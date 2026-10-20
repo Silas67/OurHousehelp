@@ -33,16 +33,7 @@
 
         </div>
 
-        <div class="ohh-booking-hero-badge">
-            <div class="ohh-hero-badge-icon">
-                <i class="fas fa-shield-heart"></i>
-            </div>
-
-            <div>
-                <strong>Trusted staff matching</strong>
-                <span>Vetted candidates selected for your needs</span>
-            </div>
-        </div>
+        
     </section>
 
 
@@ -2840,7 +2831,7 @@
     @media (max-width: 767.98px) {
 
         .ohh-booking-page {
-            padding: 18px 16px 50px;
+            padding: 18px 4px 50px;
         }
 
 
